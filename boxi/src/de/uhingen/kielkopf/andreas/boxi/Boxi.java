@@ -6,6 +6,8 @@ package de.uhingen.kielkopf.andreas.boxi;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -38,22 +40,71 @@ public class Boxi {
    final static String         MONAT   ="[A-Z][a-z][a-z] ";
    final static String         TAGE    ="(?:[1-3 ]?[0-9] )?";
    final static String         REST    ="(?:[ 0-9][0-9]{3}[ 0-9]|[0-9:]{5})";
-   static String               DATE    ="("+TAGD+MONAT+TAGE+REST+").*";
+   final static String         DATE    ="("+TAGD+MONAT+TAGE+REST+").*";
    final static boolean        colorize=true;
    final static ProcessBuilder pb      =new ProcessBuilder();
+   static List<KernelInfo>     aktuell =null;
+   static List<KernelInfo>     last    =null;
    /**
     * @param args
     */
-   public static void main(String[] arwgs) {
-      // new Boxi();
-      Boxi.start(arwgs);
+   public static void main(String[] args) {
+      Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+         @Override
+         public void run() {
+            // System.out.println("---");
+            if (aktuell!=null)
+               for (KernelInfo kernelInfo:aktuell)
+                  System.out.println(kernelInfo.getLine());
+            else
+               if (last!=null)
+                  for (KernelInfo kernelInfo:last)
+                     System.out.println(kernelInfo.getLine());
+         }
+      }));
+      Boxi.start(args);
    }
    public Boxi() {}
-   public static void start(String[] aregs) {
-      // for (String s:args)
-      // Map<String, Query> infomap=new LinkedHashMap<>();
-      for (KernelInfo kernelInfo:KernelInfo.analyse())
-         kernelInfo.println();
+   public static void start(String[] args) {
+      String flags=String.join(" ", args);
+      KernelInfo.listAll=(flags.matches(".*-[a-z]*l.*"));
+      System.out.println(KernelInfo.getHeader());
+      aktuell=KernelInfo.analyse();
+      if (flags.matches(".*-[a-z]*w.*")) {
+         for (KernelInfo kernelInfo:aktuell)
+            System.out.println("  :  .   "+kernelInfo.getLine()); // Gib die ektuelle analyse aus
+         System.out.println("will run until ^c is pressed");
+         Instant startZeitpunkt=Instant.now();
+         do { // Beobachte Änderungen bis zum Abbruch
+            last=aktuell;
+            try {
+               Thread.sleep(1*100L);
+            } catch (InterruptedException e) {}
+            KernelInfo.clear();
+            Instant jetzt=Instant.now();
+            aktuell=KernelInfo.analyse();
+            ArrayList<KernelInfo> dif=new ArrayList<>();
+            kein_dif: for (KernelInfo a:aktuell) {
+               String b=a.getLine().replaceAll(" ", "");
+               for (KernelInfo c:last) {
+                  String d=c.getLine().replaceAll(" ", "");
+                  if (d.compareTo(b)==0)
+                     continue kein_dif;
+               }
+               dif.add(a);
+            }
+            Duration zeit =Duration.between(startZeitpunkt, jetzt);
+            long     milli=zeit.toMillis();
+            long     min  =milli/60000L;
+            long     sec  =(milli/1000L)%60;
+            milli%=1000;
+            String z=String.format("%2d:%02d.%03d", min, sec, milli);
+            for (KernelInfo kernelInfo:dif)
+               System.out.println(z+kernelInfo.getLine());
+         } while (true);
+      }
+      // for (KernelInfo kernelInfo:aktuell)
+      // System.out.println(kernelInfo.getLine()); // Gib die ektuelle analyse aus
    }
    public static void show(List<Iterable<String>> f) {
       for (Iterable<String> list:f) {
@@ -68,8 +119,9 @@ public class Boxi {
     * @author andreas kielkopf
     */
    private static class KernelInfo {
+      public static boolean          listAll=false;
       private final Iterable<String> info;
-      static ArrayList<Integer>      maxlen=new ArrayList<>();
+      static ArrayList<Integer>      maxlen =new ArrayList<>();
       public KernelInfo(Iterable<String> iterableInfo) {
          info=iterableInfo;
          int index=0;
@@ -81,7 +133,14 @@ public class Boxi {
             index++;
          }
       }
-      public void println() {
+      static public String getHeader() {
+         List<Iterable<String>> running=Query.MHWD_LI.getIterable(Pattern.compile(".*running.*"));
+         for (Iterable<String> imr:running)
+            for (String text:imr)
+               return (text);
+         return "";
+      }
+      public String getLine() {
          Iterator<Integer> len=maxlen.iterator();
          StringBuilder     sb =new StringBuilder();
          for (String text:info) {
@@ -100,53 +159,68 @@ public class Boxi {
             sb.append(text);
          }
          sb.append(reset);
-         System.out.println(sb.toString());
+         return sb.toString();
       }
-      static public Iterable<KernelInfo> analyse() {
-         List<Iterable<String>> running=Query.MHWD_LI.getIterable(Pattern.compile(".*running.*"));
-         for (Iterable<String> imr:running)
-            for (String text:imr)
-               System.out.println(text);
+      static public void clear() {
+         Query.LS.clear();
+         Query.CAT_KVER.clear();
+         Query.DU_MODULES.clear();
+         Query.MHWD_LI.clear();
+      }
+      static public List<KernelInfo> analyse() {
          // Look for kernels installed
-         List<List<String>>                        installiert=Query.MHWD_LI.getList(Pattern.compile("[*].*(linux(.*))"));
+         List<List<String>>                        kernels =listAll ? Query.MHWD_L.getList(Pattern.compile("[*].*(linux(.*))"))
+                  : Query.MHWD_LI.getList(Pattern.compile("[*].*(linux(.*))"));
          /// In collect werden die Ergebnisse gesammelt je kernel ein Eintrag
-         Map<Predicate<String>, ArrayList<String>> sammlung   =new LinkedHashMap<>();
-         for (List<String> k:installiert) {
+         Map<Predicate<String>, ArrayList<String>> sammlung=new LinkedHashMap<>();
+         for (List<String> k:kernels) {
             ArrayList<String> info    =k.stream().collect(Collectors.toCollection(ArrayList<String>::new));
             String            kernelNr=info.remove(1);
-            String            stext   ="uxabc$|uxabc-|s-a[.]bc[-.]|^a[.]bc[.]|uz-a[.]bc-";
-            for (int i=0; i<=2; i++)
-               stext=stext.replaceAll(""+"abc".charAt(i), (i<kernelNr.length() ? ""+kernelNr.charAt(i) : ""));
+            String            rp      ="abcdef";
+            String            stext   ="linuxabcdef$"
+                     // * linux44 * linux515-rt
+                     // initramfs-4.4-x86_64.img initramfs-5.15-rt-x86_64-fallback.img
+                     +"|^initr.m.s-a[.]bcdef[-.].*img$"
+                     // extramodules-4.4-MANJARO extramodules-5.15-rt-MANJAR
+                     +"|^.xtr.mo.ul.s-a[.]bcdef-MANJARO$"
+                     // cat kver -> 4.4.294-1-MANJARO x64 5.15.5-rt22-1-MANJARO x64
+                     +"|^a[.]bc[.][-0-9]*def[-0-9]*MANJARO(?:[ 0-9]+[KM])?"
+                     // vmlinuz-4.4-x86_64 vmlinuz-5.15-rt-x86_64
+                     +"|^vmlinuz-a[.]bcdef-x86_64$";
+            for (int i=0; i<rp.length(); i++)
+               stext=stext.replaceAll(""+rp.charAt(i), (i<kernelNr.length() ? ""+kernelNr.charAt(i) : ""));
+            // System.out.println(stext);
             sammlung.put(Pattern.compile(stext).asPredicate(), info);
          }
          /// Prüfe ob der Kernel noch unterstützt wird OK/[EOL]
-         List<List<String>> available=Query.MHWD_L.getList(Pattern.compile(".*linux.*"));
+         List<List<String>> available=(!listAll) ? Query.MHWD_L.getList(Pattern.compile("[*].*(linux(.*))"))
+                  : Query.MHWD_LI.getList(Pattern.compile("[*].*(linux(.*))"));
          /// Zeige den Kernel und die initramdisks in /boot
          List<List<String>> vmlinuz  =Query.LS.getList(Pattern.compile(DATE+"(vmlinuz.*)"));
          List<List<String>> initrd   =Query.LS.getList(Pattern.compile(DATE+"(init.*64[.]img)"));
          List<List<String>> fallback =Query.LS.getList(Pattern.compile(DATE+"(init.*fallback[.]img)"));
          /// Zeige die Kernelversion
-         List<List<String>> kver     =Query.CAT_KVER.getList(Pattern.compile("([-0-9.]+MANJARO).*"));
-         List<List<String>> module   =Query.DU_MODULES.getList(Pattern.compile("([0-9]+[KM])[^0-9]+([-0-9.]+MANJARO)"));
+         List<List<String>> kver     =Query.CAT_KVER.getList(Pattern.compile("([-0-9.rt]+MANJARO).*"));
+         List<List<String>> module   =Query.DU_MODULES.getList(Pattern.compile("([0-9]+[KM]?)[^0-9]+([-0-9rt.]+MANJARO)"));
          for (List<String> m:module)
             m.add(m.remove(1)+" "+m.remove(0)); // swap ???
          for (Entry<Predicate<String>, ArrayList<String>> entry:sammlung.entrySet()) {
             Predicate<String> pr  =entry.getKey();
             ArrayList<String> ergs=entry.getValue();
-            ergs.add(searchFor2(available, pr, "OK", "<EOL>"));
+            ergs.add(searchFor2(available, pr, "OK", listAll ? "-" : "<EOL>"));
             ergs.add(searchFor2(vmlinuz, pr, "§", "<vmlinuz missing>"));
             ergs.add(searchFor2(initrd, pr, "§", "<initrd missing>"));
-            ergs.add(searchFor2(fallback, pr, "fallback OK", "<fallback missing>"));
+            ergs.add(searchFor2(fallback, pr, " fallback OK ", "<no fallback>"));
             ergs.add(searchFor2(kver, pr, "§", "<kver missing>"));
             String            kernelVersion=searchFor2(kver, pr, "§", "<kver missing>");
             Predicate<String> p2           =Pattern.compile(kernelVersion, Pattern.LITERAL).asPredicate();
             ergs.add("modules:");
             ergs.add(searchFor2(module, p2, "§", "<missing>"));
          }
-         ArrayList<KernelInfo> kernels=new ArrayList<>();
+         ArrayList<KernelInfo> kernel_list=new ArrayList<>();
          for (Entry<Predicate<String>, ArrayList<String>> kernelInfo:sammlung.entrySet())
-            kernels.add(new KernelInfo(kernelInfo.getValue()));
-         return kernels;
+            kernel_list.add(new KernelInfo(kernelInfo.getValue()));
+         return kernel_list;
       }
       /*
        * static private String searchFor(List<Iterable<String>> imr, Predicate<String> pr, String success, String error) { Optional<String>
@@ -176,7 +250,7 @@ public class Boxi {
       Query(String... command) {
          cmd=command;
       }
-      private void evaluate(Pattern pa) {
+      private void evaluate() {
          try {
             Process           p =pb.command(cmd).redirectErrorStream(true).start();
             InputStreamReader ir=new InputStreamReader(p.getInputStream());
@@ -193,7 +267,7 @@ public class Boxi {
       }
       public List<Iterable<String>> getIterable(Pattern pa) {
          if (result==null)
-            evaluate(null);
+            evaluate();
          return result.stream().filter(s -> pa.matcher(s).find()).map(s -> toIterable(pa.matcher(s))).collect(Collectors.toList());
       }
       public List<List<String>> getList(Pattern pa) {
@@ -205,7 +279,7 @@ public class Boxi {
          return ma.find() ? new IterableMatchResult(ma) : null;
       }
       public void clear() {
-         result.clear();
+         result=null;
       }
       /**
        * Iterator über Matchresult Ein Match ohne Klammern liefert einen GesamtString Ein Match mit Klammern liefert für jede Klammer einen String, aber keinen

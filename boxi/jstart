@@ -1,4 +1,0 @@
-#!/bin/env -S sh
-#(C) 2021 Andreas Kielkopf
-java -jar "$0" "$@"
-exit

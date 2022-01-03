@@ -37,20 +37,19 @@ public class Maxi {
                         System.out.println(kernelInfo.getLine());
          }
       }));
-      // Query.showAll();
       Maxi.start(args);
-      // System.exit(20);
    }
    public Maxi() {}
    public static void start(String[] args) {
       String flags=String.join(" ", args);
-      KernelInfo.listAll=(flags.matches(".*-[a-z]*l.*"));
-      for (List<String> list:Query.TPUT.getList(Pattern.compile("([0-9])")))
+      KernelInfo.listAll=flags.matches(".*-[a-z]*l.*");
+      InfoLine.colorize=flags.matches(".*-[a-z]*c.*");
+      for (List<String> list:(zsh ? Query.TERMINFO : Query.TPUT).getList(Pattern.compile("([0-9])")))
          if (!list.isEmpty())
             InfoLine.colorize=true;
-      System.out.println(KernelInfo.getHeader());
       if (flags.matches(".*-[a-z]*w.*")) { // watch
          listOnExit=true;
+         System.out.println(KernelInfo.getHeader());
          System.out.println("will run until ^c is pressed");
          k_aktuell=KernelInfo.analyse();
          for (KernelInfo kernelInfo:k_aktuell)
@@ -80,11 +79,11 @@ public class Maxi {
             }
          } while (true);
       }
-      k_aktuell=KernelInfo.analyse();
-      for (KernelInfo kernelInfo:k_aktuell)
+      System.out.println(KernelInfo.getHeader());
+      for (KernelInfo kernelInfo:KernelInfo.analyse())
          System.out.println(kernelInfo.getLine()); // Gib die ektuelle analyse aus
-      m_aktuell=ModuleInfo.analyse();
-      for (ModuleInfo moduleInfo:m_aktuell) {
+      System.out.println(ModuleInfo.getHeader());
+      for (ModuleInfo moduleInfo:ModuleInfo.analyse()) {
          System.out.println(moduleInfo.getLine());
       }
    }

@@ -20,7 +20,7 @@ import java.util.stream.StreamSupport;
  */
 public enum Query {
    LS("ls", "-lA", "/boot", "/boot/grub", "/lib/modules") //
-   , TPUT("tput", "colors")
+   , TERMINFO(Maxi.SHELL, "-c", "echoti colors"), TPUT("tput", "colors")
    // , ZLS(SHELL, "-c", "print -l /boot/*(.) /boot/grub/*(.) /lib/modules/*(/)") //
    , MHWD_L("mhwd-kernel", "-l") //
    , MHWD_LI("mhwd-kernel", "-li") //

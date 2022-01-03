@@ -22,11 +22,13 @@ public class KernelInfo extends InfoLine {
    public String getLine() {
       return getLine(kspalten.iterator());
    }
+   /**
+    * Bei mehrfachen analyse müssen diese querys neu gemacht werden
+    */
    static public void clear() {
+      InfoLine.clear();
       Query.LS.clear();
       Query.CAT_KVER.clear();
-      Query.DU_MODULES.clear();
-      Query.MHWD_LI.clear();
    }
    /**
     * 
@@ -49,11 +51,11 @@ public class KernelInfo extends InfoLine {
       for (Entry<Predicate<String>, ArrayList<String>> entry:basis.entrySet()) {
          Predicate<String> pr  =entry.getKey();
          ArrayList<String> ergs=entry.getValue();
-         ergs.add(searchFor(available, pr, "OK", listAll ? "-" : "<EOL>"));
-         ergs.add(searchFor(vmlinuz, pr, "§", "<vmlinuz missing>"));
-         ergs.add(searchFor(initrd, pr, "§", "<initrd missing>"));
-         ergs.add(searchFor(fallback, pr, "fallback OK", "<no fallback>"));
-         ergs.add(searchFor(kver, pr, "§", "<kver missing>"));
+         ergs.add(deepSearch(available, pr, "OK", listAll ? "-" : "<EOL>"));
+         ergs.add(deepSearch(vmlinuz, pr, "§", "<vmlinuz missing>"));
+         ergs.add(deepSearch(initrd, pr, "§", "<initrd missing>"));
+         ergs.add(deepSearch(fallback, pr, "fallback OK", "<no fallback>"));
+         ergs.add(deepSearch(kver, pr, "§", "<kver missing>"));
       }
       return basis.values().stream().map(s -> new KernelInfo(s)).collect(Collectors.toList());
    }

@@ -65,10 +65,13 @@ public class InfoLine {
          sb.append(reset);
       return sb.toString();
    }
+   static void clear() {
+      Query.MHWD_LI.clear();
+   }
    /**
     * @return a list of kernels to search for
     */
-   static public Map<Predicate<String>, ArrayList<String>> getBasis() {
+   static Map<Predicate<String>, ArrayList<String>> getBasis() {
       List<List<String>>                        kernels=KernelInfo.listAll
                ? Query.MHWD_L.getList(Pattern.compile("[*].*(linux(.*))"))
                : Query.MHWD_LI.getList(Pattern.compile("[*].*(linux(.*))"));
@@ -102,10 +105,16 @@ public class InfoLine {
     * @param error
     * @return
     */
-   protected static String searchFor(List<List<String>> lls, Predicate<String> pr, String success, String error) {
+   static String deepSearch(List<List<String>> lls, Predicate<String> pr, String success, String error) {
       Optional<String> erg=lls.stream().flatMap(ims -> ims.stream()).filter(pr).findAny();
       if (!erg.isPresent())
          return error;
       return success.replaceFirst("§", erg.get());
+   }
+   static List<String> search(List<List<String>> lls, Predicate<String> pr) {
+      Optional<List<String>> erg=lls.stream().filter(s -> s.stream().anyMatch(pr)).findAny();
+      if (!erg.isPresent())
+         return new ArrayList<>();
+      return erg.get();
    }
 }

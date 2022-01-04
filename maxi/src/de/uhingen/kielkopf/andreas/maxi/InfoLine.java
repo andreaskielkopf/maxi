@@ -43,17 +43,15 @@ public class InfoLine {
       StringBuilder sb=new StringBuilder();
       for (String text:info) {
          if (colorize)
-            if (sb.length()==0)
-               sb.append(green);
+            if ((sb.length()==0)||(text.equals("="))||(text.endsWith(":")))
+               sb.append(green);// hervorgehobene Spalte
             else
-               if (text.endsWith(":"))
-                  sb.append(green);
+               if (text.startsWith("<"))
+                  sb.append(red);// Fehler
                else
-                  if (text.startsWith("<"))
-                     sb.append(red);
-                  else
-                     sb.append(white);
-         sb.append(" ");
+                  sb.append(white);
+         if (!text.equals("="))
+            sb.append(" ");
          sb.append(text);
          for (@SuppressWarnings("boxing")
          int i=len.next(); i>text.length(); i--)

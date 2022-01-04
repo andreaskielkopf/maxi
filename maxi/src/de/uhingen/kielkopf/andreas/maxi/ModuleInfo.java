@@ -62,12 +62,14 @@ public class ModuleInfo extends InfoLine {
             return s;
          }).findAny().orElse(Arrays.asList(new String[] {"<missing>", ""})))
             ergs.add(s);
+         ergs.add(2, "=");
          //
          for (String s:du_extra.stream().filter(l -> l.stream().anyMatch(pr)).map(s -> {
             Collections.reverse(s);
             return s;
          }).findAny().orElse(Arrays.asList(new String[] {"<missing>", ""})))
             ergs.add(s);
+         ergs.add(5, "=");
       }
       return basis.values().stream().map(s -> new ModuleInfo(s)).collect(Collectors.toList());
    }

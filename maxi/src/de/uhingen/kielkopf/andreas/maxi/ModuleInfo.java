@@ -22,7 +22,8 @@ public class ModuleInfo extends InfoLine {
    public ModuleInfo(ArrayList<String> iterableInfo) {
       super(iterableInfo, mspalten);
    }
-   public String getLine() {
+   @Override
+   public String toString() {
       return getLine(mspalten.iterator());
    }
    /**
@@ -64,11 +65,7 @@ public class ModuleInfo extends InfoLine {
             ergs.add(s);
          ergs.add(2, "=");
          //
-         for (String s:du_extra.stream().filter(l -> l.stream().anyMatch(pr)).map(s -> {
-            Collections.reverse(s);
-            return s;
-         }).findAny().orElse(Arrays.asList(new String[] {"<missing>", ""})))
-            ergs.add(s);
+         select(du_extra.stream(), pr).forEach(s -> ergs.add(s));
          ergs.add(5, "=");
       }
       return basis.values().stream().map(s -> new ModuleInfo(s)).collect(Collectors.toList());
@@ -79,10 +76,10 @@ public class ModuleInfo extends InfoLine {
    static public String getHeader() {
       StringBuilder sb=new StringBuilder();
       if (colorize)
-         sb.append(green);
+         sb.append(GREEN);
       sb.append("Modules in /lib/modules");
       if (colorize)
-         sb.append(reset);
+         sb.append(RESET);
       return sb.toString();
    }
 }

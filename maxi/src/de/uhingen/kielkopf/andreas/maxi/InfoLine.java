@@ -1,6 +1,8 @@
 package de.uhingen.kielkopf.andreas.maxi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,20 +11,26 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class InfoLine {
-   final static char      ESC     =27;
-   final static String    green   =ESC+"[32m";
-   final static String    red     =ESC+"[1;31m";
-   final static String    white   =ESC+"[0;97m";
-   final static String    reset   =ESC+"[0m";
-   public static boolean  colorize=false;
-   final static String    TAGD    ="(?:[1-3 ]?[0-9][.] )?";
-   final static String    MONAT   ="[A-Z][a-z][a-z] ";
-   final static String    TAGE    ="(?:[1-3 ]?[0-9] )?";
-   final static String    REST    ="(?:[ 0-9][0-9]{3}[ 0-9]|[0-9:]{5})";
-   final static String    DATE    ="("+TAGD+MONAT+TAGE+REST+").*";
-   final Iterable<String> info;
+   final static String       GREEN    ="\u001b[0;32m";
+   final static String       RED      ="\u001b[1;31m";
+   final static String       WHITE    ="\u001b[0;97m";
+   final static String       RESET    ="\u001b[0m";
+   final static String       TAGD     ="(?:[1-3 ]?[0-9][.] )?";
+   final static String       MONAT    ="[A-Z][a-z][a-z] ";
+   final static String       TAGE     ="(?:[1-3 ]?[0-9] )?";
+   final static String       REST     ="(?:[ 0-9][0-9]{3}[ 0-9]|[0-9:]{5})";
+   final static String       DATE     ="("+TAGD+MONAT+TAGE+REST+").*";
+   final static String       SIZE     ="^([ 0-9KMG,]{4})";
+   final static List<String> MISSING  =Arrays.asList(new String[] {"<missing>", ""});
+   final static List<String> MISSING_V=Arrays.asList(new String[] {"<vmlinuz missing>", ""});
+   final static List<String> MISSING_I=Arrays.asList(new String[] {"<initrd missing>", ""});
+   final static List<String> MISSING_F=Arrays.asList(new String[] {"fallback", "<no>"});
+   final static List<String> EOL_TEST =Arrays.asList(new String[] {"linux51", "51"});
+   final Iterable<String>    info;
+   public static boolean     colorize =false;
    @SuppressWarnings("boxing")
    public InfoLine(Iterable<String> iterableInfo, ArrayList<Integer> spalten) {
       info=iterableInfo;
@@ -40,27 +48,30 @@ public class InfoLine {
     * @return one Line of the Info
     */
    public String getLine(Iterator<Integer> len) {
-      StringBuilder sb=new StringBuilder();
+      StringBuilder sb     =new StringBuilder();
+      boolean       noSpace=false;
       for (String text:info) {
          if (colorize)
             if ((sb.length()==0)||(text.equals("="))||(text.endsWith(":")))
-               sb.append(green);// hervorgehobene Spalte
+               sb.append(GREEN);// hervorgehobene Spalte
             else
                if (text.startsWith("<"))
-                  sb.append(red);// Fehler
+                  sb.append(RED);// Fehler
                else
-                  sb.append(white);
-         if (!text.equals("="))
+                  sb.append(WHITE);
+         @SuppressWarnings("boxing")
+         int width=len.next();
+         if (!(noSpace||text.equals("=")||(width==0)))
             sb.append(" ");
          sb.append(text);
-         for (@SuppressWarnings("boxing")
-         int i=len.next(); i>text.length(); i--)
+         for (; width>text.length(); width--)
             sb.append(" ");
+         noSpace=(text.equals("=")||text.endsWith(":"));
       }
       while (' '==sb.charAt(sb.length()-1))
          sb.deleteCharAt(sb.length()-1);
       if (colorize)
-         sb.append(reset);
+         sb.append(RESET);
       return sb.toString();
    }
    static void clear() {
@@ -73,6 +84,7 @@ public class InfoLine {
       List<List<String>>                        kernels=KernelInfo.listAll
                ? Query.MHWD_L.getList(Pattern.compile("[*].*(linux(.*))"))
                : Query.MHWD_LI.getList(Pattern.compile("[*].*(linux(.*))"));
+      // kernels.add(EOL_TEST);
       Map<Predicate<String>, ArrayList<String>> basis  =new LinkedHashMap<>();
       final String                              r      ="abcdef";
       for (List<String> k:kernels) {
@@ -81,13 +93,17 @@ public class InfoLine {
          // * linux44 * linux515-rt
          String            search="linuxabcdef$"
                   // initramfs-4.4-x86_64.img initramfs-5.15-rt-x86_64-fallback.img
-                  +"|^initr.m.s-a[.]bcdef[-.].*img$"
+                  +"|^initr.m.s-a[.]bcdef[-.][^r].*img$"
                   // extramodules-4.4-MANJARO extramodules-5.15-rt-MANJAR
                   +"|^.xtr.mo.ul.s-a[.]bcdef-MANJARO$"
                   // cat kver -> 4.4.294-1-MANJARO x64 5.15.5-rt22-1-MANJARO x64
                   +"|^a[.]bc[.][-0-9]*def[-0-9]*MANJARO(?:[ 0-9]+[KM])?"
                   // vmlinuz-4.4-x86_64 vmlinuz-5.15-rt-x86_64
-                  +"|^vmlinuz-a[.]bcdef-x86_64$";
+                  +"|^vmlinuz-a[.]bcdef-x86_64$"
+                  // initramfs-5.15-x86_64-fallback.img
+                  +"|^a[.]bcdef-x86_64-"
+         //
+         ;
          for (int i=0; i<r.length(); i++)
             search=search.replaceAll(""+r.charAt(i), (i<kNr.length() ? ""+kNr.charAt(i) : ""));
          // search becomes a pattern to identify this one kernel
@@ -114,5 +130,17 @@ public class InfoLine {
       if (!erg.isPresent())
          return new ArrayList<>();
       return erg.get();
+   }
+   static Iterable<String> select(Stream<List<String>> a, Predicate<String> pr) {
+      return a.filter(l -> l.stream().anyMatch(pr)).map(s -> {
+         Collections.reverse(s);
+         return s;
+      }).findAny().orElse(Arrays.asList(new String[] {"<missing>", ""}));
+   }
+   static Iterable<String> select(Stream<List<String>> a, Predicate<String> pr, List<String> missing) {
+      return a.filter(l -> l.stream().anyMatch(pr)).map(s -> {
+         Collections.reverse(s);
+         return s;
+      }).findAny().orElse(missing);
    }
 }

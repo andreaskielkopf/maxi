@@ -6,20 +6,20 @@ Description
 
 A tool to help analysing why a manjaro installation might not boot.
 
-The program collects information of the actual install (may also work inside chroot). It uses coreutils (ls cat sort du sha256sum), find and mhwd-kernel to gather these informations.
+The program collects information of the actual install (may also work inside chroot). It uses coreutils (ls cat sort du sha256sum), tput, find and mhwd-kernel to gather these informations.
 
 The program is intended to be a helpful hand to gather a lot of small info (as inxi does) and present it in a short overview. So that the insightful reader can decide what may be the problem with this installation, and how to proceed without wasting to much time.
 
-While inxi concentrates on a system overview, this program concentrates only on things between power on and kernel is running
+While inxi concentrates on a system overview, this program concentrates only on things between power_on and kernel_is_running
 
 
 It displays in short form for every kernel:
 
- * is the kernel at /boot/vmlinuz... present
- * is a initramdisk present (show date)
+ * is a kernel at /boot/vmlinuz... present
+ * is a initramdisk present (show size)
  * is a fallback present
- * are the modules at /lib/modules/... present and complete
- * are extramodules present
+ * are the modules at /lib/modules/... present and complete (size)
+ * are extramodules present (size)
 
 Usage:
 ------
@@ -47,7 +47,7 @@ Depends on
 - mhwd (mhwd-kernel)
 - coreutils (ls cat sort du sha256sum
 - findutils (find)
-- ncurses (tput)
+- ncurses (tput) or zsh (echoti)
 
 License
 -------

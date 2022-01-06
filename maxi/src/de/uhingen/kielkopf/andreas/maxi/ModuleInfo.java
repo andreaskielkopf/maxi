@@ -39,7 +39,7 @@ public class ModuleInfo extends InfoLine {
     * 
     * @return
     */
-   public static List<ModuleInfo> analyse() { /// In collect werden die Ergebnisse gesammelt je kernel ein Eintrag
+   public static List<ModuleInfo> analyse() {
       Map<Predicate<String>, ArrayList<String>> basis    =getBasis();
       List<List<String>>                        kver     =Query.CAT_KVER
                .getList(Pattern.compile("([-0-9.rt]+MANJARO).*"));
@@ -52,7 +52,6 @@ public class ModuleInfo extends InfoLine {
          Predicate<String> pr  =entry.getKey();
          ArrayList<String> ergs=entry.getValue();
          ergs.add(ergs.remove(0).replace("linux", "modules"));
-         //
          String  kernelVersion=deepSearch(kver, pr, "§", "<kver missing>");
          Matcher a            =Pattern.compile("(.*)-rt(.*)-1-(.*)").matcher(kernelVersion);
          if (a.find()) // bugfix wegen rt-kernels
@@ -64,7 +63,6 @@ public class ModuleInfo extends InfoLine {
          }).findAny().orElse(Arrays.asList(new String[] {"<missing>", ""})))
             ergs.add(s);
          ergs.add(2, "=");
-         //
          select(du_extra.stream(), pr).forEach(s -> ergs.add(s));
          ergs.add(5, "=");
       }
@@ -75,10 +73,10 @@ public class ModuleInfo extends InfoLine {
     */
    static public String getHeader() {
       StringBuilder sb=new StringBuilder();
-      if (colorize)
+      if (Flag.COLOR.get())
          sb.append(GREEN);
       sb.append("Modules in /lib/modules");
-      if (colorize)
+      if (Flag.COLOR.get())
          sb.append(RESET);
       return sb.toString();
    }

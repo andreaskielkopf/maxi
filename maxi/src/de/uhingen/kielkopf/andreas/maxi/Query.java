@@ -40,18 +40,11 @@ public enum Query {
    Query(String... command) {
       cmd=command;
    }
-   static void showAll() {
-      for (Query q:values()) { // if (q.name().contains("H")) break;
-         System.out.println();
-         System.out.print(q.name()+": ");
-         for (String c:q.cmd)
-            System.out.print(c+" ");
-         System.out.println();
-         q.evaluate();
-         for (String s:q.result)
-            System.out.println(s);
-      }
-   }
+   /*
+    * static void showAll() { for (Query q:values()) { System.out.println(); System.out.print(q.name()+": "); for
+    * (String c:q.cmd) System.out.print(c+" "); System.out.println(); q.evaluate(); for (String s:q.result)
+    * System.out.println(s); } }
+    */
    void evaluate() {
       try {
          Process           p =pb.command(cmd).redirectErrorStream(true).start();

@@ -16,7 +16,7 @@ public class KernelInfo extends InfoLine {
    public String toString() {
       return getLine(kspalten.iterator());
    }
-   public static boolean     listAll =false;
+   // public static boolean listAll =false;
    static ArrayList<Integer> kspalten=new ArrayList<>();
    public KernelInfo(Iterable<String> iterableInfo) {
       super(iterableInfo, kspalten);
@@ -35,7 +35,7 @@ public class KernelInfo extends InfoLine {
     */
    static public Stream<KernelInfo> analyseStream() {
       /// Prüfe ob der Kernel noch unterstützt wird OK/[EOL]
-      List<List<String>> available=(!listAll) ? Query.MHWD_L.getList(Pattern.compile("[*].*(linux(.*))"))
+      List<List<String>> available=(!Flag.LIST_ALL.get()) ? Query.MHWD_L.getList(Pattern.compile("[*].*(linux(.*))"))
                : Query.MHWD_LI.getList(Pattern.compile("[*].*(linux(.*))"));
       /// Zeige den Kernel und die initramdisks in /boot
       List<List<String>> vmlinuz  =Query.LS.getList(Pattern.compile(SIZE+".*(vmlinuz.*)"));
@@ -47,9 +47,8 @@ public class KernelInfo extends InfoLine {
                .map(s -> {
                   Predicate<String> key=s.getKey();
                   ArrayList<String> value=s.getValue();
-                  value.add(deepSearch(available, key, "", listAll ? "-" : "<EOL>"));
+                  value.add(deepSearch(available, key, "", Flag.LIST_ALL.get() ? "-" : "<EOL>"));
                   value.add(deepSearch(vmlinuz, key, "§", "<vmlinuz missing>"));
-                  // select(vmlinuz.stream(), p, MISSING_V).forEach(v -> l.add(v));
                   select(initrd.stream(), key, MISSING_I).forEach(t -> value.add(t.trim()));
                   select(fallback.stream(), key, MISSING_F).forEach(t -> {
                      if (!t.contains("x"))
@@ -72,7 +71,7 @@ public class KernelInfo extends InfoLine {
       for (Iterable<String> imr:running)
          for (String text:imr)
             erg=text;
-      return erg.replaceAll("\\x1b\\[[0-9;]+m", colorize ? WHITE : "").replaceFirst("\\x1b\\[[0-9;]+m",
-               colorize ? GREEN : "");
+      return erg.replaceAll("\\x1b\\[[0-9;]+m", Flag.COLOR.get() ? WHITE : "").replaceFirst("\\x1b\\[[0-9;]+m",
+               Flag.COLOR.get() ? GREEN : "");
    }
 }

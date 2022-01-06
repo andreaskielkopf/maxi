@@ -30,7 +30,6 @@ public class InfoLine {
    final static List<String> MISSING_F=Arrays.asList(new String[] {"fallback", "<no>"});
    final static List<String> EOL_TEST =Arrays.asList(new String[] {"linux51", "51"});
    final Iterable<String>    info;
-   public static boolean     colorize =false;
    @SuppressWarnings("boxing")
    public InfoLine(Iterable<String> iterableInfo, ArrayList<Integer> spalten) {
       info=iterableInfo;
@@ -51,7 +50,7 @@ public class InfoLine {
       StringBuilder sb     =new StringBuilder();
       boolean       noSpace=false;
       for (String text:info) {
-         if (colorize)
+         if (Flag.COLOR.get())
             if ((sb.length()==0)||(text.equals("="))||(text.endsWith(":")))
                sb.append(GREEN);// hervorgehobene Spalte
             else
@@ -70,7 +69,7 @@ public class InfoLine {
       }
       while (' '==sb.charAt(sb.length()-1))
          sb.deleteCharAt(sb.length()-1);
-      if (colorize)
+      if (Flag.COLOR.get())
          sb.append(RESET);
       return sb.toString();
    }
@@ -81,10 +80,9 @@ public class InfoLine {
     * @return a list of kernels to search for
     */
    static Map<Predicate<String>, ArrayList<String>> getBasis() {
-      List<List<String>>                        kernels=KernelInfo.listAll
+      List<List<String>>                        kernels=Flag.LIST_ALL.get()
                ? Query.MHWD_L.getList(Pattern.compile("[*].*(linux(.*))"))
                : Query.MHWD_LI.getList(Pattern.compile("[*].*(linux(.*))"));
-      // kernels.add(EOL_TEST);
       Map<Predicate<String>, ArrayList<String>> basis  =new LinkedHashMap<>();
       final String                              r      ="abcdef";
       for (List<String> k:kernels) {

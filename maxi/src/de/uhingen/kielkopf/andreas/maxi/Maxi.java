@@ -15,12 +15,10 @@ import java.util.stream.Collectors;
  *
  */
 public class Maxi {
-   static List<KernelInfo>     k_aktuell =null;
-   static List<KernelInfo>     last      =null;
-   static List<ModuleInfo>     m_aktuell =null;
-   final public static String  SHELL     =System.getenv("SHELL");
-   final public static boolean zsh       =Maxi.SHELL.contains("zsh");
-   static boolean              listOnExit=false;
+   static List<KernelInfo>    k_aktuell=null;
+   static List<KernelInfo>    last     =null;
+   static List<ModuleInfo>    m_aktuell=null;
+   final public static String SHELL    =System.getenv("SHELL");
    /**
     * @param args
     */
@@ -28,7 +26,7 @@ public class Maxi {
       Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
          @Override
          public void run() {
-            if (listOnExit) {
+            if (Flag.LISTONEXIT.get()) {
                System.out.println();
                if (k_aktuell!=null)
                   for (KernelInfo kernelInfo:k_aktuell)
@@ -40,23 +38,22 @@ public class Maxi {
             }
          }
       }));
-      Maxi.start(args);
+      Flag.ZSH.set(SHELL.contains("zsh"));
+      Flag.init(args);
+      start();
    }
    public Maxi() {}
-   public static void start(String[] args) {
-      String flags=String.join(" ", args);
-      KernelInfo.listAll=flags.matches(".*-[a-z]*l.*");
-      InfoLine.colorize=flags.matches(".*-[a-z]*c.*");
-      for (List<String> list:(zsh ? Query.TERMINFO : Query.TPUT).getList(Pattern.compile("([0-9])")))
+   public static void start() {
+      for (List<String> list:(Flag.ZSH.get() ? Query.TERMINFO : Query.TPUT).getList(Pattern.compile("([0-9])")))
          if (!list.isEmpty())
-            InfoLine.colorize=true;
-      if (flags.matches(".*-[a-z]*w.*")) { // watch
-         listOnExit=true;
+            Flag.COLOR.set(true);
+      if (Flag.WATCH.get()) { // watch
+         Flag.LISTONEXIT.set(true);
          System.out.println(KernelInfo.getHeader());
          System.out.println("will run until ^c is pressed");
          k_aktuell=KernelInfo.analyseStream().collect(Collectors.toList());
          for (KernelInfo kernelInfo:k_aktuell)
-            System.out.println("  : 0.   "+kernelInfo); // Gib die ektuelle analyse aus
+            System.out.println("  : 0.   "+kernelInfo); // Gib die aktuelle analyse aus
          Instant startZeitpunkt=Instant.now();
          do { // Beobachte Änderungen bis zum Abbruch
             last=k_aktuell;
@@ -83,9 +80,8 @@ public class Maxi {
          } while (true);
       }
       System.out.println(KernelInfo.getHeader());
-      KernelInfo.analyseStream().collect(Collectors.toList()).forEach(System.out::println); // Gib die
-                                                                                            // aktuelle
-      // analyse aus
+      KernelInfo.analyseStream().collect(Collectors.toList()).forEach(System.out::println);
+      // Gib dieaktuelle analyse aus
       System.out.println(ModuleInfo.getHeader());
       for (ModuleInfo moduleInfo:ModuleInfo.analyse())
          System.out.println(moduleInfo);

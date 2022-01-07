@@ -12,6 +12,7 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
         <file path="/maxi/maxi.jardesc"/>
+        <file path="/maxi/readme.md"/>
         <javaElement handleIdentifier="=maxi/src"/>
     </selectedElements>
 </jardesc>

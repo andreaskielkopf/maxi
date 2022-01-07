@@ -1,5 +1,6 @@
 #!/bin/env -S ${SHELL}
-#(C) 2022 Andreas Kielkopf
+# ©2022 Andreas Kielkopf
+# License: `GNU General Public License v3.0`
 nice java -jar "$0" "$@"
 EC="$?"
 [ "$EC" = 0 ] && exit;
@@ -12,11 +13,15 @@ Usage:
 ------
 $0 [OPTIONS]
 
- -l list all kernels [not only installed]
- -m list also modules and extramodules 
- -c hash kernel and modules directory
- -w watch how everything changes
- -g show infos about grub
- -e show efi bootloaders
+ -h --help         help
+ -c --color        colorize output unconditionally
+ -k --kernel       installed kernels, initrd
+ -l --list-all     all kernels (not only installed)  
+ -v --kver         kernelversion 
+ -m --modules      list modules and extramodules    
+ -s --shasum       produce hash to compare kernel. modules
+ -w --watch [100]  watch how everything changes with time 
+ 
+   default equals to: -km
  
 EOF

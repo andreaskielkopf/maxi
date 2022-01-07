@@ -25,20 +25,27 @@ Usage:
 ------
 maxi [OPTIONS]
 
- *    list by mhwd-kernel installed kernels
- * -l list all kernels (not only installed) 
- * -w watch how everything changes
+ * -h --help         help
+ * -c --color        colorize output unconditionally
+ * -k --kernel       installed kernels, initrd
+ * -l --list-all     all kernels (not only installed)
+ * -v --kver         kernelversion
+ * -m --modules      list modules and extramodules    
+ * -s --shasum       produce hash to compare kernel. modules
+ * -w --watch [100]  watch how everything changes with time 
+ 
+   default equals to: -km
  
 @todo:
- * -m list also modules and extramodules   
- * -c hash kernel and modules directory
+ 
  * -g show infos about grub
  * -e show efi bootloaders
+
 
 Project Members
 ---------------
 
-- [Andreas Kielkopf](https://gitlab.com/Arisa_Snowbell)
+- ©2022 [Andreas Kielkopf](https://github.com/andreaskielkopf)
 
 Depends on
 ----------

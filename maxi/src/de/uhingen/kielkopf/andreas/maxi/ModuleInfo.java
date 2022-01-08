@@ -81,7 +81,10 @@ public class ModuleInfo extends InfoLine {
       StringBuilder sb=new StringBuilder();
       if (Flag.COLOR.get())
          sb.append(GREEN);
-      sb.append("Modules in /lib/modules");
+      sb.append("Modules in:");
+      if (Flag.COLOR.get())
+         sb.append(WHITE);
+      sb.append(" /lib/modules");
       if (Flag.SHASUM.get()) {
          if (Flag.COLOR.get())
             sb.append(WHITE);

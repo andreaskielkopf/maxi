@@ -21,32 +21,42 @@ import java.util.stream.Stream;
 public class GrubInfo extends InfoLine {
    static String             GRUB_CFG   ="/boot/grub/grub.cfg";
    static String             GRUB_ETC   ="/etc/default/grub";
-   static String             GRUB_UPDATE=":please update grub.cfg";
+   static String             GRUB_UPDATE="Please update grub.cfg:";
    static ArrayList<Integer> spalten    =new ArrayList<>();
-   final static List<String> WICHTIG=Arrays
+   final static List<String> WICHTIG    =Arrays
             .asList(new String[] {"DEFAULT", "TIMEOUT", "DISTRIBUTOR", "PRELOAD", "_OS_PROBER", "THEME"});
    public GrubInfo(Iterable<String> iterableInfo) {
       super(iterableInfo, spalten);
    }
    public static Stream<InfoLine> analyseStream() {
       List<List<String>>  grub  =Query.GRUB.getLists(Pattern                                                        //
-               .compile("^(GRUB_[A-Z]*(?:" + String.join("|", WICHTIG) + ")[A-Z_]*)(=)(.+)"));
+               .compile("^(#?)(GRUB_[A-Z]*(?:" + String.join("|", WICHTIG) + ")[A-Z_]*)(=)(.+)"));
       ArrayList<String[]> tests =new ArrayList<>(Arrays.asList(new String[][] {{GRUB_CFG, GRUB_ETC, GRUB_UPDATE}}));
       List<List<String>>  initrd=Query.LS.getLists(Pattern.compile(SIZE + ".*(init.*64[.]img)"));
       for (List<String> list:initrd) {
-         String[] t=new String[] {GRUB_CFG, "/boot/" + list.get(1), ":Please update grub.cfg"};
+         String[] t=new String[] {GRUB_CFG, "/boot/" + list.get(1), GRUB_UPDATE};
          tests.add(t);
       }
       Stream<TestInfo>   testStream  =tests.stream().map(t -> Query.test(t)).filter(l -> (l.size() > 1)).map(l -> {
                                         ArrayList<String> x=new ArrayList<>(l);
                                         x.add(1, "<is older than>");
+                                        x.add(0, x.remove(x.size() - 1));
                                         return new TestInfo(x);
                                      });
       Stream<ConfigInfo> configStream=grub.stream().map(s -> new ConfigInfo(s));
       return Stream.concat(testStream, configStream);
    }
    public static String getHeader() {
-      return "";
+      StringBuilder sb=new StringBuilder();
+      if (Flag.COLOR.get())
+         sb.append(GREEN);
+      sb.append("Info about:");
+      if (Flag.COLOR.get())
+         sb.append(WHITE);
+      sb.append(" /etc/default/grub");
+      if (Flag.COLOR.get())
+         sb.append(RESET);
+      return sb.toString();
    }
    @Override
    public String toString() {

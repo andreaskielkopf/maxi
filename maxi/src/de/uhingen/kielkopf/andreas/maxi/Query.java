@@ -50,17 +50,16 @@ public enum Query {
    Query(String... command) {
       cmd=command;
    }
+   /**
+    * 
+    * @param test
+    * @return
+    */
    public static List<String> test(String[] test) {
       ArrayList<String> command=new ArrayList<>();
       command.add(Maxi.SHELL);
       command.add("-c");
-      StringBuilder sb=new StringBuilder();
-      sb.append("[[ ");
-      sb.append(test[0]);
-      sb.append(" -nt ");
-      sb.append(test[1]);
-      sb.append(" ]] && echo 't' || echo 'f'");
-      command.add(sb.toString());
+      command.add("[[ " + test[0] + " -nt " + test[1] + " ]] && echo 't' || echo 'f'");
       try {
          Process           p =pb.command(command).redirectErrorStream(true).start();
          InputStreamReader ir=new InputStreamReader(p.getInputStream());

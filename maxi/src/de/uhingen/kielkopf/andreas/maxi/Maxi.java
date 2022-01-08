@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 /**
  * @author Andreas Kielkopf ©2022
  * @license GNU General Public License v3.0
- * @version 0.2
- * @date 7.1.2022
+ * @version 0.3
+ * @date 8.1.2022
  */
 public class Maxi {
    static List<KernelInfo>    k_aktuell=null;
@@ -42,7 +42,7 @@ public class Maxi {
          }
       }));
       Flag.ZSH.set(SHELL.contains("zsh"));
-      Flag.setArgs(args, "-g");// -km
+      Flag.setArgs(args, "-km");// -km
       if (Flag.HELP.get())
          System.exit(9);
       if (Flag.WATCH.get() && Flag.SHASUM.get()) {

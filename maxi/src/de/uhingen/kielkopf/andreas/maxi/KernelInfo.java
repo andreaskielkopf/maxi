@@ -61,7 +61,7 @@ public class KernelInfo extends InfoLine {
          if (sha_kernel != null) {
             value.add(3, UTF_SUM);
             select(sha_kernel.stream(), key, MISSING).forEach(s -> {
-               if (!s.contains("vmlinuz"))
+               if (!s.isEmpty() && !s.contains("vmlinuz"))
                   value.add(4, shortSHA(s));
             });
          }

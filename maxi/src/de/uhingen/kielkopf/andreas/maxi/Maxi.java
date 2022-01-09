@@ -43,7 +43,7 @@ public class Maxi {
       }));
       Flag.ZSH.set(SHELL.contains("zsh"));
       //
-      Flag.setArgs(args, "-k");// -km
+      Flag.setArgs(args, "-ls");// -km
       //
       if (Flag.HELP.get())
          System.exit(9);

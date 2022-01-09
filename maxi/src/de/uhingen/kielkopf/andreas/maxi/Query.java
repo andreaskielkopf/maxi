@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,7 +20,6 @@ public enum Query {
    CAT_KVER(Maxi.SHELL, "-c", "cat /boot/*.kver"),
    DU_MODULES(Maxi.SHELL, "-c", "du -sh /lib/modules/*"),
    GRUB(Maxi.SHELL, "-c", "cat /etc/default/grub"),
-   MKINITCPIO(Maxi.SHELL, "-c", "cat /etc/mkinitcpio.conf"),
    // , ZSHA_MODULES("zsh", "-c", "LC_ALL=C;for K in $(print -o /lib/modules/*(/));"//
    // +"do echo -n \"$K \";for D in $(print -l $K/**/*(.)|sort);do cat $D;done|sha256sum; done;"),
    LS("ls", "-sh1", "/boot", "/boot/grub", "/lib/modules"),
@@ -29,6 +27,7 @@ public enum Query {
    // , ZLS(SHELL, "-c", "print -l /boot/*(.) /boot/grub/*(.) /lib/modules/*(/)")
    MHWD_L("mhwd-kernel", "-l"),
    MHWD_LI("mhwd-kernel", "-li"),
+   MKINITCPIO(Maxi.SHELL, "-c", "cat /etc/mkinitcpio.conf"),
    SHA_BOOT(Maxi.SHELL, "-c", "sha256sum /boot/*fallback* /boot/vmlinuz*"),
    // , SHA_M_VMLINUZ(Maxi.SHELL, "-c", "sha256sum /lib/modules/*/vmlinuz")
    SHA_MODULES(Maxi.SHELL, "-c",
@@ -39,8 +38,8 @@ public enum Query {
    private static List<String> EMPTY    =new ArrayList<String>();
    final static ProcessBuilder pb       =new ProcessBuilder();
    private static List<String> TEST_OK  =Arrays.asList(new String[] {"OK"});
-   private final String[]      cmd;
    private List<String>        cache    =null;                              // new ArrayList<String>();
+   private final String[]      cmd;
    private boolean             hasResult=false;
    /**
     * Definiert die Abfrage auf der Kommandozeile
@@ -63,7 +62,7 @@ public enum Query {
       try {
          Process           p =pb.command(command).redirectErrorStream(true).start();
          InputStreamReader ir=new InputStreamReader(p.getInputStream());
-         p.waitFor(1, TimeUnit.SECONDS);
+         // p.waitFor(1, TimeUnit.SECONDS);
          try (BufferedReader br=new BufferedReader(ir); Stream<String> li=br.lines()) {
             List<String> erg=li.collect(Collectors.toList());
             for (String s:erg) {
@@ -75,9 +74,6 @@ public enum Query {
          }
       } catch (IOException e) {
          e.printStackTrace();
-      } catch (InterruptedException e) {
-         System.out.println("Timeout: ");
-         e.printStackTrace();
       }
       return EMPTY;
    }
@@ -85,50 +81,20 @@ public enum Query {
       cache=null;
       hasResult=false;
    }
-   /*
-    * static void showAll() { for (Query q:values()) { System.out.println(); System.out.print(q.name()+": "); for
-    * (String c:q.cmd) System.out.print(c+" "); System.out.println(); q.evaluate(); for (String s:q.result)
-    * System.out.println(s); } }
-    */
-   /**
-    * Führt die Abfrage durch und speichert das Ergebnis im einer ArrayList für mehrfache Verwendung
-    */
-   private void evaluate() {
-      try {
-         Process           p =pb.command(cmd).redirectErrorStream(true).start();
-         InputStreamReader ir=new InputStreamReader(p.getInputStream());
-         p.waitFor(20, TimeUnit.SECONDS);
-         try (BufferedReader br=new BufferedReader(ir); Stream<String> li=br.lines()) {
-            hasResult=true;
-            cache=li.collect(Collectors.toList());
-         }
-      } catch (IOException e) {
-         e.printStackTrace();
-      } catch (InterruptedException e) {
-         System.out.println("Timeout: ");
-         e.printStackTrace();
-      }
+   public List<List<String>> getLists(Pattern pa) {
+      return getSelected(pa).collect(Collectors.toList());
    }
    /**
-    * Gibt eine Liste mit den per Pattern gefilterten Ergebnissen zurück.
-    * 
-    * Benutzt dazu den cache(result) Sofern das Pattern auf die Zeile zutrifft, wird die Zeile anhand des Pattern
-    * zerlegt und der Matcher wird zurückgegeben
+    * liefert selektierte Daten aus dem cache
     * 
     * @param pa
     * @return
     */
-   public List<IterableMatchResult> getIterable(Pattern pa) {
+   public Stream<List<String>> getSelected(Pattern pa) {
       if (!hasResult)
-         evaluate();
+         cache=query();
       return cache.stream().map(s -> pa.matcher(s)).filter(m -> m.find()).map(m -> new IterableMatchResult(m))
-               .collect(Collectors.toList());
-   }
-   public List<String> getList(Pattern pa, String replace) {
-      return getIterable(pa).stream().map(i -> i.replace(replace)).collect(Collectors.toList());
-   }
-   public List<List<String>> getLists(Pattern pa) {
-      return getSelected(pa).collect(Collectors.toList());
+               .map(i -> i.stream().collect(Collectors.toList()));
    }
    /**
     * macht die Abfrage und füllt den cache
@@ -147,17 +113,5 @@ public enum Query {
       } catch (IOException e) {
          return new ArrayList<String>();
       }
-   }
-   /**
-    * liefert selektierte Daten aus dem cache
-    * 
-    * @param pa
-    * @return
-    */
-   public Stream<List<String>> getSelected(Pattern pa) {
-      if (!hasResult)
-         cache=query();
-      return cache.stream().map(s -> pa.matcher(s)).filter(m -> m.find()).map(m -> new IterableMatchResult(m))
-               .map(i -> i.stream().collect(Collectors.toList()));
    }
 }

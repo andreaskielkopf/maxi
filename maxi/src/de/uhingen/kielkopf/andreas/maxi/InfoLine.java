@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -52,10 +51,7 @@ public class InfoLine {
          index++;
       }
    }
-   /**
-    * 
-    * @return one Line of the Info
-    */
+   /** @return one Line of the Info */
    public String getLine(Iterator<Integer> len) {
       StringBuilder sb     =new StringBuilder();
       boolean       noSpace=false;
@@ -88,9 +84,7 @@ public class InfoLine {
    static void clear() {
       Query.MHWD_LI.clear();
    }
-   /**
-    * @return a list of kernels to search for
-    */
+   /** @return a list of kernels to search for */
    static Map<Predicate<String>, ArrayList<String>> getBasis() {
       if (basis.isEmpty()) {
          basis=new LinkedHashMap<Predicate<String>, ArrayList<String>>();
@@ -123,7 +117,6 @@ public class InfoLine {
       return basis;
    }
    /**
-    * 
     * @param lls
     * @param pr
     * @param success
@@ -131,10 +124,8 @@ public class InfoLine {
     * @return
     */
    static String deepSearch(List<List<String>> lls, Predicate<String> pr, String success, String error) {
-      Optional<String> erg=lls.stream().flatMap(ims -> ims.stream()).filter(pr).findAny();
-      if (!erg.isPresent())
-         return error;
-      return success.replaceFirst("§", erg.get());
+      return lls.stream().flatMap(ims -> ims.stream()).filter(pr).map(s -> success.replaceFirst("§", s)).findAny()
+               .orElse(error);
    }
    static List<String> select(Stream<List<String>> sl, Predicate<String> pr, List<String> missing) {
       return sl.filter(text -> text.stream().anyMatch(pr)).map(list -> {
@@ -146,9 +137,12 @@ public class InfoLine {
       return (sha.length() != SHALEN) ? "<sha?>"
                : sha.substring(0, SHASHORT) + "~" + sha.substring(SHALEN - SHASHORT - 1, SHALEN - 1);
    }
-   static void insert(List<String> source, List<String> list, int pos, String exclude) {
-      list.add(pos, UTF_SUM);
-      list.add(pos + 1, source.stream().filter(s -> !s.isEmpty()).filter(s -> !s.contains(exclude))
-               .map(s -> shortSHA(s)).findFirst().orElse("<?>"));
+   static List<String> insert(List<String> source, String exclude) {
+      return Arrays.asList(new String[] {UTF_SUM, source.stream().filter(s -> !s.isEmpty())
+               .filter(s -> !s.contains(exclude)).map(s -> shortSHA(s)).findFirst().orElse("<?>")});
+   }
+   public String getInfo() {
+      Iterator<String> it=info.iterator();
+      return (it.hasNext()) ? it.next() : ".";
    }
 }

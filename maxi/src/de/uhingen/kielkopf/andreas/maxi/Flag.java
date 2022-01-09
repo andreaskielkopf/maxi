@@ -12,15 +12,15 @@ import java.util.regex.Pattern;
 public enum Flag {
    COLOR('c'),
    // DATES('d'),
-   // EFI('e'),
+   EFI('e'),
    GRUB('g'),
    HELP('h'),
    KERNEL('k'),
    KVER('v'),
    LIST_ALL('l'),
    LISTONEXIT('x'), // intern
-   MODULES('m'),
    MKINITCPIO('i'),
+   MODULES('m'),
    SHASUM('s'),
    WATCH('w', "100"),
    ZSH('z'); // intern
@@ -38,7 +38,7 @@ public enum Flag {
       this(kurz, null);
    }
    /**
-    * Flag mit einem möglichen parameter
+    * Flag mit einem möglichen Parameter
     * 
     * @param kurz
     * @param standard

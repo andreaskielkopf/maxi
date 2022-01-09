@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -33,10 +34,8 @@ public class GrubInfo extends InfoLine {
                .compile("^(#?)(GRUB_[A-Z]*(?:" + String.join("|", WICHTIG) + ")[A-Z_]*)(=)(.+)"));
       ArrayList<String[]> tests =new ArrayList<>(Arrays.asList(new String[][] {{GRUB_CFG, GRUB_ETC, GRUB_UPDATE}}));
       List<List<String>>  initrd=Query.LS.getLists(Pattern.compile(SIZE + ".*(init.*64[.]img)"));
-      for (List<String> list:initrd) {
-         String[] t=new String[] {"/boot/" + list.get(1), GRUB_ETC, GRUB_UPDATE};
-         tests.add(t);
-      }
+      tests.addAll(initrd.stream().map(l -> new String[] {"/boot/" + l.get(1), GRUB_ETC, GRUB_UPDATE})
+               .collect(Collectors.toList()));
       Stream<TestInfo>   testStream  =tests.stream().map(t -> Query.test(t)).filter(l -> (l.size() > 1)).map(l -> {
                                         ArrayList<String> x=new ArrayList<>(l);
                                         x.add(1, "<is older than>");

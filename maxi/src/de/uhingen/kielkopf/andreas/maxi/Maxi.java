@@ -43,7 +43,7 @@ public class Maxi {
       }));
       Flag.ZSH.set(SHELL.contains("zsh"));
       //
-      Flag.setArgs(args, "-ks");// -km
+      Flag.setArgs(args, "-gi");// -km
       //
       if (Flag.HELP.get())
          System.exit(9);
@@ -118,7 +118,8 @@ public class Maxi {
       // Gib dieaktuelle analyse aus
       if (Flag.MODULES.get()) {
          System.out.println(ModuleInfo.getHeader());
-         ModuleInfo.analyseStream().collect(Collectors.toList()).forEach(System.out::println);
+         ModuleInfo.analyseStream()// .map(p -> { System.out.print(p.getInfo() + " "); return p; })
+                  .collect(Collectors.toList()).forEach(System.out::println);
       }
       if (Flag.GRUB.get()) {
          System.out.println(GrubInfo.getHeader());

@@ -17,10 +17,7 @@ public class KernelInfo extends InfoLine {
    public KernelInfo(Iterable<String> iterableInfo) {
       super(iterableInfo, spalten);
    }
-   /**
-    * 
-    * @return
-    */
+   /** @return */
    static public Stream<KernelInfo> analyseStream() {
       /// Prüfe ob der Kernel noch unterstützt wird OK/[EOL]
       List<List<String>> available   =!Flag.LIST_ALL.get()                                                        //
@@ -58,24 +55,19 @@ public class KernelInfo extends InfoLine {
             value.add(9, "kver:");
          }
          if (sha_kernel != null)
-            insert(select(sha_kernel.stream(), key, MISSING), value, 3, "vmlinuz");
+            value.addAll(3, insert(select(sha_kernel.stream(), key, MISSING), "vmlinuz"));
          if (sha_fallback != null)
-            insert(select(sha_fallback.stream(), key, MISSING), value, 11, "fallback");
+            value.addAll(11, insert(select(sha_fallback.stream(), key, MISSING), "fallback"));
          return value;
       }).map(s -> new KernelInfo(s));
    }
-   /**
-    * Bei mehrfachen analyse müssen diese querys neu gemacht werden
-    */
+   /** Bei mehrfachen analyse müssen diese querys neu gemacht werden */
    static public void clear() {
       InfoLine.clear(); // MHWD_LI
       Query.LS.clear();
       Query.CAT_KVER.clear();
    }
-   /**
-    * 
-    * @return die Meldung vom MHWD übernehmen
-    */
+   /** @return die Meldung vom MHWD übernehmen */
    static public String getHeader() {
       return Query.MHWD_LI.getLists(Pattern.compile(".*running.*")).stream().flatMap(i -> i.stream()).findAny()
                .orElse("").replaceAll(ANY_ESC, Flag.COLOR.get() ? WHITE : "")

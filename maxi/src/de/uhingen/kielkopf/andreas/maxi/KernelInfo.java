@@ -13,7 +13,6 @@ import java.util.stream.Stream;
  * @license GNU General Public License v3.0
  */
 public class KernelInfo extends InfoLine {
-   // public static boolean listAll =false;
    static ArrayList<Integer> spalten=new ArrayList<>();
    public KernelInfo(Iterable<String> iterableInfo) {
       super(iterableInfo, spalten);
@@ -58,20 +57,10 @@ public class KernelInfo extends InfoLine {
             value.add(deepSearch(kver, key, "§", "<kver missing>"));
             value.add(9, "kver:");
          }
-         if (sha_kernel != null) {
-            value.add(3, UTF_SUM);
-            select(sha_kernel.stream(), key, MISSING).forEach(s -> {
-               if (!s.isEmpty() && !s.contains("vmlinuz"))
-                  value.add(4, shortSHA(s));
-            });
-         }
-         if (sha_fallback != null) {
-            value.add(11, UTF_SUM);
-            select(sha_fallback.stream(), key, MISSING).forEach(s -> {
-               if (!s.isEmpty() && !s.contains("fallback"))
-                  value.add(12, shortSHA(s));
-            });
-         }
+         if (sha_kernel != null)
+            insert(select(sha_kernel.stream(), key, MISSING), value, 3, "vmlinuz");
+         if (sha_fallback != null)
+            insert(select(sha_fallback.stream(), key, MISSING), value, 11, "fallback");
          return value;
       }).map(s -> new KernelInfo(s));
    }

@@ -136,7 +136,7 @@ public class InfoLine {
          return error;
       return success.replaceFirst("§", erg.get());
    }
-   static Iterable<String> select(Stream<List<String>> sl, Predicate<String> pr, List<String> missing) {
+   static List<String> select(Stream<List<String>> sl, Predicate<String> pr, List<String> missing) {
       return sl.filter(text -> text.stream().anyMatch(pr)).map(list -> {
          Collections.reverse(list); // System.out.println(list);
          return list;
@@ -145,5 +145,10 @@ public class InfoLine {
    static String shortSHA(String sha) {
       return (sha.length() != SHALEN) ? "<sha?>"
                : sha.substring(0, SHASHORT) + "~" + sha.substring(SHALEN - SHASHORT - 1, SHALEN - 1);
+   }
+   static void insert(List<String> source, List<String> list, int pos, String exclude) {
+      list.add(pos, UTF_SUM);
+      list.add(pos + 1, source.stream().filter(s -> !s.isEmpty()).filter(s -> !s.contains(exclude))
+               .map(s -> shortSHA(s)).findFirst().orElse("<?>"));
    }
 }

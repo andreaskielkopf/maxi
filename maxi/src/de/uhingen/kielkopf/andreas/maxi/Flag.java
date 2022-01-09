@@ -11,18 +11,19 @@ import java.util.regex.Pattern;
  */
 public enum Flag {
    COLOR('c'),
-   DATES('d'),
-   EFI('e'),
+   // DATES('d'),
+   // EFI('e'),
    GRUB('g'),
    HELP('h'),
    KERNEL('k'),
    KVER('v'),
    LIST_ALL('l'),
-   LISTONEXIT('x'),
+   LISTONEXIT('x'), // intern
    MODULES('m'),
+   MKINITCPIO('i'),
    SHASUM('s'),
    WATCH('w', "100"),
-   ZSH('z');
+   ZSH('z'); // intern
    static String        arg =null;
    final private char   c;
    private Boolean      flag=null;

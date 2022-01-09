@@ -21,6 +21,7 @@ $0 [OPTIONS]
  -m --modules      list modules and extramodules    
  -s --shasum       produce hash to compare kernel. modules
  -w --watch [100]  watch how everything changes with time 
+ -g --grub         infos about grub.cfg
  
    default equals to: -km
  

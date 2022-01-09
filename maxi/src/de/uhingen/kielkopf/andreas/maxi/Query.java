@@ -6,13 +6,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Spliterator;
-import java.util.Spliterators;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 /**
  * Definition von Abfragen mit eingebautem Caching
@@ -24,9 +21,11 @@ public enum Query {
    CAT_KVER(Maxi.SHELL, "-c", "cat /boot/*.kver"),
    DU_MODULES(Maxi.SHELL, "-c", "du -sh /lib/modules/*"),
    GRUB(Maxi.SHELL, "-c", "cat /etc/default/grub"),
+   MKINITCPIO(Maxi.SHELL, "-c", "cat /etc/mkinitcpio.conf"),
    // , ZSHA_MODULES("zsh", "-c", "LC_ALL=C;for K in $(print -o /lib/modules/*(/));"//
    // +"do echo -n \"$K \";for D in $(print -l $K/**/*(.)|sort);do cat $D;done|sha256sum; done;"),
-   LS("ls", "-sh1", "/boot", "/boot/grub", "/lib/modules /etc/default/grub"),
+   LS("ls", "-sh1", "/boot", "/boot/grub", "/lib/modules"),
+   LS_EFI(Maxi.SHELL, "-c", "for F in $(find /boot -iname \"*.efi\"); do ls -sh1 $F ;done"),
    // , ZLS(SHELL, "-c", "print -l /boot/*(.) /boot/grub/*(.) /lib/modules/*(/)")
    MHWD_L("mhwd-kernel", "-l"),
    MHWD_LI("mhwd-kernel", "-li"),
@@ -37,11 +36,12 @@ public enum Query {
                      + "do cd $K;echo -n \"$K \";for D in $(find . -type f|sort);do cat $D;done|sha256sum; done"),
    TERMINFO(Maxi.SHELL, "-c", "echoti colors"),
    TPUT("tput", "colors");
-   private static List<String> EMPTY  =new ArrayList<String>();
-   final static ProcessBuilder pb     =new ProcessBuilder();
-   private static List<String> TEST_OK=Arrays.asList(new String[] {"OK"});
+   private static List<String> EMPTY    =new ArrayList<String>();
+   final static ProcessBuilder pb       =new ProcessBuilder();
+   private static List<String> TEST_OK  =Arrays.asList(new String[] {"OK"});
    private final String[]      cmd;
-   private List<String>        result =null;
+   private List<String>        cache    =null;                              // new ArrayList<String>();
+   private boolean             hasResult=false;
    /**
     * Definiert die Abfrage auf der Kommandozeile
     * 
@@ -82,7 +82,8 @@ public enum Query {
       return EMPTY;
    }
    public void clear() {
-      result=null;
+      cache=null;
+      hasResult=false;
    }
    /*
     * static void showAll() { for (Query q:values()) { System.out.println(); System.out.print(q.name()+": "); for
@@ -98,7 +99,8 @@ public enum Query {
          InputStreamReader ir=new InputStreamReader(p.getInputStream());
          p.waitFor(20, TimeUnit.SECONDS);
          try (BufferedReader br=new BufferedReader(ir); Stream<String> li=br.lines()) {
-            result=li.collect(Collectors.toList());
+            hasResult=true;
+            cache=li.collect(Collectors.toList());
          }
       } catch (IOException e) {
          e.printStackTrace();
@@ -117,19 +119,45 @@ public enum Query {
     * @return
     */
    public List<IterableMatchResult> getIterable(Pattern pa) {
-      if (result == null)
+      if (!hasResult)
          evaluate();
-      return result.stream().map(s -> pa.matcher(s)).filter(m -> m.find()).map(m -> new IterableMatchResult(m))
+      return cache.stream().map(s -> pa.matcher(s)).filter(m -> m.find()).map(m -> new IterableMatchResult(m))
                .collect(Collectors.toList());
    }
    public List<String> getList(Pattern pa, String replace) {
       return getIterable(pa).stream().map(i -> i.replace(replace)).collect(Collectors.toList());
    }
    public List<List<String>> getLists(Pattern pa) {
-      return getIterable(pa).stream()
-               .map(i -> StreamSupport
-                        .stream(Spliterators.spliteratorUnknownSize(i.iterator(), Spliterator.ORDERED), false)
-                        .collect(Collectors.toList()))
-               .collect(Collectors.toList());
+      return getSelected(pa).collect(Collectors.toList());
+   }
+   /**
+    * macht die Abfrage und füllt den cache
+    * 
+    * @return
+    */
+   private List<String> query() {
+      try {
+         // System.out.println(name());
+         Process           p =pb.command(cmd).redirectErrorStream(true).start();
+         InputStreamReader ir=new InputStreamReader(p.getInputStream());
+         try (BufferedReader br=new BufferedReader(ir); Stream<String> li=br.lines()) {
+            hasResult=true;
+            return li.collect(Collectors.toList());
+         }
+      } catch (IOException e) {
+         return new ArrayList<String>();
+      }
+   }
+   /**
+    * liefert selektierte Daten aus dem cache
+    * 
+    * @param pa
+    * @return
+    */
+   public Stream<List<String>> getSelected(Pattern pa) {
+      if (!hasResult)
+         cache=query();
+      return cache.stream().map(s -> pa.matcher(s)).filter(m -> m.find()).map(m -> new IterableMatchResult(m))
+               .map(i -> i.stream().collect(Collectors.toList()));
    }
 }

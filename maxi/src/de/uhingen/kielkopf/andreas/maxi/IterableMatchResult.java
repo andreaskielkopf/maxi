@@ -1,7 +1,9 @@
 package de.uhingen.kielkopf.andreas.maxi;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.regex.MatchResult;
+import java.util.stream.Stream;
 
 /**
  * Iterator über Matchresult Ein Match ohne Klammern liefert einen GesamtString Ein Match mit Klammern liefert für jede
@@ -30,6 +32,12 @@ public class IterableMatchResult implements Iterable<String> {
             return matchResult.group(index++);
          }
       };
+   }
+   public Stream<String> stream() {
+      ArrayList<String> erg=new ArrayList<>();
+      for (String s:this)
+         erg.add(s);
+      return erg.stream();
    }
    public String replace(String replacement) {
       if (matchResult.groupCount() == 0)

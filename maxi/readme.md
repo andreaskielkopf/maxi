@@ -21,6 +21,7 @@ It displays in short form for every kernel:
  * are the modules at /lib/modules/... present and complete (size)
  * are extramodules present (size)
 
+
 Usage:
 ------
 maxi [OPTIONS]
@@ -33,19 +34,21 @@ maxi [OPTIONS]
  * -m --modules      list modules and extramodules    
  * -s --shasum       produce hash to compare kernel. modules
  * -w --watch [100]  watch how everything changes with time 
+ * -g --grub         infos about grub.cfg
  
    default equals to: -km
  
 @todo:
  
- * -g show infos about grub
- * -e show efi bootloaders
+ * -e show efi all bootloaders
+ * -i show mkinitcpio.conf
 
 
 Project Members
 ---------------
 
 - ©2022 [Andreas Kielkopf](https://github.com/andreaskielkopf)
+
 
 Depends on
 ----------
@@ -56,18 +59,19 @@ Depends on
 - findutils (find)
 - ncurses (tput) or zsh (echoti)
 
+
 License
 -------
 The license is `GNU General Public License v3.0`
 
+
 ToDos:
 ------
 
- * is /etc/default/grub present
- * is /boot/grub/grub.cfg present
- * is grub.cfg newer than grub
-
  * is /boot/efi or /efi present
  * list all *.efi there (show date)
+ * list some configs in mkinitcpio
+ * list presets ?
+
 
 And i hope there are other wishes to extend the program, so that it is an aid to resolve boot-problems fast.

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * @author Andreas Kielkopf ©2022
  * @license GNU General Public License v3.0
- * @version 0.3
+ * @version 0.4
  * @date 8.1.2022
  */
 public class Maxi {
@@ -42,7 +42,9 @@ public class Maxi {
          }
       }));
       Flag.ZSH.set(SHELL.contains("zsh"));
-      Flag.setArgs(args, "-km");// -km
+      //
+      Flag.setArgs(args, "-k");// -km
+      //
       if (Flag.HELP.get())
          System.exit(9);
       if (Flag.WATCH.get() && Flag.SHASUM.get()) {
@@ -121,6 +123,10 @@ public class Maxi {
       if (Flag.GRUB.get()) {
          System.out.println(GrubInfo.getHeader());
          GrubInfo.analyseStream().collect(Collectors.toList()).forEach(System.out::println);
+      }
+      if (Flag.MKINITCPIO.get()) {
+         System.out.println(MkinitcpioInfo.getHeader());
+         MkinitcpioInfo.analyseStream().collect(Collectors.toList()).forEach(System.out::println);
       }
    }
 }

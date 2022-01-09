@@ -7,10 +7,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
- * Makes some tests on grub and show the results
+ * Makes some tests on mkinitcpio and show the results
  * 
  * <pre>
- * - grub.cfg newer than: initrdisks, /etc/default/grub 
+ * - mkinitcpio.conf newer than: initrdisks, /etc/mkinitcpio.conf 
  * - 
  * -
  * </pre>
@@ -18,23 +18,23 @@ import java.util.stream.Stream;
  * @author Andreas Kielkopf ©2022
  * @license GNU General Public License v3.0
  */
-public class GrubInfo extends InfoLine {
-   static String             GRUB_CFG   ="/boot/grub/grub.cfg";
-   static String             GRUB_ETC   ="/etc/default/grub";
-   static String             GRUB_UPDATE="Please update grub.cfg:";
-   static ArrayList<Integer> spalten    =new ArrayList<>();
-   final static List<String> WICHTIG    =Arrays
-            .asList(new String[] {"DEFAULT", "TIMEOUT", "DISTRIBUTOR", "PRELOAD", "_OS_PROBER", "THEME"});
-   public GrubInfo(Iterable<String> iterableInfo) {
+public class MkinitcpioInfo extends InfoLine {
+   static String             MKINITCPIO_ETC   ="/etc/mkinitcpio.conf";
+   static String             MKINITCPIO_UPDATE="Please run 'mkinitcpio -p ";
+   static ArrayList<Integer> spalten          =new ArrayList<>();
+   final static List<String> WICHTIG          =Arrays
+            .asList(new String[] {"MODULES", "HOOKS", "COMPRESSION", "BINARIES", "FILES"});
+   public MkinitcpioInfo(Iterable<String> iterableInfo) {
       super(iterableInfo, spalten);
    }
    public static Stream<InfoLine> analyseStream() {
-      List<List<String>>  grub  =Query.GRUB.getLists(Pattern                                                        //
-               .compile("^(#?)(GRUB_[A-Z]*(?:" + String.join("|", WICHTIG) + ")[A-Z_]*)(=)(.+)"));
-      ArrayList<String[]> tests =new ArrayList<>(Arrays.asList(new String[][] {{GRUB_CFG, GRUB_ETC, GRUB_UPDATE}}));
-      List<List<String>>  initrd=Query.LS.getLists(Pattern.compile(SIZE + ".*(init.*64[.]img)"));
-      for (List<String> list:initrd) {
-         String[] t=new String[] {"/boot/" + list.get(1), GRUB_ETC, GRUB_UPDATE};
+      List<List<String>>  mkinitcpio=Query.MKINITCPIO.getLists(Pattern      //
+               .compile("^(#?)(" + String.join("|", WICHTIG) + ")(=)(.+)"));
+      ArrayList<String[]> tests     =new ArrayList<>();
+      for (List<String> list:Query.LS.getLists(Pattern.compile(SIZE + ".*(init.*64[.]img)"))) {
+         String   b=getBasis().entrySet().stream().filter(e -> e.getKey().test(list.get(1)))
+                  .map(e -> e.getValue().get(0)).findAny().orElse("linuxXXX");
+         String[] t=new String[] {"/boot/" + list.get(1), MKINITCPIO_ETC, MKINITCPIO_UPDATE + b + "' :"};
          tests.add(t);
       }
       Stream<TestInfo>   testStream  =tests.stream().map(t -> Query.test(t)).filter(l -> (l.size() > 1)).map(l -> {
@@ -43,7 +43,7 @@ public class GrubInfo extends InfoLine {
                                         x.add(0, x.remove(x.size() - 1));
                                         return new TestInfo(x);
                                      });
-      Stream<ConfigInfo> configStream=grub.stream().map(s -> new ConfigInfo(s));
+      Stream<ConfigInfo> configStream=mkinitcpio.stream().map(s -> new ConfigInfo(s));
       return Stream.concat(testStream, configStream);
    }
    public static String getHeader() {
@@ -53,7 +53,7 @@ public class GrubInfo extends InfoLine {
       sb.append("Info about:");
       if (Flag.COLOR.get())
          sb.append(WHITE);
-      sb.append(" /etc/default/grub");
+      sb.append(" /etc/default/MKINITCPIO");
       if (Flag.COLOR.get())
          sb.append(RESET);
       return sb.toString();

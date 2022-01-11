@@ -2,6 +2,7 @@ package de.uhingen.kielkopf.andreas.maxi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -28,22 +29,20 @@ public class EfiInfo extends InfoLine {
       super(iterableInfo, spalten);
    }
    public static Stream<InfoLine> analyseStream() {
-      List<List<String>>  mkinitcpio=Query.MKINITCPIO
-               .getLists(Pattern.compile("^(#?)(" + String.join("|", WICHTIG) + ")(=)(.+)"));
-      ArrayList<String[]> tests     =new ArrayList<>();
-      List<List<String>>  initrd    =Query.LS.getLists(Pattern.compile(SIZE + ".*(init.*64[.]img)"));
-      for (List<String> list:initrd) {
-         String[] t=new String[] {"/boot/" + list.get(1), MKINITCPIO_ETC, MKINITCPIO_UPDATE};
-         tests.add(t);
-      }
-      Stream<TestInfo>   testStream  =tests.stream().map(t -> Query.test(t)).filter(l -> (l.size() > 1)).map(l -> {
-                                        ArrayList<String> x=new ArrayList<>(l);
-                                        x.add(1, "<is older than>");
-                                        x.add(0, x.remove(x.size() - 1));
-                                        return new TestInfo(x);
-                                     });
-      Stream<ConfigInfo> configStream=mkinitcpio.stream().map(s -> new ConfigInfo(s));
-      return Stream.concat(testStream, configStream);
+      List<List<String>> efi_ls =Query.LS_EFI.getLists(                                                              //
+               Pattern.compile(SIZE5 + "[^/]*(/[-_a-zA-Z0-9/]+[.]efi)"));
+      List<List<String>> efi_sha=Query.SHA_EFI.getLists(Pattern.compile("^" + SHA + "[^/]+([-_a-zA-Z0-9/]+[.]efi)"));
+      return efi_ls.stream().map(list -> {
+         Collections.reverse(list);
+         if (Flag.SHASUM.get()) {
+            String name=list.get(0);
+            efi_sha.stream().filter(l -> name.equals(l.get(1))).forEach(l -> {
+               list.add(UTF_SUM);
+               list.add(shortSHA(l.get(0)));
+            });
+         }
+         return list;
+      }).map(l -> new EfiInfo(l));
    }
    public static String getHeader() {
       StringBuilder sb=new StringBuilder();
@@ -52,7 +51,7 @@ public class EfiInfo extends InfoLine {
       sb.append("Info about:");
       if (Flag.COLOR.get())
          sb.append(WHITE);
-      sb.append(" /etc/default/MKINITCPIO");
+      sb.append(" efi bootloaders");
       if (Flag.COLOR.get())
          sb.append(RESET);
       return sb.toString();

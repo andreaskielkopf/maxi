@@ -21,7 +21,9 @@ $0 [OPTIONS]
  -m --modules      list modules and extramodules    
  -s --shasum       produce hash to compare kernel. modules
  -w --watch [100]  watch how everything changes with time 
- -g --grub         infos about grub.cfg
+ -g --grub         /boot/grub/grub.cfg, /etc/default/grub
+ -i --mkinitcpio   /etc/mkinitcpio.conf
+ -e --efi          efi bootloaders 
  
    default equals to: -km
  

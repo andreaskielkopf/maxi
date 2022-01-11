@@ -31,9 +31,9 @@ public class MkinitcpioInfo extends InfoLine {
       List<List<String>>  mkinitcpio=Query.MKINITCPIO.getLists(Pattern      //
                .compile("^(#?)(" + String.join("|", WICHTIG) + ")(=)(.+)"));
       ArrayList<String[]> tests     =new ArrayList<>();
-      for (List<String> list:Query.LS.getLists(Pattern.compile(SIZE + ".*(init.*64[.]img)"))) {
-         String   b=getBasis().entrySet().stream().filter(e -> e.getKey().test(list.get(1)))
-                  .map(e -> e.getValue().get(0)).findAny().orElse("linuxXXX");
+      for (List<String> list:Query.LS.getLists(Pattern.compile(SIZE4 + ".*(init.*64[.]img)"))) {
+         String   b=getBasisStream().filter(e -> e.getKey().test(list.get(1))).map(e -> e.getValue().get(0)).findAny()
+                  .orElse("linuxXXX");
          String[] t=new String[] {"/boot/" + list.get(1), MKINITCPIO_ETC, MKINITCPIO_UPDATE + b + "' :"};
          tests.add(t);
       }

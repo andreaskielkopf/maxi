@@ -30,19 +30,18 @@ maxi [OPTIONS]
  * -c --color        colorize output unconditionally
  * -k --kernel       installed kernels, initrd
  * -l --list-all     all kernels (not only installed)
- * -v --kver         kernelversion
+ * -v --kver         kernelversion (includes -k)
  * -m --modules      list modules and extramodules    
  * -s --shasum       produce hash to compare kernel. modules
  * -w --watch [100]  watch how everything changes with time 
- * -g --grub         infos about grub.cfg
+ * -g --grub         /boot/grub/grub.cfg, /etc/default/grub
+ * -i --mkinitcpio   /etc/mkinitcpio.conf
+ * -e --efi          efi bootloaders 
  
    default equals to: -km
  
 @todo:
- 
- * -e show efi all bootloaders
- * -i show mkinitcpio.conf
-
+   ? 
 
 Project Members
 ---------------
@@ -55,7 +54,7 @@ Depends on
 
 - java (1.8 or any newer)
 - mhwd (mhwd-kernel)
-- coreutils (ls cat sort du sha256sum
+- coreutils (ls cat sort du sha256sum)
 - findutils (find)
 - ncurses (tput) or zsh (echoti)
 
@@ -68,10 +67,7 @@ The license is `GNU General Public License v3.0`
 ToDos:
 ------
 
- * is /boot/efi or /efi present
- * list all *.efi there (show date)
- * list some configs in mkinitcpio
- * list presets ?
+ * list presets for mkinitcpio?
 
 
 And i hope there are other wishes to extend the program, so that it is an aid to resolve boot-problems fast.

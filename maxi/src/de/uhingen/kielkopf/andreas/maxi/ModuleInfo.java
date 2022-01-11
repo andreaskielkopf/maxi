@@ -30,9 +30,9 @@ public class ModuleInfo extends InfoLine {
                ? Query.SHA_MODULES.getLists(Pattern.compile("^.*(extra.+MANJARO) *" + SHA + ".*$"))
                : null;
       // Für jeden einzelnen kernel untersuchen
-      return getBasis().entrySet().stream().map(e -> {
+      return getBasisStream().map(e -> {
          Predicate<String> key  =e.getKey();
-         ArrayList<String> value=e.getValue();
+         ArrayList<String> value=new ArrayList<>(e.getValue());
          value.add(value.remove(0).replace("linux", "modules"));
          String  kernelVersion=deepSearch(kver, key, "§", "<kver missing>");
          Matcher ma           =Pattern.compile("(.*)-rt(.*)-1-(.*)").matcher(kernelVersion);
@@ -47,8 +47,8 @@ public class ModuleInfo extends InfoLine {
             value.addAll(4, insert(select(sha_modules.stream(), key, MISSING), "-"));
          if (sha_extra != null)
             value.addAll(9, insert(select(sha_extra.stream(), key, MISSING), "extra"));
-         return value;
-      }).map(s -> new ModuleInfo(s));
+         return new ModuleInfo(value);
+      });
    }
    /** Bei mehrfachen analyse müssen diese querys neu gemacht werden */
    static public void clear() {

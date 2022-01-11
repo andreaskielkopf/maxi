@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -30,7 +31,8 @@ public class InfoLine {
    final static String                              TAGE     ="(?:[1-3 ]?[0-9] )?";
    final static String                              REST     ="(?:[ 0-9][0-9]{3}[ 0-9]|[0-9:]{5})";
    final static String                              DATE     ="(" + TAGD + MONAT + TAGE + REST + ").*";
-   final static String                              SIZE     ="^([ 0-9KMG,]{4})";
+   final static String                              SIZE4    ="^([ 0-9KMG,]{4})";
+   final static String                              SIZE5    ="^([ 0-9KMG,]{4,5})";
    final static String                              SHA      ="([0-9a-fA-F]{" + SHALEN + "})";
    final static List<String>                        MISSING  =Arrays.asList(new String[] {"<missing>", ""});
    final static List<String>                        MISSING_V=Arrays.asList(new String[] {"<vmlinuz missing>", ""});
@@ -85,7 +87,7 @@ public class InfoLine {
       Query.MHWD_LI.clear();
    }
    /** @return a list of kernels to search for */
-   static Map<Predicate<String>, ArrayList<String>> getBasis() {
+   static Stream<Entry<Predicate<String>, ArrayList<String>>> getBasisStream() {
       if (basis.isEmpty()) {
          basis=new LinkedHashMap<Predicate<String>, ArrayList<String>>();
          List<List<String>> kernels=Flag.LIST_ALL.get() ? Query.MHWD_L.getLists(Pattern.compile("[*].*(linux(.*))"))
@@ -114,7 +116,7 @@ public class InfoLine {
             basis.put(Pattern.compile(search).asPredicate(), info);
          }
       }
-      return basis;
+      return basis.entrySet().stream();
    }
    /**
     * @param lls

@@ -33,7 +33,7 @@ public class GrubInfo extends InfoLine {
       List<List<String>>  grub  =Query.GRUB.getLists(Pattern                                                        //
                .compile("^(#?)(GRUB_[A-Z]*(?:" + String.join("|", WICHTIG) + ")[A-Z_]*)(=)(.+)"));
       ArrayList<String[]> tests =new ArrayList<>(Arrays.asList(new String[][] {{GRUB_CFG, GRUB_ETC, GRUB_UPDATE}}));
-      List<List<String>>  initrd=Query.LS.getLists(Pattern.compile(SIZE + ".*(init.*64[.]img)"));
+      List<List<String>>  initrd=Query.LS.getLists(Pattern.compile(SIZE4 + ".*(init.*64[.]img)"));
       tests.addAll(initrd.stream().map(l -> new String[] {"/boot/" + l.get(1), GRUB_ETC, GRUB_UPDATE})
                .collect(Collectors.toList()));
       Stream<TestInfo>   testStream  =tests.stream().map(t -> Query.test(t)).filter(l -> (l.size() > 1)).map(l -> {

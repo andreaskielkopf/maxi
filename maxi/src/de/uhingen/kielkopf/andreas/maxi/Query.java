@@ -23,12 +23,13 @@ public enum Query {
    // , ZSHA_MODULES("zsh", "-c", "LC_ALL=C;for K in $(print -o /lib/modules/*(/));"//
    // +"do echo -n \"$K \";for D in $(print -l $K/**/*(.)|sort);do cat $D;done|sha256sum; done;"),
    LS("ls", "-sh1", "/boot", "/boot/grub", "/lib/modules"),
-   LS_EFI(Maxi.SHELL, "-c", "for F in $(find /boot -iname \"*.efi\"); do ls -sh1 $F ;done"),
+   LS_EFI(Maxi.SHELL, "-c", "for F in $(find /efi /boot -iname \"*.efi\"); do ls -sh1 $F ;done"),
    // , ZLS(SHELL, "-c", "print -l /boot/*(.) /boot/grub/*(.) /lib/modules/*(/)")
    MHWD_L("mhwd-kernel", "-l"),
    MHWD_LI("mhwd-kernel", "-li"),
    MKINITCPIO(Maxi.SHELL, "-c", "cat /etc/mkinitcpio.conf"),
    SHA_BOOT(Maxi.SHELL, "-c", "sha256sum /boot/*fallback* /boot/vmlinuz*"),
+   SHA_EFI(Maxi.SHELL, "-c", "for F in $(find /efi /boot -iname \"*.efi\"); do sha256sum $F ;done"),
    // , SHA_M_VMLINUZ(Maxi.SHELL, "-c", "sha256sum /lib/modules/*/vmlinuz")
    SHA_MODULES(Maxi.SHELL, "-c",
             "LC_ALL=C;for K in $(find /lib/modules/* -maxdepth 0 -type d|sort);"

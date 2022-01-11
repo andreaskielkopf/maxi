@@ -20,13 +20,13 @@ public class KernelInfo extends InfoLine {
    /** @return */
    static public Stream<KernelInfo> analyseStream() {
       /// Prüfe ob der Kernel noch unterstützt wird OK/[EOL]
-      List<List<String>> available   =!Flag.LIST_ALL.get()                                                        //
+      List<List<String>> available   =!Flag.LIST_ALL.get()                                                         //
                ? Query.MHWD_L.getLists(Pattern.compile("[*].*(linux(.*))"))
                : Query.MHWD_LI.getLists(Pattern.compile("[*].*(linux(.*))"));
       /// Zeige den Kernel und die initramdisks in /boot
-      List<List<String>> vmlinuz     =Query.LS.getLists(Pattern.compile(SIZE + ".*(vmlinuz.*)"));
-      List<List<String>> initrd      =Query.LS.getLists(Pattern.compile(SIZE + ".*(init.*64[.]img)"));
-      List<List<String>> fallback    =Query.LS.getLists(Pattern.compile(SIZE + "[^0-9]+([0-9.]+.+).*(fallback)"));
+      List<List<String>> vmlinuz     =Query.LS.getLists(Pattern.compile(SIZE4 + ".*(vmlinuz.*)"));
+      List<List<String>> initrd      =Query.LS.getLists(Pattern.compile(SIZE4 + ".*(init.*64[.]img)"));
+      List<List<String>> fallback    =Query.LS.getLists(Pattern.compile(SIZE4 + "[^0-9]+([0-9.]+.+).*(fallback)"));
       /// Zeige die Kernelversion
       List<List<String>> kver        =Flag.KVER.get()
                ? Query.CAT_KVER.getLists(Pattern.compile("([-0-9.rt]+MANJARO).*"))
@@ -38,28 +38,28 @@ public class KernelInfo extends InfoLine {
       List<List<String>> sha_fallback=Flag.SHASUM.get()
                ? Query.SHA_BOOT.getLists(Pattern.compile("^" + SHA + ".*(init.*back.*)"))
                : null;
-      return getBasis().entrySet().stream().map(e -> {
-         Predicate<String> key  =e.getKey();
-         ArrayList<String> value=e.getValue();
-         value.add(deepSearch(available, key, "", Flag.LIST_ALL.get() ? "-" : "<EOL>"));
-         value.add(deepSearch(vmlinuz, key, "§", "<vmlinuz missing>"));
-         select(initrd.stream(), key, MISSING_I).forEach(t -> value.add(t.trim()));
+      return getBasisStream().map(e -> {
+         Predicate<String> key =e.getKey();
+         ArrayList<String> list=new ArrayList<>(e.getValue());
+         list.add(deepSearch(available, key, "", Flag.LIST_ALL.get() ? "-" : "<EOL>"));
+         list.add(deepSearch(vmlinuz, key, "§", "<vmlinuz missing>"));
+         select(initrd.stream(), key, MISSING_I).forEach(t -> list.add(t.trim()));
          select(fallback.stream(), key, MISSING_F).forEach(t -> {
             if (!t.contains("x"))
-               value.add(t.trim());
+               list.add(t.trim());
          });
-         value.add(4, "=");
-         value.add(7, "=");
+         list.add(4, "=");
+         list.add(7, "=");
          if (kver != null) {
-            value.add(deepSearch(kver, key, "§", "<kver missing>"));
-            value.add(9, "kver:");
+            list.add(deepSearch(kver, key, "§", "<kver missing>"));
+            list.add(9, "kver:");
          }
          if (sha_kernel != null)
-            value.addAll(3, insert(select(sha_kernel.stream(), key, MISSING), "vmlinuz"));
+            list.addAll(3, insert(select(sha_kernel.stream(), key, MISSING), "vmlinuz"));
          if (sha_fallback != null)
-            value.addAll(11, insert(select(sha_fallback.stream(), key, MISSING), "fallback"));
-         return value;
-      }).map(s -> new KernelInfo(s));
+            list.addAll(11, insert(select(sha_fallback.stream(), key, MISSING), "fallback"));
+         return new KernelInfo(list);
+      });
    }
    /** Bei mehrfachen analyse müssen diese querys neu gemacht werden */
    static public void clear() {

@@ -9,6 +9,9 @@ echo -n "$EC ==>"
 [ "$EC" = 1 ] && echo "$0 needs a java runtime with at least version 1.8"
 {cat;exit;}  <<EOF
 
+Maxi is made for manjaro linux only
+This is version 0.6 from 23.1.2022
+
 Usage:
 ------
 $0 [OPTIONS]

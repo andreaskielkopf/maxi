@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * @author Andreas Kielkopf ©2022
  * @license GNU General Public License v3.0
- * @version 0.5
+ * @version 0.6
  * @date 8.1.2022
  */
 public class Maxi {
@@ -134,6 +134,8 @@ public class Maxi {
       if (Flag.EFI.get()) {
          System.out.println(EfiInfo.getHeader());
          EfiInfo.analyseStream().collect(Collectors.toList()).forEach(System.out::println);
+         System.out.println(EfiVars.getHeader());
+         EfiVars.analyseStream().collect(Collectors.toList()).forEach(System.out::println);
       }
    }
 }

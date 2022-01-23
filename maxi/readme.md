@@ -68,6 +68,11 @@ ToDos:
 ------
 
  * list presets for mkinitcpio?
+ * schow boot-stanzas from UEFI
+ * find all EFI-Partitions
+ * show connected boot-stanzas
+ * show all grub.cfg
+ 
 
 
 And i hope there are other wishes to extend the program, so that it is an aid to resolve boot-problems fast.

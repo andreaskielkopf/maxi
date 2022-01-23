@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 public enum Query {
    CAT_KVER(Maxi.SHELL, "-c", "cat /boot/*.kver"),
    DU_MODULES(Maxi.SHELL, "-c", "du -sh /lib/modules/*"),
+   EFI_VAR(Maxi.SHELL, "-c", "efibootmgr -v"),
    GRUB(Maxi.SHELL, "-c", "cat /etc/default/grub"),
    // , ZSHA_MODULES("zsh", "-c", "LC_ALL=C;for K in $(print -o /lib/modules/*(/));"//
    // +"do echo -n \"$K \";for D in $(print -l $K/**/*(.)|sort);do cat $D;done|sha256sum; done;"),

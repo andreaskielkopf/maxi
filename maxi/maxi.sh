@@ -1,4 +1,4 @@
-#!/bin/env -S ${SHELL}
+#!/bin/env -S bash
 # ©2022 Andreas Kielkopf
 # License: `GNU General Public License v3.0`
 nice java -jar "$0" "$@"
@@ -7,10 +7,10 @@ EC="$?"
 echo -n "$EC ==>"
 [ "$EC" = 127 ] && echo "$0 needs a java runntime"
 [ "$EC" = 1 ] && echo "$0 needs a java runtime with at least version 1.8"
-{cat;exit;}  <<EOF
+{ cat; exit; } <<EOF
 
 Maxi is made for manjaro linux only
-This is version 0.6 from 23.1.2022
+This is version 0.6.2 from 23.1.2022
 
 Usage:
 ------

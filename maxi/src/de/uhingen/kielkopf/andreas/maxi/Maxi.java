@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * @author Andreas Kielkopf ©2022
  * @license GNU General Public License v3.0
- * @version 0.6
+ * @version 0.6.2
  * @date 8.1.2022
  */
 public class Maxi {

@@ -58,7 +58,10 @@ public enum Query {
     */
    public static List<String> test(String[] test) {
       ArrayList<String> command=new ArrayList<>();
-      command.add(Maxi.SHELL);
+      if (Maxi.SHELL.contains("zsh"))
+         command.add(Maxi.SHELL);
+      else
+         command.add("/bin/bash");
       command.add("-c");
       command.add("[[ " + test[0] + " -nt " + test[1] + " ]] && echo 't' || echo 'f'");
       try {

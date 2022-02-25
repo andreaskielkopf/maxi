@@ -10,7 +10,7 @@ echo -n "$EC ==>"
 { cat; exit; } <<EOF
 
 Maxi is made for manjaro linux only
-This is version 0.6.2 from 23.1.2022
+This is version 0.6.8 from 21.2.2022
 
 Usage:
 ------
@@ -18,7 +18,7 @@ $0 [OPTIONS]
 
  -h --help         help
  -c --color        colorize output unconditionally
- -k --kernel       installed kernels, initrd
+ -k --kernel       installed kernels, initrd, chroot
  -l --list-all     all kernels (not only installed)  
  -v --kver         kernelversion 
  -m --modules      list modules and extramodules    
@@ -27,6 +27,7 @@ $0 [OPTIONS]
  -g --grub         /boot/grub/grub.cfg, /etc/default/grub
  -i --mkinitcpio   /etc/mkinitcpio.conf
  -e --efi          efi bootloaders 
+ -f --forum        frame with backticks and [details] and copy to clipboard
  
    default equals to: -km
  

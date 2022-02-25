@@ -25,7 +25,7 @@ public class GrubInfo extends InfoLine {
    static String             GRUB_UPDATE="Please update grub.cfg:";
    static ArrayList<Integer> spalten    =new ArrayList<>();
    final static List<String> WICHTIG    =Arrays
-            .asList(new String[] {"DEFAULT", "TIMEOUT", "DISTRIBUTOR", "PRELOAD", "_OS_PROBER", "THEME"});
+            .asList(new String[] {"CMDLINE", "DEFAULT", "TIMEOUT", "DISTRIBUTOR", "PRELOAD", "_OS_PROBER", "THEME"});
    public GrubInfo(Iterable<String> iterableInfo) {
       super(iterableInfo, spalten);
    }

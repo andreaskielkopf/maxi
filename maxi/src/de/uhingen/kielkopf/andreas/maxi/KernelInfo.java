@@ -41,10 +41,11 @@ public class KernelInfo extends InfoLine {
       return getBasisStream().map(e -> {
          Predicate<String> key =e.getKey();
          ArrayList<String> list=new ArrayList<>(e.getValue());
-         list.add(deepSearch(available, key, "", Flag.LIST_ALL.get() ? "-" : "<EOL>"));
-         list.add(deepSearch(vmlinuz, key, "§", "<vmlinuz missing>"));
-         select(initrd.stream(), key, MISSING_I).forEach(t -> list.add(t.trim()));
-         select(fallback.stream(), key, MISSING_F).forEach(t -> {
+         list.add(deepSearch(available, key, "", Flag.LIST_ALL.get() ? NA : "<EOL>"));
+         boolean notLocal=list.contains(NA);
+         list.add(deepSearch(vmlinuz, key, "§", notLocal ? NA : "<vmlinuz missing>"));
+         select(initrd.stream(), key, notLocal ? MISSING_IA : MISSING_I).forEach(t -> list.add(t.trim()));
+         select(fallback.stream(), key, notLocal ? MISSING_FA : MISSING_F).forEach(t -> {
             if (!t.contains("x"))
                list.add(t.trim());
          });
@@ -69,8 +70,11 @@ public class KernelInfo extends InfoLine {
    }
    /** @return die Meldung vom MHWD übernehmen */
    static public String getHeader() {
+      // teste ob wir in chroot laufen
+      List<List<String>> mounts=Query.CHROOT.getLists(Pattern.compile(" /.* / .*"));
+      String             chroot=(mounts.isEmpty()) ? "running in CHROOT" : "running";
       return Query.MHWD_LI.getLists(Pattern.compile(".*running.*")).stream().flatMap(i -> i.stream()).findAny()
-               .orElse("").replaceAll(ANY_ESC, Flag.COLOR.get() ? WHITE : "")
+               .orElse("").replaceFirst("running", chroot).replaceAll(ANY_ESC, Flag.COLOR.get() ? WHITE : "")
                .replaceFirst(ANY_ESC, Flag.COLOR.get() ? GREEN : "");
    }
    @Override

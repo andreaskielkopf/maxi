@@ -18,6 +18,7 @@ import java.util.stream.Stream;
  */
 public enum Query {
    CAT_KVER(Maxi.SHELL, "-c", "cat /boot/*.kver"),
+   CHROOT(Maxi.SHELL, "-c", "cat /proc/1/mountinfo"),
    DU_MODULES(Maxi.SHELL, "-c", "du -sh /lib/modules/*"),
    EFI_VAR(Maxi.SHELL, "-c", "efibootmgr -v"),
    GRUB(Maxi.SHELL, "-c", "cat /etc/default/grub"),
@@ -108,7 +109,6 @@ public enum Query {
     */
    private List<String> query() {
       try {
-         // System.out.println(name());
          Process           p =pb.command(cmd).redirectErrorStream(true).start();
          InputStreamReader ir=new InputStreamReader(p.getInputStream());
          try (BufferedReader br=new BufferedReader(ir); Stream<String> li=br.lines()) {

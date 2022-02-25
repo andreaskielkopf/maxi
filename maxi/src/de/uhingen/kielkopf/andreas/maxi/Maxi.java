@@ -13,14 +13,19 @@ import java.util.stream.Collectors;
 /**
  * @author Andreas Kielkopf ©2022
  * @license GNU General Public License v3.0
- * @version 0.6.2
+ * @version 0.6.8
  * @date 8.1.2022
  */
 public class Maxi {
-   static List<KernelInfo>    k_aktuell=null;
-   static List<KernelInfo>    last     =null;
-   static List<ModuleInfo>    m_aktuell=null;
-   final public static String SHELL    =System.getenv("SHELL");
+   static List<KernelInfo>       k_aktuell  =null;
+   static List<KernelInfo>       last       =null;
+   static List<ModuleInfo>       m_aktuell  =null;
+   final public static String    SHELL      =System.getenv("SHELL");
+   final public static String    BACKTICKS  ="```";
+   final public static String    DETAILS0   ="[details=\"maxi";
+   final public static String    DETAILS1   ="\"]";
+   final public static String    DETAILS2   ="[/details]";
+   final static ClipboardSupport clipSupport=new ClipboardSupport();
    public Maxi() {}
    /**
     * @param args
@@ -30,14 +35,19 @@ public class Maxi {
          @Override
          public void run() {
             if (!Flag.HELP.get() && Flag.LISTONEXIT.get()) {
-               System.out.println();
+               clipSupport.println();
                if (k_aktuell != null)
                   for (KernelInfo kernelInfo:k_aktuell)
-                     System.out.println(kernelInfo);
+                     clipSupport.println(kernelInfo);
                else
                   if (last != null)
                      for (KernelInfo kernelInfo:last)
-                        System.out.println(kernelInfo);
+                        clipSupport.println(kernelInfo);
+               if (Flag.FORUM.get()) {
+                  clipSupport.clipln(BACKTICKS);
+                  clipSupport.clipln(DETAILS2);
+                  clipSupport.transfer();
+               }
             }
          }
       }));
@@ -47,8 +57,14 @@ public class Maxi {
       //
       if (Flag.HELP.get())
          System.exit(9);
+      if (Flag.USAGE.get())
+         System.exit(8);
       if (Flag.KVER.get())
          Flag.KERNEL.set(true);
+      if (Flag.FORUM.get()) {
+         clipSupport.clipln(DETAILS0 + Flag.arg + DETAILS1);
+         clipSupport.clipln(BACKTICKS);
+      }
       if (Flag.WATCH.get() && Flag.SHASUM.get()) {
          Flag.SHASUM.set(false);
          StringBuilder sb=new StringBuilder();
@@ -57,15 +73,15 @@ public class Maxi {
          sb.append("When --watch is enabled, checksumming is disabled");
          if (Flag.COLOR.get())
             sb.append(InfoLine.RESET);
-         System.out.println(sb.toString());
+         clipSupport.println(sb.toString());
       }
       start();
    }
    public static void show(List<Iterable<String>> f) {
       for (Iterable<String> list:f) {
          for (String s:list)
-            System.out.print(s);
-         System.out.println();
+            clipSupport.print(s);
+         clipSupport.println();
       }
    }
    public static void start() {
@@ -83,16 +99,16 @@ public class Maxi {
             System.exit(10);
          }
          Flag.LISTONEXIT.set(true);
-         System.out.println(KernelInfo.getHeader());
-         System.out.println("will run until ^c is pressed");
+         clipSupport.println(KernelInfo.getHeader());
+         clipSupport.printonly("will run until ^c is pressed");
          k_aktuell=KernelInfo.analyseStream().collect(Collectors.toList());
          for (KernelInfo kernelInfo:k_aktuell)
-            System.out.println("  : 0.   " + kernelInfo); // Gib die aktuelle analyse aus
+            clipSupport.println("  : 0.   " + kernelInfo); // Gib die aktuelle analyse aus
          Instant startZeitpunkt=Instant.now();
          do { // Beobachte Änderungen bis zum Abbruch
             last=k_aktuell;
             KernelInfo.clear();
-            // System.out.println(Flag.WATCH.getParameter());
+            // slipboardSupport.println(Flag.WATCH.getParameter());
             try {
                Thread.sleep(pause);
             } catch (InterruptedException e) { /* nothing to do */}
@@ -110,32 +126,37 @@ public class Maxi {
                @SuppressWarnings("boxing")
                String z    =String.format("%2d:%02d.%03d", milli / 60000L, (milli / 1000L) % 60, milli % 1000);
                for (KernelInfo kernelInfo:dif)
-                  System.out.println(z + kernelInfo);
+                  clipSupport.println(z + kernelInfo);
             }
          } while (true);
       }
-      System.out.println(KernelInfo.getHeader());
+      clipSupport.println(KernelInfo.getHeader());
       if (Flag.KERNEL.get() || Flag.LIST_ALL.get())
-         KernelInfo.analyseStream().collect(Collectors.toList()).forEach(System.out::println);
+         KernelInfo.analyseStream().collect(Collectors.toList()).forEach(clipSupport::println);
       // Gib dieaktuelle analyse aus
       if (Flag.MODULES.get()) {
-         System.out.println(ModuleInfo.getHeader());
-         ModuleInfo.analyseStream()// .map(p -> { System.out.print(p.getInfo() + " "); return p; })
-                  .collect(Collectors.toList()).forEach(System.out::println);
+         clipSupport.println(ModuleInfo.getHeader());
+         ModuleInfo.analyseStream()// .map(p -> { slipboardSupport.print(p.getInfo() + " "); return p; })
+                  .collect(Collectors.toList()).forEach(clipSupport::println);
       }
       if (Flag.GRUB.get()) {
-         System.out.println(GrubInfo.getHeader());
-         GrubInfo.analyseStream().collect(Collectors.toList()).forEach(System.out::println);
+         clipSupport.println(GrubInfo.getHeader());
+         GrubInfo.analyseStream().collect(Collectors.toList()).forEach(clipSupport::println);
       }
       if (Flag.MKINITCPIO.get()) {
-         System.out.println(MkinitcpioInfo.getHeader());
-         MkinitcpioInfo.analyseStream().collect(Collectors.toList()).forEach(System.out::println);
+         clipSupport.println(MkinitcpioInfo.getHeader());
+         MkinitcpioInfo.analyseStream().collect(Collectors.toList()).forEach(clipSupport::println);
       }
       if (Flag.EFI.get()) {
-         System.out.println(EfiInfo.getHeader());
-         EfiInfo.analyseStream().collect(Collectors.toList()).forEach(System.out::println);
-         System.out.println(EfiVars.getHeader());
-         EfiVars.analyseStream().collect(Collectors.toList()).forEach(System.out::println);
+         clipSupport.println(EfiInfo.getHeader());
+         EfiInfo.analyseStream().collect(Collectors.toList()).forEach(clipSupport::println);
+         clipSupport.println(EfiVars.getHeader());
+         EfiVars.analyseStream().collect(Collectors.toList()).forEach(clipSupport::println);
+      }
+      if (Flag.FORUM.get()) {
+         clipSupport.clipln(BACKTICKS);
+         clipSupport.clipln(DETAILS2);
+         clipSupport.transfer();
       }
    }
 }

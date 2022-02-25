@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Definiert und behandet parameter die über dei Kommandozeile übergeben werden
+ * Definiert und behandet parameter die über die Kommandozeile übergeben werden
  * 
  * @author Andreas Kielkopf ©2022
  * @license GNU General Public License v3.0
@@ -13,6 +13,7 @@ public enum Flag {
    COLOR('c'),
    // DATES('d'),
    EFI('e'),
+   FORUM('f'),
    GRUB('g'),
    HELP('h'),
    KERNEL('k'),
@@ -22,12 +23,23 @@ public enum Flag {
    MKINITCPIO('i'),
    MODULES('m'),
    SHASUM('s'),
+   USAGE('u'),
    WATCH('w', "100"),
    ZSH('z'); // intern
-   static String        arg =null;
+   static String        arg      =null;
    final private char   c;
-   private Boolean      flag=null;
+   static final char    KEIN_KURZ=0;
+   private Boolean      flag     =null;
    final private String p;
+   /**
+    * Flag mit einem langen Namen
+    * 
+    * @param kurzer
+    *           name
+    */
+   Flag() {
+      this(KEIN_KURZ, null);
+   }
    /**
     * Flag mit einem langen und kurzen Namen
     * 
@@ -67,9 +79,12 @@ public enum Flag {
    @SuppressWarnings("boxing")
    boolean get() {
       if (flag == null) {
-         String findLong =".* --" + name().toLowerCase().replaceAll("_", "-") + " .*";
-         String findShort=".* -[a-z]*" + c + "[a-z]* .*";
-         flag=(arg.matches(findLong) || arg.matches(findShort));
+         String findLong=".* --" + name().toLowerCase().replaceAll("_", "-") + " .*";
+         flag=arg.matches(findLong);
+         if (c != KEIN_KURZ) {
+            String findShort=".* -[a-z]*" + c + "[a-z]* .*";
+            flag|=arg.matches(findShort);
+         }
       }
       return flag;
    }
@@ -80,10 +95,12 @@ public enum Flag {
     */
    String getParameter() {
       if (p != null) {
-         String  findShort=".* -[a-z]*" + c + " ([^- ]+).*";
-         Matcher ma       =Pattern.compile(findShort).matcher(arg);
-         if (ma.find())
-            return ma.group(1);
+         if (c != KEIN_KURZ) {
+            String  findShort=".* -[a-z]*" + c + " ([^- ]+).*";
+            Matcher ma       =Pattern.compile(findShort).matcher(arg);
+            if (ma.find())
+               return ma.group(1);
+         }
          String  findLong=".* --" + name().toLowerCase().replaceAll("_", "-") + " ([^-]+).*";
          Matcher ma2     =Pattern.compile(findLong).matcher(arg);
          if (ma2.find())

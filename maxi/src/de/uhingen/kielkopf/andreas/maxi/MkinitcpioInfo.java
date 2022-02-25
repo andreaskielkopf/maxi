@@ -53,7 +53,7 @@ public class MkinitcpioInfo extends InfoLine {
       sb.append("Info about:");
       if (Flag.COLOR.get())
          sb.append(WHITE);
-      sb.append(" /etc/default/MKINITCPIO");
+      sb.append(" " + MKINITCPIO_ETC);
       if (Flag.COLOR.get())
          sb.append(RESET);
       return sb.toString();

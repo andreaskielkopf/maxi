@@ -97,4 +97,105 @@ Use it:
 #### sha256sum of v0.6.8
 8f176630cfa49bb8c98e4f5bedd0af1066c5f2fa761a8f37f8332640c9a7ce9f  maxi
 
+P.S. If current developments trouble you, you can [find peace](https://www.jw.org/en/library/series/more-topics/russia-invades-ukraine-bible-meaning-hope/)
 
+
+------------------------------------------------------------
+
+maxi
+====
+Wenn deine Manjaro-Installation nicht (mehr) bootet, kann `maxi` helfen, heraus zu finden, was fehlt.
+Verwende es einfach von der Befehlszeile oder von einer Chroot-Umgebung aus. Wenn du Hilfe beim Interpretieren der Ausgabe benötigst, lies [Den Boot-Prozess verstehen](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/ 99740) oder kontaktiere ein Forum wie [manjaro forum](https://forum.manjaro.org/) und bitte um Hilfe.
+
+ `wget https://github.com/andreaskielkopf/maxi/raw/master/maxi ; chmod a+x maxi ; ./maxi -kmsgeif`
+
+Beschreibung
+------------
+
+Ein Tool zur Analyse, warum eine Manjaro-Installation möglicherweise nicht startet.
+
+Das Programm sammelt Informationen über die aktuelle Installation (es kann auch innerhalb einer Chroot-Umgebung funktionieren). Es verwendet `coreutils` (ls cat sort du sha256sum), `tput`, `find` und `mhwd-kernel`, um diese Informationen zu sammeln.
+
+Das Programm soll eine helfende Hand sein, um viele kleine Informationen zu sammeln (wie es `inxi` tut) und in einer kurzen Übersicht darzustellen. Damit der erfahrene Leser ohne Zeitverlust entscheiden kann, wo das Problem bei dieser Installation liegen könnte und wie er vorgehen soll.
+
+Während sich `inxi` auf eine Systemübersicht konzentriert, konzentriert sich `maxi` nur auf Dinge zwischen "power_on" und "kernel_is_running"
+
+Es zeigt in Kurzform:
+
+ * Kernel unter /boot/vmlinuz... (Größe, sha256)
+ * Initramdisks/Fallback vorhanden (Größe, sha256)
+ * Module unter /lib/modules/... (Größe, sha256)
+ * Extramodule unter /lib/modules/extra... (Größe, sha256)
+ * grub, grub.cfg, efivars ...
+
+
+Verwendung:
+-----------
+Maxi [OPTIONEN]
+
+ * -h --help         Hilfe
+ * -c --color        Ausgabe bedingungslos einfärben
+ * -k --kernel       installierte Kernel, initrd, chroot
+ * -l --list-all     alle Kernel (nicht nur installierte)
+ * -v --kver         Kernelversion (enthält -k)
+ * -m --modules      listet Module und Extramodule auf
+ * -s --shasum       erzeugt einen kurzen Hash, um Kernel und Module zu vergleichen
+ * -w --watch [100]  beobachte, wie sich alles mit der Zeit verändert
+ * -g --grub         /boot/grub/grub.cfg, /etc/default/grub
+ * -i --mkinitcpio   /etc/mkinitcpio.conf
+ * -e --efi          EFI-Bootloader
+ * -f --forum        Frame mit Backticks und [Details] in die Zwischenablage kopieren
+ 
+   Standardwert ist: -km
+ 
+
+Projektmitglieder
+-----------------
+
+- ©2022 [Andreas Kielkopf](https://github.com/andreaskielkopf)
+
+
+Kommt drauf an
+--------------
+
+- `java` (1.8 oder neuer)
+- `mhwd` (mhwd-Kernel)
+- `coreutils` (ls cat sort du sha256sum)
+- `findutils` (finden)
+- `ncurses` (tput) oder zsh (echoti)
+
+
+Lizenz
+------
+Die Lizenz lautet „GNU General Public License v3.0“.
+
+
+Aufgaben:
+---------
+
+ * Voreinstellungen für mkinitcpio auflisten
+ * Boot-Stanzas von UEFI anzeigen
+ * Alle EFI-Partitionen finden
+ * verbundene Boot-Programme anzeigen
+ * grub.cfg anzeigen
+ 
+Und ich hoffe, es gibt [andere Wünsche](https://forum.manjaro.org/t/maxi-call-for-testers-0-6-7/99763) um das Programm zu erweitern, so dass es eine Hilfe ist Boot-Probleme schnell lösen.
+
+Installieren:
+-------------
+1. Laden Sie Maxi von [github](https://github.com/andreaskielkopf/maxi) herunter und speichern Sie es dort, wo Sie es möchten `wget https://github.com/andreaskielkopf/maxi/raw/master/maxi`
+2. Überprüfen Sie die Prüfsumme `sha256sum maxi`
+3. Machen Sie die Datei ausführbar `chmod -c a+x ./maxi`
+
+ `wget https://github.com/andreaskielkopf/maxi/raw/master/maxi ; sha256sum maxi ; chmod -c a+x maxi`
+
+Benutze es:
+-----------
+1. `./maxi -kmf**` oder `**./maxi -kmsgeif**`
+2. Die Ausgabe befindet sich bereits in der Zwischenablage. Wenn Sie sie [manjaro-Forum](https://forum.manjaro.org/) posten möchten, müssen Sie nur den Beitrag erstellen und `[Strg-v]` drücken
+3. Sie können sich auch [Verstehe den boot-prozess](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/ 99740)
+
+#### sha256sum von v0.6.8
+8f176630cfa49bb8c98e4f5bedd0af1066c5f2fa761a8f37f8332640c9a7ce9f maxi
+
+P.S. Wenn dich die aktuellen Entwicklungen beunruhigen kannst du [Frieden finden](https://www.jw.org/de/bibliothek/artikelserien/weitere-themen/russland-marschiert-in-ukraine-ein-biblische-bedeutung-hoffnung/)

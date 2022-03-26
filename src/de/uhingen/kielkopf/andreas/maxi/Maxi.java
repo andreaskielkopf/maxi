@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 /**
  * @author Andreas Kielkopf ©2022
  * @license GNU General Public License v3.0
- * @version 0.6.8
- * @date 8.1.2022
+ * @version 0.6.9
+ * @date 26.3.2022
  */
 public class Maxi {
    static List<KernelInfo>       k_aktuell  =null;

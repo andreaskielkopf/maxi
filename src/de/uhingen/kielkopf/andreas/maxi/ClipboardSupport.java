@@ -1,5 +1,6 @@
 package de.uhingen.kielkopf.andreas.maxi;
 
+import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -31,14 +32,17 @@ public class ClipboardSupport {
    }
    public void transfer() {
       if (!clip.isEmpty()) {
-         String          a =String.join(System.lineSeparator(), clip);
-         Clipboard       b =Toolkit.getDefaultToolkit().getSystemClipboard();
-         StringSelection ss=new StringSelection(a);
-         b.setContents(ss, ss);
-         Console c=System.console();
-         if (c != null) {
-            printonly("\nPress ENTER to proceed.\n");
-            c.readLine();
+         try {
+            Clipboard       clipboard=Toolkit.getDefaultToolkit().getSystemClipboard();
+            StringSelection ss       =new StringSelection(String.join(System.lineSeparator(), clip));
+            clipboard.setContents(ss, ss);
+            Console console=System.console();
+            if (console != null) {
+               printonly("\nPress ENTER to proceed.\n");
+               console.readLine();
+            }
+         } catch (HeadlessException e) {
+            System.err.println("Copying to clipboard is not possible");
          }
          clip.clear();
       }

@@ -94,8 +94,8 @@ Use it:
   
   
 
-#### sha256sum of v0.6.8
-8f176630cfa49bb8c98e4f5bedd0af1066c5f2fa761a8f37f8332640c9a7ce9f  maxi
+#### sha256sum of v0.6.9
+2dd60771885ac5280faf41997f7877c24d5d1d06077af2abb784043c15be1e3c  maxi
 
 P.S. If current developments trouble you, you can [find peace](https://www.jw.org/en/library/series/more-topics/russia-invades-ukraine-bible-meaning-hope/)
 
@@ -195,7 +195,6 @@ Benutze es:
 2. Die Ausgabe befindet sich bereits in der Zwischenablage. Wenn Sie sie [manjaro-Forum](https://forum.manjaro.org/) posten möchten, müssen Sie nur den Beitrag erstellen und `[Strg-v]` drücken
 3. Sie können sich auch [Verstehe den boot-prozess](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/ 99740)
 
-#### sha256sum von v0.6.8
-8f176630cfa49bb8c98e4f5bedd0af1066c5f2fa761a8f37f8332640c9a7ce9f maxi
+#### Die sha256sum findest du Oben
 
 P.S. Wenn dich die aktuellen Entwicklungen beunruhigen kannst du [Frieden finden](https://www.jw.org/de/bibliothek/artikelserien/weitere-themen/russland-marschiert-in-ukraine-ein-biblische-bedeutung-hoffnung/)

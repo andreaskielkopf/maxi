@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 /**
  * Definiert und behandet parameter die über die Kommandozeile übergeben werden
- * 
+ *
  * @author Andreas Kielkopf ©2022
  * @license GNU General Public License v3.0
  */
@@ -22,18 +22,19 @@ public enum Flag {
    LISTONEXIT('x'), // intern
    MKINITCPIO('i'),
    MODULES('m'),
+   PARTITIONS('p'),
    SHASUM('s'),
    USAGE('u'),
    WATCH('w', "100"),
    ZSH('z'); // intern
    static String        arg      =null;
-   final private char   c;
    static final char    KEIN_KURZ=0;
+   final private char   c;
    private Boolean      flag     =null;
    final private String p;
    /**
     * Flag mit einem langen Namen
-    * 
+    *
     * @param kurzer
     *           name
     */
@@ -42,7 +43,7 @@ public enum Flag {
    }
    /**
     * Flag mit einem langen und kurzen Namen
-    * 
+    *
     * @param kurzer
     *           name
     */
@@ -51,7 +52,7 @@ public enum Flag {
    }
    /**
     * Flag mit einem möglichen Parameter
-    * 
+    *
     * @param kurz
     * @param standard
     */
@@ -73,16 +74,16 @@ public enum Flag {
    }
    /**
     * Lazy auswertung der Flags (optimiert)
-    * 
+    *
     * @return boolean ist dieses Flag gesetzt
     */
    @SuppressWarnings("boxing")
    boolean get() {
       if (flag == null) {
-         String findLong=".* --" + name().toLowerCase().replaceAll("_", "-") + " .*";
+         final String findLong=".* --" + name().toLowerCase().replaceAll("_", "-") + " .*";
          flag=arg.matches(findLong);
          if (c != KEIN_KURZ) {
-            String findShort=".* -[a-z]*" + c + "[a-z]* .*";
+            final String findShort=".* -[a-z]*" + c + "[a-z]* .*";
             flag|=arg.matches(findShort);
          }
       }
@@ -90,19 +91,19 @@ public enum Flag {
    }
    /**
     * Lazy auswertung der Parameter (nicht optimiert)
-    * 
+    *
     * @return
     */
    String getParameter() {
       if (p != null) {
          if (c != KEIN_KURZ) {
-            String  findShort=".* -[a-z]*" + c + " ([^- ]+).*";
-            Matcher ma       =Pattern.compile(findShort).matcher(arg);
+            final String  findShort=".* -[a-z]*" + c + " ([^- ]+).*";
+            final Matcher ma       =Pattern.compile(findShort).matcher(arg);
             if (ma.find())
                return ma.group(1);
          }
-         String  findLong=".* --" + name().toLowerCase().replaceAll("_", "-") + " ([^-]+).*";
-         Matcher ma2     =Pattern.compile(findLong).matcher(arg);
+         final String  findLong=".* --" + name().toLowerCase().replaceAll("_", "-") + " ([^-]+).*";
+         final Matcher ma2     =Pattern.compile(findLong).matcher(arg);
          if (ma2.find())
             return ma2.group(1);
       }
@@ -110,7 +111,7 @@ public enum Flag {
    }
    /**
     * Manuelles setzen oder löschen von Flags
-    * 
+    *
     * @param b
     */
    @SuppressWarnings("boxing")

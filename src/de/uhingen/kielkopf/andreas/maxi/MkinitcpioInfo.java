@@ -8,13 +8,13 @@ import java.util.stream.Stream;
 
 /**
  * Makes some tests on mkinitcpio and show the results
- * 
+ *
  * <pre>
- * - mkinitcpio.conf newer than: initrdisks, /etc/mkinitcpio.conf 
- * - 
+ * - mkinitcpio.conf newer than: initrdisks, /etc/mkinitcpio.conf
+ * -
  * -
  * </pre>
- * 
+ *
  * @author Andreas Kielkopf ©2022
  * @license GNU General Public License v3.0
  */
@@ -22,32 +22,31 @@ public class MkinitcpioInfo extends InfoLine {
    static String             MKINITCPIO_ETC   ="/etc/mkinitcpio.conf";
    static String             MKINITCPIO_UPDATE="Please run 'mkinitcpio -p ";
    static ArrayList<Integer> spalten          =new ArrayList<>();
-   final static List<String> WICHTIG          =Arrays
-            .asList(new String[] {"MODULES", "HOOKS", "COMPRESSION", "BINARIES", "FILES"});
+   final static List<String> WICHTIG          =Arrays.asList("MODULES", "HOOKS", "COMPRESSION", "BINARIES", "FILES");
    public MkinitcpioInfo(Iterable<String> iterableInfo) {
       super(iterableInfo, spalten);
    }
    public static Stream<InfoLine> analyseStream() {
-      List<List<String>>  mkinitcpio=Query.MKINITCPIO.getLists(Pattern      //
+      final List<List<String>>  mkinitcpio=Query.MKINITCPIO.getLists(Pattern   //
                .compile("^(#?)(" + String.join("|", WICHTIG) + ")(=)(.+)"));
-      ArrayList<String[]> tests     =new ArrayList<>();
-      for (List<String> list:Query.LS.getLists(Pattern.compile(SIZE4 + ".*(init.*64[.]img)"))) {
-         String   b=getBasisStream().filter(e -> e.getKey().test(list.get(1))).map(e -> e.getValue().get(0)).findAny()
-                  .orElse("linuxXXX");
-         String[] t=new String[] {"/boot/" + list.get(1), MKINITCPIO_ETC, MKINITCPIO_UPDATE + b + "' :"};
+      final ArrayList<String[]> tests     =new ArrayList<>();
+      for (final List<String> list:Query.LS.getLists(Pattern.compile(SIZE4 + ".*(init.*64[.]img)"))) {
+         final String   b=getBasisStream().filter(e -> e.getKey().test(list.get(1))).map(e -> e.getValue().get(0))
+                  .findAny().orElse("linuxXXX");
+         final String[] t= {"/boot/" + list.get(1), MKINITCPIO_ETC, MKINITCPIO_UPDATE + b + "' :"};
          tests.add(t);
       }
-      Stream<TestInfo>   testStream  =tests.stream().map(t -> Query.test(t)).filter(l -> (l.size() > 1)).map(l -> {
-                                        ArrayList<String> x=new ArrayList<>(l);
-                                        x.add(1, "<is older than>");
-                                        x.add(0, x.remove(x.size() - 1));
-                                        return new TestInfo(x);
-                                     });
-      Stream<ConfigInfo> configStream=mkinitcpio.stream().map(s -> new ConfigInfo(s));
+      final Stream<TestInfo>   testStream  =tests.stream().map(Query::test).filter(l -> (l.size() > 1)).map(l -> {
+                                              final ArrayList<String> x=new ArrayList<>(l);
+                                              x.add(1, "<is older than>");
+                                              x.add(0, x.remove(x.size() - 1));
+                                              return new TestInfo(x);
+                                           });
+      final Stream<ConfigInfo> configStream=mkinitcpio.stream().map(ConfigInfo::new);
       return Stream.concat(testStream, configStream);
    }
    public static String getHeader() {
-      StringBuilder sb=new StringBuilder();
+      final StringBuilder sb=new StringBuilder();
       if (Flag.COLOR.get())
          sb.append(GREEN);
       sb.append("Info about:");

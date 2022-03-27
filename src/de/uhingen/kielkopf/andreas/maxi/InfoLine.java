@@ -35,72 +35,54 @@ public class InfoLine {
    final static String                              SIZE5     ="^([ 0-9KMG,]{4,5})";
    final static String                              SHA       ="([0-9a-fA-F]{" + SHALEN + "})";
    final static String                              NA        ="--";
-   final static List<String>                        MISSING   =Arrays.asList(new String[] {"<missing>", ""});
-   final static List<String>                        MISSING_V =Arrays.asList(new String[] {"<vmlinuz missing>", ""});
-   final static List<String>                        MISSING_I =Arrays.asList(new String[] {"<initrd missing>", ""});
-   final static List<String>                        MISSING_IA=Arrays.asList(new String[] {NA, ""});
-   final static List<String>                        MISSING_F =Arrays.asList(new String[] {"fallback", "<no>"});
-   final static List<String>                        MISSING_FA=Arrays.asList(new String[] {NA, ""});
-   final static List<String>                        EOL_TEST  =Arrays.asList(new String[] {"linux51", "51"});
-   static Map<Predicate<String>, ArrayList<String>> basis     =new LinkedHashMap<Predicate<String>, ArrayList<String>>();
+   final static List<String>                        MISSING   =Arrays.asList("<missing>", "");
+   final static List<String>                        MISSING_V =Arrays.asList("<vmlinuz missing>", "");
+   final static List<String>                        MISSING_I =Arrays.asList("<initrd missing>", "");
+   final static List<String>                        MISSING_IA=Arrays.asList(NA, "");
+   final static List<String>                        MISSING_F =Arrays.asList("fallback", "<no>");
+   final static List<String>                        MISSING_FA=Arrays.asList(NA, "");
+   final static List<String>                        EOL_TEST  =Arrays.asList("linux51", "51");
+   static Map<Predicate<String>, ArrayList<String>> basis     =new LinkedHashMap<>();
    final Iterable<String>                           info;
    @SuppressWarnings("boxing")
    public InfoLine(Iterable<String> iterableInfo, ArrayList<Integer> spalten) {
       info=iterableInfo;
       int index=0;
-      for (String text:iterableInfo) {
+      for (final String text:iterableInfo) {
          if (index >= spalten.size())
             spalten.add(0);
-         if (text.length() > spalten.get(index))
+         if ((text != null) && (text.length() > spalten.get(index)))
             spalten.set(index, text.length());
          index++;
       }
    }
-   /** @return one Line of the Info */
-   public String getLine(Iterator<Integer> len) {
-      StringBuilder sb     =new StringBuilder();
-      boolean       noSpace=false;
-      for (String text:info) {
-         boolean separator=((text.equals("=")) || text.equals("|") || text.equals(UTF_SUM));
-         boolean title    =((text.endsWith(":")) || text.startsWith(":"));
-         if (Flag.COLOR.get())
-            if ((sb.length() == 0) || separator || title)
-               sb.append(GREEN);// hervorgehobene Spalte
-            else
-               if (text.startsWith("<"))
-                  sb.append(RED);// Fehler
-               else
-                  sb.append(WHITE);
-         @SuppressWarnings("boxing")
-         int width=len.next();
-         if (!(noSpace || separator || (width == 0)))
-            sb.append(" ");
-         sb.append(text);
-         for (; width > text.length(); width--)
-            sb.append(" ");
-         noSpace=(separator || title);
-      }
-      while (' ' == sb.charAt(sb.length() - 1))
-         sb.deleteCharAt(sb.length() - 1);
-      if (Flag.COLOR.get())
-         sb.append(RESET);
-      return sb.toString();
-   }
    static void clear() {
       Query.MHWD_LI.clear();
+   }
+   /**
+    * @param lls
+    * @param pr
+    * @param success
+    * @param error
+    * @return
+    */
+   static String deepSearch(List<List<String>> lls, Predicate<String> pr, String success, String error) {
+      return lls.stream().flatMap(List::stream).filter(pr).map(s -> success.replaceFirst("§", s)).findAny()
+               .orElse(error);
    }
    /** @return a list of kernels to search for */
    static Stream<Entry<Predicate<String>, ArrayList<String>>> getBasisStream() {
       if (basis.isEmpty()) {
-         basis=new LinkedHashMap<Predicate<String>, ArrayList<String>>();
-         List<List<String>> kernels=Flag.LIST_ALL.get() ? Query.MHWD_L.getLists(Pattern.compile("[*].*(linux(.*))"))
+         basis=new LinkedHashMap<>();
+         final List<List<String>> kernels=Flag.LIST_ALL.get()
+                  ? Query.MHWD_L.getLists(Pattern.compile("[*].*(linux(.*))"))
                   : Query.MHWD_LI.getLists(Pattern.compile("[*].*(linux(.*))"));
-         final String       r      ="abcdef";
-         for (List<String> k:kernels) {
-            ArrayList<String> info  =k.stream().collect(Collectors.toCollection(ArrayList<String>::new));
-            String            kNr   =info.remove(1);
+         final String             r      ="abcdef";
+         for (final List<String> k:kernels) {
+            final ArrayList<String> info  =k.stream().collect(Collectors.toCollection(ArrayList<String>::new));
+            final String            kNr   =info.remove(1);
             // * linux44 * linux515-rt
-            String            search="linuxabcdef$"
+            String                  search="linuxabcdef$"
                      // initramfs-4.4-x86_64.img initramfs-5.15-rt-x86_64-fallback.img
                      + "|^initr.m.s-a[.]bcdef[-.][^r].*img"
                      // extramodules-4.4-MANJARO extramodules-5.15-rt-MANJAR
@@ -121,17 +103,14 @@ public class InfoLine {
       }
       return basis.entrySet().stream();
    }
-   /**
-    * @param lls
-    * @param pr
-    * @param success
-    * @param error
-    * @return
-    */
-   static String deepSearch(List<List<String>> lls, Predicate<String> pr, String success, String error) {
-      return lls.stream().flatMap(ims -> ims.stream()).filter(pr).map(s -> success.replaceFirst("§", s)).findAny()
-               .orElse(error);
+   static List<String> insert(List<String> source, String exclude) {
+      return Arrays.asList(UTF_SUM, source.stream().filter(s -> !s.isEmpty()).filter(s -> !s.contains(exclude))
+               .map(InfoLine::shortSHA).findFirst().orElse("<?>"));
    }
+   // public String getInfo() {
+   // Iterator<String> it=info.iterator();
+   // return (it.hasNext()) ? it.next() : ".";
+   // }
    static List<String> select(Stream<List<String>> sl, Predicate<String> pr, List<String> missing) {
       return sl.filter(text -> text.stream().anyMatch(pr)).map(list -> {
          Collections.reverse(list);
@@ -142,12 +121,35 @@ public class InfoLine {
       return (sha.length() != SHALEN) ? "<sha?>"
                : sha.substring(0, SHASHORT) + "~" + sha.substring(SHALEN - SHASHORT - 1, SHALEN - 1);
    }
-   static List<String> insert(List<String> source, String exclude) {
-      return Arrays.asList(new String[] {UTF_SUM, source.stream().filter(s -> !s.isEmpty())
-               .filter(s -> !s.contains(exclude)).map(s -> shortSHA(s)).findFirst().orElse("<?>")});
-   }
-   public String getInfo() {
-      Iterator<String> it=info.iterator();
-      return (it.hasNext()) ? it.next() : ".";
+   /** @return one Line of the Info */
+   public String getLine(Iterator<Integer> len) {
+      final StringBuilder sb     =new StringBuilder();
+      boolean             noSpace=false;
+      for (final String text0:info) {
+         final String  text     =(text0 != null) ? text0 : "";
+         final boolean separator=((text.equals("=")) || text.equals("|") || text.equals(UTF_SUM));
+         final boolean title    =((text.endsWith(":")) || text.startsWith(":"));
+         if (Flag.COLOR.get())
+            if ((sb.length() == 0) || separator || title)
+               sb.append(GREEN);// hervorgehobene Spalte
+            else
+               if (text.startsWith("<"))
+                  sb.append(RED);// Fehler
+               else
+                  sb.append(WHITE);
+         @SuppressWarnings("boxing")
+         int width=len.next();
+         if ((!noSpace && !separator && (width != 0)))
+            sb.append(" ");
+         sb.append(text);
+         for (; width > text.length(); width--)
+            sb.append(" ");
+         noSpace=(separator || title);
+      }
+      while (' ' == sb.charAt(sb.length() - 1))
+         sb.deleteCharAt(sb.length() - 1);
+      if (Flag.COLOR.get())
+         sb.append(RESET);
+      return sb.toString();
    }
 }

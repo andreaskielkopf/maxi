@@ -1,5 +1,5 @@
-maxi
-====
+maxi 0.7.0
+==========
 If your manjaro installation does not boot (any more), maxi may help to find what is missing. 
 Just use it from commandline or from a chroot environment. If you need help interpreting the output, read [Understand the boot process](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/99740) or contact a forum like [manjaro forum](https://forum.manjaro.org/) and ask for help.
 
@@ -41,6 +41,7 @@ maxi [OPTIONS]
  * -i --mkinitcpio   /etc/mkinitcpio.conf
  * -e --efi          efi bootloaders 
  * -f --forum        frame with backticks and [details] and copy to clipboard
+ * -p --partitions   info about visible partitions
  
    default equals to: -km
  
@@ -59,7 +60,7 @@ Depends on
 - `coreutils` (ls cat sort du sha256sum)
 - `findutils` (find)
 - `ncurses` (tput) or zsh (echoti)
-
+- `lsblk`
 
 License
 -------
@@ -70,10 +71,7 @@ ToDos:
 ------
 
  * list presets for mkinitcpio
- * schow boot-stanzas from UEFI
- * find all EFI-Partitions
  * show connected boot-stanzas
- * show all grub.cfg
  
 And i hope there are [other wishes](https://forum.manjaro.org/t/maxi-call-for-testers-0-6-7/99763) to extend the program, so that it is an aid to resolve boot-problems fast.
 
@@ -90,14 +88,14 @@ Use it:
 1. `./maxi -kmf**` or `**./maxi -kmsgeif**`
 3. The output is already in the clipoboard. If you want to post it in [manjaro forum](https://forum.manjaro.org/) you only have to create the post, and press `[Ctrl-v]`
 4. You may also have a look at [Understand the boot process](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/99740)
-   
-  
-  
 
-#### sha256sum of v0.6.9
-2dd60771885ac5280faf41997f7877c24d5d1d06077af2abb784043c15be1e3c  maxi
+#### sha256sum of v0.7.0
+3e6de43b28d80d11ffd495eb08faceaf4b76b6811d033ef2ca323b2e85c2ca53  maxi
 
-P.S. If current developments trouble you, you can [find peace](https://www.jw.org/en/library/series/more-topics/russia-invades-ukraine-bible-meaning-hope/)
+P.S. If current developments trouble you, you can 
+[Find Peace](https://www.jw.org/en/library/series/more-topics/russia-invades-ukraine-bible-meaning-hope/) -
+[Millions Flee Ukraine](https://www.jw.org/en/library/series/more-topics/ukraine-refugee-crisis-bible-meaning-hope/) -
+[Find Real Hope](https://www.jw.org/en/jehovahs-witnesses/memorial/)
 
 
 ------------------------------------------------------------
@@ -145,6 +143,7 @@ Maxi [OPTIONEN]
  * -i --mkinitcpio   /etc/mkinitcpio.conf
  * -e --efi          EFI-Bootloader
  * -f --forum        Frame mit Backticks und [Details] in die Zwischenablage kopieren
+ * -p --partitions   Info über sichtbare Partitionen
  
    Standardwert ist: -km
  
@@ -193,8 +192,11 @@ Benutze es:
 -----------
 1. `./maxi -kmf**` oder `**./maxi -kmsgeif**`
 2. Die Ausgabe befindet sich bereits in der Zwischenablage. Wenn Sie sie [manjaro-Forum](https://forum.manjaro.org/) posten möchten, müssen Sie nur den Beitrag erstellen und `[Strg-v]` drücken
-3. Sie können sich auch [Verstehe den boot-prozess](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/ 99740)
+3. Sie können sich auch [Verstehe den boot-prozess](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/ 99740)[Echte Hoffnung](https://www.jw.org/de/jehovas-zeugen/erinnerung-an-jesu-tod/)
 
 #### Die sha256sum findest du Oben
 
-P.S. Wenn dich die aktuellen Entwicklungen beunruhigen kannst du [Frieden finden](https://www.jw.org/de/bibliothek/artikelserien/weitere-themen/russland-marschiert-in-ukraine-ein-biblische-bedeutung-hoffnung/)
+P.S. Wenn dich die aktuellen Entwicklungen beunruhigen kannst du 
+[Frieden finden](https://www.jw.org/de/bibliothek/artikelserien/weitere-themen/russland-marschiert-in-ukraine-ein-biblische-bedeutung-hoffnung/) -
+[Millionen fliehen aus der Ukrain](https://www.jw.org/de/bibliothek/artikelserien/weitere-themen/ukraine-fluechtlingskrise-bibel-bedeutung-hoffnung/) -
+[Eine echte Hoffnung](https://www.jw.org/de/jehovas-zeugen/erinnerung-an-jesu-tod/)

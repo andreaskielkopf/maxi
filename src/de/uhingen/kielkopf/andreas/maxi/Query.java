@@ -6,13 +6,14 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * Definition von Abfragen mit eingebautem Caching
- * 
+ *
  * @author Andreas Kielkopf ©2022
  * @license GNU General Public License v3.0
  */
@@ -26,6 +27,8 @@ public enum Query {
    // +"do echo -n \"$K \";for D in $(print -l $K/**/*(.)|sort);do cat $D;done|sha256sum; done;"),
    LS("ls", "-sh1", "/boot", "/boot/grub", "/lib/modules"),
    LS_EFI(Maxi.SHELL, "-c", "for F in $(find /efi /boot -iname \"*.efi\"); do ls -sh1 $F ;done"),
+   LSBLK(Maxi.SHELL, "-c", "lsblk -o kname,pttype,ptuuid,parttypename,partuuid,partlabel,fstype,uuid,label"),
+   // BLKID(Maxi.SHELL, "-c", "blkid"),
    // , ZLS(SHELL, "-c", "print -l /boot/*(.) /boot/grub/*(.) /lib/modules/*(/)")
    MHWD_L("mhwd-kernel", "-l"),
    MHWD_LI("mhwd-kernel", "-li"),
@@ -38,7 +41,7 @@ public enum Query {
                      + "do cd $K;echo -n \"$K \";for D in $(find . -type f|sort);do cat $D;done|sha256sum; done"),
    TERMINFO(Maxi.SHELL, "-c", "echoti colors"),
    TPUT("tput", "colors");
-   private static List<String> EMPTY    =new ArrayList<String>();
+   private static List<String> EMPTY    =new ArrayList<>();
    final static ProcessBuilder pb       =new ProcessBuilder();
    private static List<String> TEST_OK  =Arrays.asList(new String[] {"OK"});
    private List<String>        cache    =null;                              // new ArrayList<String>();
@@ -46,19 +49,19 @@ public enum Query {
    private boolean             hasResult=false;
    /**
     * Definiert die Abfrage auf der Kommandozeile
-    * 
+    *
     * @param command
     */
    Query(String... command) {
       cmd=command;
    }
    /**
-    * 
+    *
     * @param test
     * @return
     */
    public static List<String> test(String[] test) {
-      ArrayList<String> command=new ArrayList<>();
+      final ArrayList<String> command=new ArrayList<>();
       if (Maxi.SHELL.contains("zsh"))
          command.add(Maxi.SHELL);
       else
@@ -66,19 +69,19 @@ public enum Query {
       command.add("-c");
       command.add("[[ " + test[0] + " -nt " + test[1] + " ]] && echo 't' || echo 'f'");
       try {
-         Process           p =pb.command(command).redirectErrorStream(true).start();
-         InputStreamReader ir=new InputStreamReader(p.getInputStream());
+         final Process           p =pb.command(command).redirectErrorStream(true).start();
+         final InputStreamReader ir=new InputStreamReader(p.getInputStream());
          // p.waitFor(1, TimeUnit.SECONDS);
          try (BufferedReader br=new BufferedReader(ir); Stream<String> li=br.lines()) {
-            List<String> erg=li.collect(Collectors.toList());
-            for (String s:erg) {
+            final List<String> erg=li.collect(Collectors.toList());
+            for (final String s:erg) {
                if (s.startsWith("t"))
                   return TEST_OK;
                if (s.startsWith("f"))
                   return Arrays.asList(test);
             }
          }
-      } catch (IOException e) {
+      } catch (final IOException e) {
          e.printStackTrace();
       }
       return EMPTY;
@@ -92,31 +95,31 @@ public enum Query {
    }
    /**
     * liefert selektierte Daten aus dem cache
-    * 
+    *
     * @param pa
     * @return
     */
    public Stream<List<String>> getSelected(Pattern pa) {
       if (!hasResult)
          cache=query();
-      return cache.stream().map(s -> pa.matcher(s)).filter(m -> m.find()).map(m -> new IterableMatchResult(m))
+      return cache.stream().map(s -> pa.matcher(s)).filter(Matcher::find).map(IterableMatchResult::new)
                .map(i -> i.stream().collect(Collectors.toList()));
    }
    /**
     * macht die Abfrage und füllt den cache
-    * 
+    *
     * @return
     */
    private List<String> query() {
       try {
-         Process           p =pb.command(cmd).redirectErrorStream(true).start();
-         InputStreamReader ir=new InputStreamReader(p.getInputStream());
+         final Process           p =pb.command(cmd).redirectErrorStream(true).start();
+         final InputStreamReader ir=new InputStreamReader(p.getInputStream());
          try (BufferedReader br=new BufferedReader(ir); Stream<String> li=br.lines()) {
             hasResult=true;
             return li.collect(Collectors.toList());
          }
-      } catch (IOException e) {
-         return new ArrayList<String>();
+      } catch (final IOException e) {
+         return new ArrayList<>();
       }
    }
 }

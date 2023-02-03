@@ -11,8 +11,9 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
-        <file path="/maxi/maxi.jardesc"/>
         <file path="/maxi/readme.md"/>
+        <javaElement handleIdentifier="=Beans/src&lt;de.uhingen.kielkopf.andreas.beans.cli{Flag.java"/>
         <javaElement handleIdentifier="=maxi/src"/>
+        <file path="/maxi/maxi.jardesc"/>
     </selectedElements>
 </jardesc>

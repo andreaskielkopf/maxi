@@ -17,10 +17,11 @@ public class KernelInfo extends InfoLine {
    public KernelInfo(Iterable<String> iterableInfo) {
       super(iterableInfo, spalten);
    }
-   /** @return */
+   /** @return */   
+   @SuppressWarnings("null")
    static public Stream<KernelInfo> analyseStream() {
       /// Prüfe ob der Kernel noch unterstützt wird OK/[EOL]
-      final List<List<String>> available   =!Flag.LIST_ALL.get()                                             //
+      final List<List<String>> available   =!Maxi.LIST_ALL.get()                                             //
                ? Query.MHWD_L.getLists(Pattern.compile("[*].*(linux(.*))"))
                : Query.MHWD_LI.getLists(Pattern.compile("[*].*(linux(.*))"));
       /// Zeige den Kernel und die initramdisks in /boot
@@ -29,20 +30,20 @@ public class KernelInfo extends InfoLine {
       final List<List<String>> fallback    =Query.LS
                .getLists(Pattern.compile(SIZE4 + "[^0-9]+([0-9.]+.+).*(fallback)"));
       /// Zeige die Kernelversion
-      final List<List<String>> kver        =Flag.KVER.get()
+      final List<List<String>> kver        =Maxi.KVER.get()
                ? Query.CAT_KVER.getLists(Pattern.compile("([-0-9.rt]+MANJARO).*"))
                : null;
       /// berechne die Prüfsummen
-      final List<List<String>> sha_kernel  =Flag.SHASUM.get()
+      final List<List<String>> sha_kernel  =Maxi.SHASUM.get()
                ? Query.SHA_BOOT.getLists(Pattern.compile("^" + SHA + ".*(vmlinuz.*)"))
                : null;
-      final List<List<String>> sha_fallback=Flag.SHASUM.get()
+      final List<List<String>> sha_fallback=Maxi.SHASUM.get()
                ? Query.SHA_BOOT.getLists(Pattern.compile("^" + SHA + ".*(init.*back.*)"))
                : null;
       return getBasisStream().map(e -> {
          final Predicate<String> key =e.getKey();
          final ArrayList<String> list=new ArrayList<>(e.getValue());
-         list.add(deepSearch(available, key, "", Flag.LIST_ALL.get() ? NA : "<EOL>"));
+         list.add(deepSearch(available, key, "", Maxi.LIST_ALL.get() ? NA : "<EOL>"));
          final boolean notLocal=list.contains(NA);
          list.add(deepSearch(vmlinuz, key, "§", notLocal ? NA : "<vmlinuz missing>"));
          select(initrd.stream(), key, notLocal ? MISSING_IA : MISSING_I).forEach(t -> list.add(t.trim()));
@@ -75,8 +76,8 @@ public class KernelInfo extends InfoLine {
       final List<List<String>> mounts=Query.CHROOT.getLists(Pattern.compile(" /.* / .*"));
       final String             chroot=(mounts.isEmpty()) ? "running in CHROOT" : "running";
       return Query.MHWD_LI.getLists(Pattern.compile(".*running.*")).stream().flatMap(List::stream).findAny().orElse("")
-               .replaceFirst("running", chroot).replaceAll(ANY_ESC, Flag.COLOR.get() ? WHITE : "")
-               .replaceFirst(ANY_ESC, Flag.COLOR.get() ? GREEN : "");
+               .replaceFirst("running", chroot).replaceAll(ANY_ESC, Maxi.COLOR.get() ? WHITE : "")
+               .replaceFirst(ANY_ESC, Maxi.COLOR.get() ? GREEN : "");
    }
    @Override
    public String toString() {

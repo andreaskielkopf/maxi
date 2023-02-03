@@ -10,7 +10,7 @@ echo -n "$EC ==>"
 { cat; exit; } <<EOF
 
 Maxi is made for manjaro linux only
-This is version 0.6.9 from 26.3.2022
+This is version 0.7.2 from 3.2.2023
 
 Usage:
 ------

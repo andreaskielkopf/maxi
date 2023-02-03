@@ -91,6 +91,8 @@ Use it:
 
 #### sha256sum of v0.7.0
 3e6de43b28d80d11ffd495eb08faceaf4b76b6811d033ef2ca323b2e85c2ca53  maxi
+#### sha256sum of v0.7.2
+cbfaa150e8caf43c44878ce1973b4897b9ebc8cef7873d6e79e4076244c28164  maxi
 
 P.S. If current developments trouble you, you can 
 [Find Peace](https://www.jw.org/en/library/series/more-topics/russia-invades-ukraine-bible-meaning-hope/) -
@@ -151,7 +153,7 @@ Maxi [OPTIONEN]
 Projektmitglieder
 -----------------
 
-- ©2022 [Andreas Kielkopf](https://github.com/andreaskielkopf)
+- ©2023 [Andreas Kielkopf](https://github.com/andreaskielkopf)
 
 
 Kommt drauf an

@@ -1,10 +1,7 @@
 package de.uhingen.kielkopf.andreas.maxi;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -35,8 +32,8 @@ public class GrubInfo extends InfoLine {
       final ArrayList<String[]> tests =new ArrayList<>(
                Arrays.asList(new String[][] {{GRUB_CFG, GRUB_ETC, GRUB_UPDATE}}));
       final List<List<String>>  initrd=Query.LS.getLists(Pattern.compile(SIZE4 + ".*(init.*64[.]img)"));
-      tests.addAll(initrd.stream().map(l -> new String[] {"/boot/" + l.get(1), GRUB_ETC, GRUB_UPDATE})
-               .collect(Collectors.toList()));
+      tests.addAll(initrd.stream().map(l -> new String[] {"/boot/" + l.get(1), GRUB_ETC, GRUB_UPDATE}).toList());
+      @SuppressWarnings("null")
       final Stream<TestInfo>   testStream  =tests.stream().map(Query::test).filter(l -> (l.size() > 1)).map(l -> {
                                               final ArrayList<String> x=new ArrayList<>(l);
                                               x.add(1, "<is older than>");
@@ -48,13 +45,13 @@ public class GrubInfo extends InfoLine {
    }
    public static String getHeader() {
       final StringBuilder sb=new StringBuilder();
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(GREEN);
       sb.append("Info about:");
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(WHITE);
       sb.append(" /etc/default/grub");
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(RESET);
       return sb.toString();
    }

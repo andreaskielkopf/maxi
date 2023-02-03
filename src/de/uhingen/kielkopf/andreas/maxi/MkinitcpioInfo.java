@@ -1,8 +1,6 @@
 package de.uhingen.kielkopf.andreas.maxi;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -36,6 +34,7 @@ public class MkinitcpioInfo extends InfoLine {
          final String[] t= {"/boot/" + list.get(1), MKINITCPIO_ETC, MKINITCPIO_UPDATE + b + "' :"};
          tests.add(t);
       }
+      @SuppressWarnings("null")
       final Stream<TestInfo>   testStream  =tests.stream().map(Query::test).filter(l -> (l.size() > 1)).map(l -> {
                                               final ArrayList<String> x=new ArrayList<>(l);
                                               x.add(1, "<is older than>");
@@ -47,13 +46,13 @@ public class MkinitcpioInfo extends InfoLine {
    }
    public static String getHeader() {
       final StringBuilder sb=new StringBuilder();
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(GREEN);
       sb.append("Info about:");
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(WHITE);
       sb.append(" " + MKINITCPIO_ETC);
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(RESET);
       return sb.toString();
    }

@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -73,7 +72,7 @@ public enum Query {
          final InputStreamReader ir=new InputStreamReader(p.getInputStream());
          // p.waitFor(1, TimeUnit.SECONDS);
          try (BufferedReader br=new BufferedReader(ir); Stream<String> li=br.lines()) {
-            final List<String> erg=li.collect(Collectors.toList());
+            final List<String> erg=li.toList();
             for (final String s:erg) {
                if (s.startsWith("t"))
                   return TEST_OK;
@@ -91,7 +90,7 @@ public enum Query {
       hasResult=false;
    }
    public List<List<String>> getLists(Pattern pa) {
-      return getSelected(pa).collect(Collectors.toList());
+      return getSelected(pa).toList();
    }
    /**
     * liefert selektierte Daten aus dem cache
@@ -103,7 +102,7 @@ public enum Query {
       if (!hasResult)
          cache=query();
       return cache.stream().map(s -> pa.matcher(s)).filter(Matcher::find).map(IterableMatchResult::new)
-               .map(i -> i.stream().collect(Collectors.toList()));
+               .map(i -> i.stream().toList());
    }
    /**
     * macht die Abfrage und füllt den cache
@@ -116,7 +115,7 @@ public enum Query {
          final InputStreamReader ir=new InputStreamReader(p.getInputStream());
          try (BufferedReader br=new BufferedReader(ir); Stream<String> li=br.lines()) {
             hasResult=true;
-            return li.collect(Collectors.toList());
+            return li.toList();
          }
       } catch (final IOException e) {
          return new ArrayList<>();

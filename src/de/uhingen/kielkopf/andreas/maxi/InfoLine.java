@@ -1,12 +1,6 @@
 package de.uhingen.kielkopf.andreas.maxi;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -74,7 +68,7 @@ public class InfoLine {
    static Stream<Entry<Predicate<String>, ArrayList<String>>> getBasisStream() {
       if (basis.isEmpty()) {
          basis=new LinkedHashMap<>();
-         final List<List<String>> kernels=Flag.LIST_ALL.get()
+         final List<List<String>> kernels=Maxi.LIST_ALL.get()
                   ? Query.MHWD_L.getLists(Pattern.compile("[*].*(linux(.*))"))
                   : Query.MHWD_LI.getLists(Pattern.compile("[*].*(linux(.*))"));
          final String             r      ="abcdef";
@@ -129,7 +123,7 @@ public class InfoLine {
          final String  text     =(text0 != null) ? text0 : "";
          final boolean separator=((text.equals("=")) || text.equals("|") || text.equals(UTF_SUM));
          final boolean title    =((text.endsWith(":")) || text.startsWith(":"));
-         if (Flag.COLOR.get())
+         if (Maxi.COLOR.get())
             if ((sb.length() == 0) || separator || title)
                sb.append(GREEN);// hervorgehobene Spalte
             else
@@ -148,7 +142,7 @@ public class InfoLine {
       }
       while (' ' == sb.charAt(sb.length() - 1))
          sb.deleteCharAt(sb.length() - 1);
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(RESET);
       return sb.toString();
    }

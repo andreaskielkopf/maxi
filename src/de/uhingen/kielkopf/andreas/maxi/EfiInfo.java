@@ -1,8 +1,6 @@
 package de.uhingen.kielkopf.andreas.maxi;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -30,7 +28,7 @@ public class EfiInfo extends InfoLine {
                .getLists(Pattern.compile("^" + SHA + "[^/]+([-_a-zA-Z0-9/]+[.]efi)"));
       return efi_ls.stream().map(list -> {
          Collections.reverse(list);
-         if (Flag.SHASUM.get()) {
+         if (Maxi.SHASUM.get()) {
             final String name=list.get(0);
             efi_sha.stream().filter(l -> name.equals(l.get(1))).forEach(l -> {
                list.add(UTF_SUM);
@@ -42,13 +40,13 @@ public class EfiInfo extends InfoLine {
    }
    public static String getHeader() {
       final StringBuilder sb=new StringBuilder();
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(GREEN);
       sb.append("Info about:");
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(WHITE);
       sb.append(" efi bootloaders");
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(RESET);
       return sb.toString();
    }

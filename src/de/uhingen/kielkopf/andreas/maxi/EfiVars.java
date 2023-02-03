@@ -3,7 +3,6 @@ package de.uhingen.kielkopf.andreas.maxi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -25,8 +24,7 @@ public class EfiVars extends InfoLine {
    }
    public static Stream<InfoLine> analyseStream() {
       final List<List<String>> efi_vars=getEfiVars();
-      return efi_vars.stream()
-               .map(l -> l.stream().map(s -> s.replaceFirst(".File.(.+).", "$1")).collect(Collectors.toList()))
+      return efi_vars.stream().map(l -> l.stream().map(s -> s.replaceFirst(".File.(.+).", "$1")).toList())
                .map(EfiVars::new);
    }
    static List<List<String>> getEfiVars() {
@@ -43,13 +41,13 @@ public class EfiVars extends InfoLine {
    }
    public static String getHeader() {
       final StringBuilder sb=new StringBuilder();
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(GREEN);
       sb.append("Info about:");
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(WHITE);
       sb.append(" efi vars (needs efibootmgr)");
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(RESET);
       return sb.toString();
    }

@@ -61,13 +61,13 @@ public class Partition extends InfoLine {
    }
    public static String getHeader() {
       final StringBuilder sb=new StringBuilder();
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(GREEN);
       sb.append("Info about:");
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(WHITE);
       sb.append(" visible partitions (needs lsblk)");
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(RESET);
       return sb.toString();
    }

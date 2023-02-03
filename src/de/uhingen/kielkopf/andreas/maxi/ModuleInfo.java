@@ -17,16 +17,17 @@ public class ModuleInfo extends InfoLine {
       super(iterableInfo, spalten);
    }
    /** @return */
+   @SuppressWarnings("null")
    public static Stream<ModuleInfo> analyseStream() {
       /// Zeige die Kernelversion
       final List<List<String>> kver       =Query.CAT_KVER.getLists(Pattern.compile("([-0-9.rt]+MANJARO).*"));
       final List<List<String>> du_module  =Query.DU_MODULES
                .getLists(Pattern.compile("([0-9]+[KM]?)[^0-9]+/([-0-9rt.]+MANJARO)")/* , "§2 §1" */);
       final List<List<String>> du_extra   =Query.DU_MODULES.getLists(Pattern.compile("([0-9]+[KM]?)[^0-9]+/(extra.*)"));
-      final List<List<String>> sha_modules=Flag.SHASUM.get()
+      final List<List<String>> sha_modules=Maxi.SHASUM.get()
                ? Query.SHA_MODULES.getLists(Pattern.compile("^.*[/]([0-9.-]+MANJARO) *" + SHA + ".*$"))
                : null;
-      final List<List<String>> sha_extra  =Flag.SHASUM.get()
+      final List<List<String>> sha_extra  =Maxi.SHASUM.get()
                ? Query.SHA_MODULES.getLists(Pattern.compile("^.*(extra.+MANJARO) *" + SHA + ".*$"))
                : null;
       // Für jeden einzelnen kernel untersuchen
@@ -60,18 +61,18 @@ public class ModuleInfo extends InfoLine {
    /** @return */
    static public String getHeader() {
       final StringBuilder sb=new StringBuilder();
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(GREEN);
       sb.append("Modules in:");
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(WHITE);
       sb.append(" /lib/modules");
-      if (Flag.SHASUM.get()) {
-         if (Flag.COLOR.get())
+      if (Maxi.SHASUM.get()) {
+         if (Maxi.COLOR.get())
             sb.append(WHITE);
          sb.append(" Checksumming all modules may take a while");
       }
-      if (Flag.COLOR.get())
+      if (Maxi.COLOR.get())
          sb.append(RESET);
       return sb.toString();
    }

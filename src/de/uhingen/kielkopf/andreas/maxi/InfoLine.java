@@ -107,8 +107,9 @@ public class InfoLine {
    // }
    static List<String> select(Stream<List<String>> sl, Predicate<String> pr, List<String> missing) {
       return sl.filter(text -> text.stream().anyMatch(pr)).map(list -> {
-         Collections.reverse(list);
-         return list;
+         List<String> nl=new ArrayList<String>(list);
+         Collections.reverse(nl);
+         return nl;
       }).findAny().orElse(missing);
    }
    static String shortSHA(String sha) {

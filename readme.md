@@ -93,6 +93,8 @@ Use it:
 3e6de43b28d80d11ffd495eb08faceaf4b76b6811d033ef2ca323b2e85c2ca53  maxi
 #### sha256sum of v0.7.3
 7c3c14623d58b317fff9d79cd75df16dba37a2a1e316ec8ea950483f312b9173  maxi
+#### sha256sum of v0.7.4
+3174e58f591d86c12ff1d897fb1fffc18744a5dd7fb64fa9fc43ce378ec960b1  maxi
 
 P.S. If current developments trouble you, you can 
 [Find Peace](https://www.jw.org/en/library/series/more-topics/russia-invades-ukraine-bible-meaning-hope/) -

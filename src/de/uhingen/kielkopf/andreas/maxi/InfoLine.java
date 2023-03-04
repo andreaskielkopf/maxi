@@ -106,10 +106,10 @@ public class InfoLine {
    // return (it.hasNext()) ? it.next() : ".";
    // }
    static List<String> select(Stream<List<String>> sl, Predicate<String> pr, List<String> missing) {
-      return sl.filter(text -> text.stream().anyMatch(pr)).map(list -> {
-         List<String> nl=new ArrayList<String>(list);
-         Collections.reverse(nl);
-         return nl;
+      return sl.filter(text -> text.stream().anyMatch(pr)).map(fList -> {
+         List<String> rList=new ArrayList<String>(fList);
+         Collections.reverse(rList);
+         return rList;
       }).findAny().orElse(missing);
    }
    static String shortSHA(String sha) {

@@ -26,16 +26,17 @@ public class EfiInfo extends InfoLine {
                Pattern.compile(SIZE5 + "[^/]*(/[-_a-zA-Z0-9/]+[.]efi)"));
       final List<List<String>> efi_sha=Query.SHA_EFI
                .getLists(Pattern.compile("^" + SHA + "[^/]+([-_a-zA-Z0-9/]+[.]efi)"));
-      return efi_ls.stream().map(list -> {
-         Collections.reverse(list);
+      return efi_ls.stream().map(fList -> {
+         ArrayList<String>rList=new ArrayList<String>(fList);
+         Collections.reverse(rList);
          if (Maxi.SHASUM.get()) {
-            final String name=list.get(0);
+            final String name=rList.get(0);
             efi_sha.stream().filter(l -> name.equals(l.get(1))).forEach(l -> {
-               list.add(UTF_SUM);
-               list.add(shortSHA(l.get(0)));
+               rList.add(UTF_SUM);
+               rList.add(shortSHA(l.get(0)));
             });
          }
-         return list;
+         return rList;
       }).map(EfiInfo::new);
    }
    public static String getHeader() {

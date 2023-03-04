@@ -1,5 +1,5 @@
 #!/bin/env -S bash
-# ©2022 Andreas Kielkopf
+# ©2023 Andreas Kielkopf
 # License: `GNU General Public License v3.0`
 nice java -jar "$0" "$@"
 EC="$?"
@@ -10,7 +10,7 @@ echo -n "$EC ==>"
 { cat; exit; } <<EOF
 
 Maxi is made for manjaro linux only
-This is version 0.7.3 from 4.2.2023
+This is version 0.7.4 from 4.3.2023
 
 Usage:
 ------

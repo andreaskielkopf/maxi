@@ -3,7 +3,7 @@ maxi 0.7.0
 If your manjaro installation does not boot (any more), maxi may help to find what is missing. 
 Just use it from commandline or from a chroot environment. If you need help interpreting the output, read [Understand the boot process](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/99740) or contact a forum like [manjaro forum](https://forum.manjaro.org/) and ask for help.
 
- `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/maxi -O /usr/local/bin/maxi; chmod a+x /usr/local/bin/maxi ; maxi -kmsgeif` 
+ `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/maxi -O /usr/local/bin/maxi; sudo chmod a+x /usr/local/bin/maxi ; maxi -kmsgeif` 
 
 Description
 -----------
@@ -81,7 +81,7 @@ Install:
 2. Check the sha256sum `sha256sum /usr/local/bin/maxi`
 3. Make the file executable `sudo chmod -c a+x /usr/local/bin/maxi`
 
- `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/maxi -O /usr/local/bin/maxi ; sha256sum /usr/local/bin/maxi ; chmod -c a+x /usr/local/bin/maxi` 
+ `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/maxi -O /usr/local/bin/maxi ; sha256sum /usr/local/bin/maxi ; sudo chmod -c a+x /usr/local/bin/maxi` 
 
 Use it:
 -------
@@ -188,9 +188,9 @@ Installieren:
 -------------
 1. Laden Sie Maxi von [github](https://github.com/andreaskielkopf/maxi) herunter und speichern Sie es dort, wo Sie es möchten `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/maxi -O /usr/local/bin/maxi`
 2. Überprüfen Sie die Prüfsumme `sha256sum /usr/local/bin/maxi`
-3. Machen Sie die Datei ausführbar `chmod -c a+x /usr/local/bin/maxi`
+3. Machen Sie die Datei ausführbar `sudo chmod -c a+x /usr/local/bin/maxi`
 
- `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/maxi -O /usr/local/bin/maxi ; sha256sum /usr/local/bin/maxi ; chmod -c a+x /usr/local/bin/maxi`
+ `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/maxi -O /usr/local/bin/maxi ; sha256sum /usr/local/bin/maxi ; sudo chmod -c a+x /usr/local/bin/maxi`
 
 Benutze es:
 -----------

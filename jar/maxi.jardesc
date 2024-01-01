@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-    <jar path="maxi/maxi.jar"/>
-    <options buildIfNeeded="true" compress="true" descriptionLocation="/maxi/maxi.jardesc" exportErrors="false" exportWarnings="true" includeDirectoryEntries="true" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <jar path="maxi/jar/maxi.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/maxi/jar/maxi.jardesc" exportErrors="false" exportWarnings="true" includeDirectoryEntries="true" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
     <manifest generateManifest="true" mainClassHandleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{Maxi.java[Maxi" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
@@ -11,9 +11,7 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
-        <javaElement handleIdentifier="=Beans/src&lt;de.uhingen.kielkopf.andreas.beans.cli{Flag.java"/>
-        <file path="/maxi/readme.md"/>
         <javaElement handleIdentifier="=maxi/src"/>
-        <file path="/maxi/maxi.jardesc"/>
+        <file path="/maxi/readme.md"/>
     </selectedElements>
 </jardesc>

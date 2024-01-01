@@ -12,33 +12,33 @@ import java.util.stream.Stream;
  * @license GNU General Public License v3.0
  */
 public class InfoLine {
-   final static int                                 SHALEN    =64;
-   final static int                                 SHASHORT  =4;
-   final static String                              UTF_SUM   ="\u2211";
-   final static String                              GREEN     ="\u001b[0;32m";
-   final static String                              RED       ="\u001b[1;31m";
-   final static String                              WHITE     ="\u001b[0;97m";
-   final static String                              RESET     ="\u001b[0m";
-   final static String                              ANY_ESC   ="\\x1b\\[[0-9;]+m";
-   final static String                              TAGD      ="(?:[1-3 ]?[0-9][.] )?";
-   final static String                              MONAT     ="[A-Z][a-z][a-z] ";
-   final static String                              TAGE      ="(?:[1-3 ]?[0-9] )?";
-   final static String                              REST      ="(?:[ 0-9][0-9]{3}[ 0-9]|[0-9:]{5})";
-   final static String                              DATE      ="(" + TAGD + MONAT + TAGE + REST + ").*";
-   final static String                              SIZE4     ="^([ 0-9KMG,]{4})";
-   final static String                              SIZE5     ="^([ 0-9KMG,]{4,5})";
-   final static String                              SHA       ="([0-9a-fA-F]{" + SHALEN + "})";
-   final static String                              NA        ="--";
-   final static List<String>                        MISSING   =Arrays.asList("<missing>", "");
-   final static List<String>                        MISSING_V =Arrays.asList("<vmlinuz missing>", "");
-   final static List<String>                        MISSING_I =Arrays.asList("<initrd missing>", "");
-   final static List<String>                        MISSING_IA=Arrays.asList(NA, "");
-   final static List<String>                        MISSING_F =Arrays.asList("fallback", "<no>");
-   final static List<String>                        MISSING_FA=Arrays.asList(NA, "");
-   final static List<String>                        EOL_TEST  =Arrays.asList("linux51", "51");
+   static final int                                 SHALEN    =64;
+   static final int                                 SHASHORT  =4;
+   static final String                              UTF_SUM   ="\u2211";
+   static final String                              GREEN     ="\u001b[0;32m";
+   static final String                              RED       ="\u001b[1;31m";
+   static final String                              WHITE     ="\u001b[0;97m";
+   static final String                              RESET     ="\u001b[0m";
+   static final String                              ANY_ESC   ="\\x1b\\[[0-9;]+m";
+   static final String                              TAGD      ="(?:[1-3 ]?[0-9][.] )?";
+   static final String                              MONAT     ="[A-Z][a-z][a-z] ";
+   static final String                              TAGE      ="(?:[1-3 ]?[0-9] )?";
+   static final String                              REST      ="(?:[ 0-9][0-9]{3}[ 0-9]|[0-9:]{5})";
+   static final String                              DATE      ="(" + TAGD + MONAT + TAGE + REST + ").*";
+   static final String                              SIZE4     ="^([ 0-9KMG,]{4})";
+   static final String                              SIZE5     ="^([ 0-9KMG,]{4,5})";
+   static final String                              SIZE7     ="([ 0-9KMG,]{4,7})";
+   static final String                              SHA       ="([0-9a-fA-F]{" + SHALEN + "})";
+   static final String                              NA        ="--";
+   static final List<String>                        MISSING   =Arrays.asList("<missing>", "");
+   static final List<String>                        MISSING_V =Arrays.asList("<vmlinuz missing>", "");
+   static final List<String>                        MISSING_I =Arrays.asList("<initrd missing>", "");
+   static final List<String>                        MISSING_IA=Arrays.asList(NA, "");
+   static final List<String>                        MISSING_F =Arrays.asList("fallback", "<no>");
+   static final List<String>                        MISSING_FA=Arrays.asList(NA, "");
+   static final List<String>                        EOL_TEST  =Arrays.asList("linux51", "51");
    static Map<Predicate<String>, ArrayList<String>> basis     =new LinkedHashMap<>();
    final Iterable<String>                           info;
-   @SuppressWarnings("boxing")
    public InfoLine(Iterable<String> iterableInfo, ArrayList<Integer> spalten) {
       info=iterableInfo;
       int index=0;
@@ -132,7 +132,6 @@ public class InfoLine {
                   sb.append(RED);// Fehler
                else
                   sb.append(WHITE);
-         @SuppressWarnings("boxing")
          int width=len.next();
          if ((!noSpace && !separator && (width != 0)))
             sb.append(" ");

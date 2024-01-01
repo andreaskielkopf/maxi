@@ -3,6 +3,7 @@ package de.uhingen.kielkopf.andreas.maxi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -24,19 +25,20 @@ public class EfiVars extends InfoLine {
    }
    public static Stream<InfoLine> analyseStream() {
       final List<List<String>> efi_vars=getEfiVars();
-      return efi_vars.stream().map(l -> l.stream().map(s -> s.replaceFirst(".File.(.+).", "$1")).toList())
+      return efi_vars.stream().map(l -> l.stream().map(s -> s.replaceFirst(".File.(.+).", "$1"))
+               .collect(Collectors.toList()))//.toList())
                .map(EfiVars::new);
    }
+   static final String  x    ="[-0-9a-fA-F]";
+   static final String  nr   ="^(Boot" + x + "+[*]) ";
+   static final String  name ="([-:/ a-zA-Z]+)\t";
+   static final String  place="([0-9a-zA-Z]+[(][^)]+[)])";
+   static final String  pfad ="(.+File[^)]+[)]|)";                                   // String pfad
+   // ="(?:/File[(]([0-9A-Z.\\]+)[)])|)";
+   static final String  boo  ="(..[BG]O|)";
+   static final String  rest =".*?$";
+   static final Pattern pa   =Pattern.compile(nr + name + place + pfad + boo + rest);
    static List<List<String>> getEfiVars() {
-      final String  x    ="[-0-9a-fA-F]";
-      final String  nr   ="^(Boot" + x + "+[*]) ";
-      final String  name ="([-:/ a-zA-Z]+)\t";
-      final String  place="([0-9a-zA-Z]+[(][^)]+[)])";
-      final String  pfad ="(.+File[^)]+[)]|)";                                   // String pfad
-      // ="(?:/File[(]([0-9A-Z.\\]+)[)])|)";
-      final String  boo  ="(..[BG]O|)";
-      final String  rest =".*?$";
-      final Pattern pa   =Pattern.compile(nr + name + place + pfad + boo + rest);
       return Query.EFI_VAR.getLists(pa);
    }
    public static String getHeader() {

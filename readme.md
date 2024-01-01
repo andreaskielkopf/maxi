@@ -1,4 +1,4 @@
-maxi 0.7.0
+maxi 0.7.7
 ==========
 If your manjaro installation does not boot (any more), maxi may help to find what is missing. 
 Just use it from commandline or from a chroot environment. If you need help interpreting the output, read [Understand the boot process](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/99740) or contact a forum like [manjaro forum](https://forum.manjaro.org/) and ask for help.
@@ -55,13 +55,14 @@ Project Members
 Depends on
 ----------
 
-- `java` (1.8 or any newer)
+- `java` (1.8 or any newer. at best 21)
 - `mhwd` (mhwd-kernel)
 - `coreutils` (ls cat sort du sha256sum)
 - `findutils` (find)
 - `ncurses` (tput) or zsh (echoti)
 - `lsblk`
 
+<img src="needsJava21.png" width=7% height=7%>
 License
 -------
 The license is `GNU General Public License v3.0`
@@ -95,6 +96,8 @@ Use it:
 7c3c14623d58b317fff9d79cd75df16dba37a2a1e316ec8ea950483f312b9173  maxi
 #### sha256sum of v0.7.4
 3174e58f591d86c12ff1d897fb1fffc18744a5dd7fb64fa9fc43ce378ec960b1  maxi
+#### sha256sum of v0.7.7
+c7519180ec45fc004b75478c85ca4efc8c8d49ce10977a2fdd40c8da224b0ca0  maxi
 
 P.S. If current developments trouble you, you can 
 [Find Peace](https://www.jw.org/en/library/series/more-topics/russia-invades-ukraine-bible-meaning-hope/) -

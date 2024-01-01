@@ -2,6 +2,7 @@ package de.uhingen.kielkopf.andreas.maxi;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -21,7 +22,7 @@ public class GrubInfo extends InfoLine {
    static String             GRUB_ETC   ="/etc/default/grub";
    static String             GRUB_UPDATE="Please update grub.cfg:";
    static ArrayList<Integer> spalten    =new ArrayList<>();
-   final static List<String> WICHTIG    =Arrays.asList("CMDLINE", "DEFAULT", "TIMEOUT", "DISTRIBUTOR", "PRELOAD",
+   static final List<String> WICHTIG    =Arrays.asList("CMDLINE", "DEFAULT", "TIMEOUT", "DISTRIBUTOR", "PRELOAD",
             "_OS_PROBER", "THEME");
    public GrubInfo(Iterable<String> iterableInfo) {
       super(iterableInfo, spalten);
@@ -32,7 +33,8 @@ public class GrubInfo extends InfoLine {
       final ArrayList<String[]> tests =new ArrayList<>(
                Arrays.asList(new String[][] {{GRUB_CFG, GRUB_ETC, GRUB_UPDATE}}));
       final List<List<String>>  initrd=Query.LS.getLists(Pattern.compile(SIZE4 + ".*(init.*64[.]img)"));
-      tests.addAll(initrd.stream().map(l -> new String[] {"/boot/" + l.get(1), GRUB_ETC, GRUB_UPDATE}).toList());
+      tests.addAll(initrd.stream().map(l -> new String[] {"/boot/" + l.get(1), GRUB_ETC, GRUB_UPDATE})
+               .collect(Collectors.toList()));//.toList());
       @SuppressWarnings("null")
       final Stream<TestInfo>   testStream  =tests.stream().map(Query::test).filter(l -> (l.size() > 1)).map(l -> {
                                               final ArrayList<String> x=new ArrayList<>(l);

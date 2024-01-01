@@ -20,7 +20,7 @@ public class MkinitcpioInfo extends InfoLine {
    static String             MKINITCPIO_ETC   ="/etc/mkinitcpio.conf";
    static String             MKINITCPIO_UPDATE="Please run 'mkinitcpio -p ";
    static ArrayList<Integer> spalten          =new ArrayList<>();
-   final static List<String> WICHTIG          =Arrays.asList("MODULES", "HOOKS", "COMPRESSION", "BINARIES", "FILES");
+   static final List<String> WICHTIG          =Arrays.asList("MODULES", "HOOKS", "COMPRESSION", "BINARIES", "FILES");
    public MkinitcpioInfo(Iterable<String> iterableInfo) {
       super(iterableInfo, spalten);
    }

@@ -8,7 +8,7 @@ import java.io.Console;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ClipboardSupport {
-   final static CopyOnWriteArrayList<String> clip=new CopyOnWriteArrayList<>();
+   static final CopyOnWriteArrayList<String> clip=new CopyOnWriteArrayList<>();
    static String                             line="";
    public void clipln(String s) {
       clip.add(s.replaceAll(InfoLine.ANY_ESC, ""));

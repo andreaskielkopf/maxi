@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
 /**
  * Definition von Abfragen mit eingebautem Caching
@@ -25,7 +25,17 @@ public enum Query {
    // , ZSHA_MODULES("zsh", "-c", "LC_ALL=C;for K in $(print -o /lib/modules/*(/));"//
    // +"do echo -n \"$K \";for D in $(print -l $K/**/*(.)|sort);do cat $D;done|sha256sum; done;"),
    LS("ls", "-sh1", "/boot", "/boot/grub", "/lib/modules"),
-   LS_EFI(Maxi.SHELL, "-c", "for F in $(find /efi /boot -iname \"*.efi\"); do ls -sh1 $F ;done"),
+   // LS_EFI(Maxi.SHELL, "-c", "for F in $(sudo find /efi /boot -iname \"*.efi\"); do sudo ls -sh1 $F ;done"),
+   GRS_EFI(Maxi.SHELL, "-c", "for F in $(sudo find /efi /boot -iname '*.efi');" // suche mit sudo nach *.efi-dateien
+            + "do sudo sha256sum $F|grep -Eo '[0-f]{64}'|tr '\\n' ' ';" // berechne sha256 und entferne den zeilenumbruch
+            + "sudo ls -sh1 $F|tr '\\n' ' ';" // berechne dateigrösse und namen und entferne den zeilenumbruch
+            + "echo \"-unknown-\"|sudo cat $F -|" // füge eine Schlusszeile in die pipe ein
+            + "grep -Eiao --max-count=1 '/grub|refind,0.{6}|shell/RELEASE|load memtest86 |-unknown-'"// erkenne den typ
+            + "; done"),
+   // GR_EFI(Maxi.SHELL, "-c", "for F in $(find /efi /boot -iname '*.efi');"
+   // + "do sha256sum $F|grep -Eo '[0-f]{64}'|tr '\\n' ' ';" + "ls -sh1 $F|tr '\\n' ' ';"
+   // + "echo \"-unknown-\"|cat $F -|"
+   // + "grep -Eiao --max-count=1 '@/boot/grub|refind,0.{5}|shell/RELEASE|load memtest86 |-unknown-'; done"),
    LSBLK(Maxi.SHELL, "-c", "lsblk -o kname,pttype,ptuuid,parttypename,partuuid,partlabel,fstype,uuid,label"),
    // BLKID(Maxi.SHELL, "-c", "blkid"),
    // , ZLS(SHELL, "-c", "print -l /boot/*(.) /boot/grub/*(.) /lib/modules/*(/)")
@@ -33,16 +43,16 @@ public enum Query {
    MHWD_LI("mhwd-kernel", "-li"),
    MKINITCPIO(Maxi.SHELL, "-c", "cat /etc/mkinitcpio.conf"),
    SHA_BOOT(Maxi.SHELL, "-c", "sha256sum /boot/*fallback* /boot/vmlinuz*"),
-   SHA_EFI(Maxi.SHELL, "-c", "for F in $(find /efi /boot -iname \"*.efi\"); do sha256sum $F ;done"),
+   // SHA_EFI(Maxi.SHELL, "-c", "for F in $(sudo find /efi /boot -iname \"*.efi\"); do sudo sha256sum $F ;done"),
    // , SHA_M_VMLINUZ(Maxi.SHELL, "-c", "sha256sum /lib/modules/*/vmlinuz")
    SHA_MODULES(Maxi.SHELL, "-c",
             "LC_ALL=C;for K in $(find /lib/modules/* -maxdepth 0 -type d|sort);"
                      + "do cd $K;echo -n \"$K \";for D in $(find . -type f|sort);do cat $D;done|sha256sum; done"),
    TERMINFO(Maxi.SHELL, "-c", "echoti colors"),
    TPUT("tput", "colors");
-   private static List<String> EMPTY    =new ArrayList<>();
-   final static ProcessBuilder pb       =new ProcessBuilder();
-   private static List<String> TEST_OK  =Arrays.asList(new String[] {"OK"});
+   static private List<String> EMPTY    =new ArrayList<>();
+   static final ProcessBuilder pb       =new ProcessBuilder();
+   static private List<String> TEST_OK  =Arrays.asList(new String[] {"OK"});
    private List<String>        cache    =null;                              // new ArrayList<String>();
    private final String[]      cmd;
    private boolean             hasResult=false;
@@ -68,11 +78,11 @@ public enum Query {
       command.add("-c");
       command.add("[[ " + test[0] + " -nt " + test[1] + " ]] && echo 't' || echo 'f'");
       try {
-         final Process           p =pb.command(command).redirectErrorStream(true).start();
+         final Process p=pb.command(command).redirectErrorStream(true).start();
          final InputStreamReader ir=new InputStreamReader(p.getInputStream());
          // p.waitFor(1, TimeUnit.SECONDS);
          try (BufferedReader br=new BufferedReader(ir); Stream<String> li=br.lines()) {
-            final List<String> erg=li.toList();
+            final List<String> erg=li.collect(Collectors.toList())/* .toList() */;
             for (final String s:erg) {
                if (s.startsWith("t"))
                   return TEST_OK;
@@ -90,7 +100,7 @@ public enum Query {
       hasResult=false;
    }
    public List<List<String>> getLists(Pattern pa) {
-      return getSelected(pa).toList();
+      return getSelected(pa).collect(Collectors.toList());// toList();
    }
    /**
     * liefert selektierte Daten aus dem cache
@@ -101,8 +111,14 @@ public enum Query {
    public Stream<List<String>> getSelected(Pattern pa) {
       if (!hasResult)
          cache=query();
-      return cache.stream().map(s -> pa.matcher(s)).filter(Matcher::find).map(IterableMatchResult::new)
-               .map(i -> i.stream().toList());
+      List<List<String>> q=cache.stream().map(s -> pa.matcher(s)).filter(Matcher::find).map(IterableMatchResult::new)
+               .map(i -> i.stream().collect(Collectors.toList())).collect(Collectors.toList());
+      // filter(Matcher::find).
+      // map(IterableMatchResult::new)
+      // .map(i -> i.stream().collect(Collectors.toList()) .toList());
+      return q.stream();
+      // return cache.stream().map(s -> pa.matcher(s)).filter(Matcher::find).map(IterableMatchResult::new)
+      // .map(i -> i.stream().collect(Collectors.toList()));// .toList());
    }
    /**
     * macht die Abfrage und füllt den cache
@@ -111,11 +127,11 @@ public enum Query {
     */
    private List<String> query() {
       try {
-         final Process           p =pb.command(cmd).redirectErrorStream(true).start();
+         final Process p=pb.command(cmd).redirectErrorStream(true).start();
          final InputStreamReader ir=new InputStreamReader(p.getInputStream());
          try (BufferedReader br=new BufferedReader(ir); Stream<String> li=br.lines()) {
             hasResult=true;
-            return li.toList();
+            return li.collect(Collectors.toList());// return li.toList();
          }
       } catch (final IOException e) {
          return new ArrayList<>();

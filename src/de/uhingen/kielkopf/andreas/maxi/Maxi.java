@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import de.uhingen.kielkopf.andreas.beans.cli.Flag;
 
@@ -26,24 +27,24 @@ public class Maxi {
    final public static String    DETAILS0   ="[details=\"maxi";
    final public static String    DETAILS1   ="\"]";
    final public static String    DETAILS2   ="[/details]";
-   final static ClipboardSupport clipSupport=new ClipboardSupport();       // suport the clipboard when used in GUI
-   final static Flag             COLOR      =new Flag('c', "color");
-   // final static Flag DATES=new Flag('d',"dates");
-   final static Flag             EFI        =new Flag('e', "efi");
-   final static Flag             FORUM      =new Flag('f', "forum");
-   final static Flag             GRUB       =new Flag('g', "grub");
-   final static Flag             HELP       =new Flag('h', "help");        //
-   final static Flag             MKINITCPIO =new Flag('i', "mkinitcpio");
-   final static Flag             KERNEL     =new Flag('k', "kernel");
-   final static Flag             LIST_ALL   =new Flag('l', "list_all");
-   final static Flag             MODULES    =new Flag('m', "modules");
-   final static Flag             PARTITIONS =new Flag('p', "partitions");
-   final static Flag             SHASUM     =new Flag('s', "shasum");
-   final static Flag             USAGE      =new Flag('u', "usage");
-   final static Flag             KVER       =new Flag('v', "kver");
-   final static Flag             WATCH      =new Flag('w', "watch", "100");
-   final static Flag             LISTONEXIT =new Flag('x', "listonexit");  // intern
-   final static Flag             ZSH        =new Flag('z');                // intern
+   static final ClipboardSupport clipSupport=new ClipboardSupport();       // suport the clipboard when used in GUI
+   static final Flag             COLOR      =new Flag('c', "color");
+   // static final Flag DATES=new Flag('d',"dates");
+   static final Flag             EFI        =new Flag('e', "efi");
+   static final Flag             FORUM      =new Flag('f', "forum");
+   static final Flag             GRUB       =new Flag('g', "grub");
+   static final Flag             HELP       =new Flag('h', "help");        //
+   static final Flag             MKINITCPIO =new Flag('i', "mkinitcpio");
+   static final Flag             KERNEL     =new Flag('k', "kernel");
+   static final Flag             LIST_ALL   =new Flag('l', "list_all");
+   static final Flag             MODULES    =new Flag('m', "modules");
+   static final Flag             PARTITIONS =new Flag('p', "partitions");
+   static final Flag             SHASUM     =new Flag('s', "shasum");
+   static final Flag             USAGE      =new Flag('u', "usage");
+   static final Flag             KVER       =new Flag('v', "kver");
+   static final Flag             WATCH      =new Flag('w', "watch", "100");
+   static final Flag             LISTONEXIT =new Flag('x', "listonexit");  // intern
+   static final Flag             ZSH        =new Flag('z');                // intern
    public Maxi() {}
    /**
     * Das Hauptprogramm das die Parameter annimmt
@@ -125,7 +126,7 @@ public class Maxi {
          LISTONEXIT.set(true);
          clipSupport.println(KernelInfo.getHeader());
          clipSupport.printonly("will run until ^c is pressed");
-         k_aktuell=KernelInfo.analyseStream().toList();
+         k_aktuell=KernelInfo.analyseStream().collect(Collectors.toList());//.toList();
          for (final KernelInfo kernelInfo:k_aktuell)
             clipSupport.println("  : 0.   " + kernelInfo); // Gib die aktuelle analyse aus
          final Instant startZeitpunkt=Instant.now();
@@ -136,7 +137,7 @@ public class Maxi {
             try {
                Thread.sleep(pause);
             } catch (final InterruptedException e) { /* nothing to do */}
-            k_aktuell=KernelInfo.analyseStream().toList();
+            k_aktuell=KernelInfo.analyseStream().collect(Collectors.toList());//.toList();
             final ArrayList<KernelInfo> dif=new ArrayList<>();
             kein_dif: for (final KernelInfo a:k_aktuell) {
                final String b=a.toString().replaceAll(" ", "");
@@ -147,7 +148,6 @@ public class Maxi {
             }
             if (!dif.isEmpty()) {
                final long   milli=Duration.between(startZeitpunkt, Instant.now()).toMillis();
-               @SuppressWarnings("boxing")
                final String z    =String.format("%2d:%02d.%03d", milli / 60000L, (milli / 1000L) % 60, milli % 1000);
                for (final KernelInfo kernelInfo:dif)
                   clipSupport.println(z + kernelInfo);
@@ -156,30 +156,30 @@ public class Maxi {
       }
       clipSupport.println(KernelInfo.getHeader());
       if (KERNEL.get() || LIST_ALL.get())
-         KernelInfo.analyseStream().toList().forEach(clipSupport::println);
+         KernelInfo.analyseStream().collect(Collectors.toList())/*.toList()*/.forEach(clipSupport::println);
       // Gib dieaktuelle analyse aus
       if (MODULES.get()) {
          clipSupport.println(ModuleInfo.getHeader());
          ModuleInfo.analyseStream()// .map(p -> { slipboardSupport.print(p.getInfo() + " "); return p; })
-                  .toList().forEach(clipSupport::println);
+         .collect(Collectors.toList())/*.toList()*/.forEach(clipSupport::println);
       }
       if (GRUB.get()) {
          clipSupport.println(GrubInfo.getHeader());
-         GrubInfo.analyseStream().toList().forEach(clipSupport::println);
+         GrubInfo.analyseStream().collect(Collectors.toList())/*.toList()*/.forEach(clipSupport::println);
       }
       if (MKINITCPIO.get()) {
          clipSupport.println(MkinitcpioInfo.getHeader());
-         MkinitcpioInfo.analyseStream().toList().forEach(clipSupport::println);
+         MkinitcpioInfo.analyseStream().collect(Collectors.toList())/*.toList()*/.forEach(clipSupport::println);
       }
       if (EFI.get()) {
          clipSupport.println(EfiInfo.getHeader());
-         EfiInfo.analyseStream().toList().forEach(clipSupport::println);
+         EfiInfo.analyseStream().collect(Collectors.toList())/*.toList()*/.forEach(clipSupport::println);
          clipSupport.println(EfiVars.getHeader());
-         EfiVars.analyseStream().toList().forEach(clipSupport::println);
+         EfiVars.analyseStream().collect(Collectors.toList())/*.toList()*/.forEach(clipSupport::println);
       }
       if (PARTITIONS.get()) {
          clipSupport.println(Partition.getHeader());
-         Partition.analyseStream().toList().forEach(clipSupport::println);
+         Partition.analyseStream().collect(Collectors.toList())/*.toList()*/.forEach(clipSupport::println);
       }
       if (FORUM.get()) {
          clipSupport.clipln(BACKTICKS);

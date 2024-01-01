@@ -3,7 +3,7 @@ maxi 0.7.7
 If your manjaro installation does not boot (any more), maxi may help to find what is missing. 
 Just use it from commandline or from a chroot environment. If you need help interpreting the output, read [Understand the boot process](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/99740) or contact a forum like [manjaro forum](https://forum.manjaro.org/) and ask for help.
 
- `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/maxi -O /usr/local/bin/maxi; sudo chmod a+x /usr/local/bin/maxi ; maxi -kmsgeif` 
+ `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/jar/maxi -O /usr/local/bin/maxi; sudo chmod a+x /usr/local/bin/maxi ; maxi -kmsgeif` 
 
 Description
 -----------
@@ -78,11 +78,11 @@ And i hope there are [other wishes](https://forum.manjaro.org/t/maxi-call-for-te
 
 Install:
 --------
-1. Download maxi from [github](https://github.com/andreaskielkopf/maxi) and save it where you want `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/maxi -O /usr/local/bin/maxi`
+1. Download maxi from [github](https://github.com/andreaskielkopf/maxi) and save it where you want `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/jar/maxi -O /usr/local/bin/maxi`
 2. Check the sha256sum `sha256sum /usr/local/bin/maxi`
 3. Make the file executable `sudo chmod -c a+x /usr/local/bin/maxi`
 
- `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/maxi -O /usr/local/bin/maxi ; sha256sum /usr/local/bin/maxi ; sudo chmod -c a+x /usr/local/bin/maxi` 
+ `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/jar/maxi -O /usr/local/bin/maxi ; sha256sum /usr/local/bin/maxi ; sudo chmod -c a+x /usr/local/bin/maxi` 
 
 Use it:
 -------
@@ -112,7 +112,7 @@ maxi
 Wenn deine Manjaro-Installation nicht (mehr) bootet, kann `maxi` helfen, heraus zu finden, was fehlt.
 Verwende es einfach von der Befehlszeile oder von einer Chroot-Umgebung aus. Wenn du Hilfe beim Interpretieren der Ausgabe benötigst, lies [Den Boot-Prozess verstehen](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/ 99740) oder kontaktiere ein Forum wie [manjaro forum](https://forum.manjaro.org/) und bitte um Hilfe.
 
- `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/maxi -O /usr/local/bin/maxi; sudo chmod a+x /usr/local/bin/maxi ; maxi -kmsgeif`
+ `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/jar/maxi -O /usr/local/bin/maxi; sudo chmod a+x /usr/local/bin/maxi ; maxi -kmsgeif`
 
 Beschreibung
 ------------
@@ -189,11 +189,11 @@ Und ich hoffe, es gibt [andere Wünsche](https://forum.manjaro.org/t/maxi-call-f
 
 Installieren:
 -------------
-1. Laden Sie Maxi von [github](https://github.com/andreaskielkopf/maxi) herunter und speichern Sie es dort, wo Sie es möchten `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/maxi -O /usr/local/bin/maxi`
+1. Laden Sie Maxi von [github](https://github.com/andreaskielkopf/maxi) herunter und speichern Sie es dort, wo Sie es möchten `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/jar/maxi -O /usr/local/bin/maxi`
 2. Überprüfen Sie die Prüfsumme `sha256sum /usr/local/bin/maxi`
 3. Machen Sie die Datei ausführbar `sudo chmod -c a+x /usr/local/bin/maxi`
 
- `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/maxi -O /usr/local/bin/maxi ; sha256sum /usr/local/bin/maxi ; sudo chmod -c a+x /usr/local/bin/maxi`
+ `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/jar/maxi -O /usr/local/bin/maxi ; sha256sum /usr/local/bin/maxi ; sudo chmod -c a+x /usr/local/bin/maxi`
 
 Benutze es:
 -----------

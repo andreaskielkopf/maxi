@@ -3,6 +3,7 @@ package de.uhingen.kielkopf.andreas.maxi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -23,19 +24,34 @@ public class Partition extends InfoLine {
    public Partition(Iterable<String> iterableInfo) {
       super(iterableInfo, spalten);
    }
+   static final String FLABEL="([^ ]+)?";
+   static final String KNAME ="([a-z0-9]{3,11})";
+   static final String PTTYPE="([a-z]+)";
+   static final String TYPE  ="(disk|part)";
+   static final String FSTYPE="((?:[a-zA-Z]+)|(?: {5}))";
+   static final String PTNAME="((?:[ a-zA-Z]+?)) +";
    public static Stream<InfoLine> analyseStream() {
       // final String Y =" +([^ ]+)?";
       // final String Y ="([^ ]+) +([-0-9a-fA-F]{9,})";
-      final String             KN        ="([a-z0-9]+) +";
-      final String             PT        ="((?:gpt|   ) +(?:[-0-9a-fA-F]{36})) +";
-      final String             PA        ="((?:EFI System|Linux filesystem|BIOS boot| {12}) +(?:[-0-9a-fA-F]{36}))? ";
-      final String             PL        ="([^ ].{6}[^ ]*)? +";
-      final String             FS        ="((?:vfat|btrfs|     ) +(?:[-0-9a-fA-F]{9,}))? +";
-      final String             FL        ="([^ ]+)?";
-      final List<List<String>> partitions=Query.LSBLK
-               .getLists(Pattern.compile("^" + KN + PT + PA + PL + FS + FL + "(.+)?$"));
+      // final String PTYPE="((?:gpt| ) +" + "(?:[-0-9a-fA-F]{36})) +";
+      // final String PTNAME="((?:EFI System|Linux filesystem|BIOS boot| {12}) +(?:[-0-9a-fA-F]{36}))? ";
+      // final String PL="([^ ].{6}[^ ]*)? +";
+      final List<List<String>> partitions=Query.LSBLK.getLists(Pattern.compile("^" + UUID + " " + KNAME + " +"//
+               + PTTYPE + " +"//
+               + TYPE + " "//
+               + FSTYPE + " +"//
+               + SIZE7 + " "//
+               + PTNAME//
+               + UUIDMIX+ " *"
+               // + "(.....) " //
+               // +"...."
+               // + PTTYPE //
+               // + "[^a-z]+([a-z]+[^0-9a-zA-Z]+)"// + PTTYPE +"(.+?)"//+ TYPE + ""// +
+               // SIZE7 + PTNAME +
+               // UUID//
+               + "(.+)$"));
       return partitions.stream().map(l -> {
-         if (l.size() > 4) {
+         if (l.size() > 12) { // BUG
             while (l.size() > 5)
                l.remove(5);
             final String gpt=" -->      " + l.remove(1);
@@ -70,6 +86,10 @@ public class Partition extends InfoLine {
       if (Maxi.COLOR.get())
          sb.append(RESET);
       return sb.toString();
+   }
+   public static void main(String[] args) {
+      System.out.println(Partition.getHeader());
+      Partition.analyseStream().collect(Collectors.toList())/* .toList() */.forEach(System.out::println);
    }
    @Override
    public String toString() {

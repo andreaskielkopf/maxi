@@ -35,10 +35,10 @@ public class KernelInfo extends InfoLine {
                : null;
       /// berechne die Prüfsummen
       final List<List<String>> sha_kernel  =Maxi.SHASUM.get()
-               ? Query.SHA_BOOT.getLists(Pattern.compile("^" + SHA + ".*(vmlinuz.*)"))
+               ? Query.SHA_BOOT.getLists(Pattern.compile("^" + SHA256 + ".*(vmlinuz.*)"))
                : null;
       final List<List<String>> sha_fallback=Maxi.SHASUM.get()
-               ? Query.SHA_BOOT.getLists(Pattern.compile("^" + SHA + ".*(init.*back.*)"))
+               ? Query.SHA_BOOT.getLists(Pattern.compile("^" + SHA256 + ".*(init.*back.*)"))
                : null;
       return getBasisStream().map(e -> {
          final Predicate<String> key =e.getKey();

@@ -29,7 +29,7 @@ public class EfiInfo extends InfoLine {
       // .getLists(Pattern.compile("^" + SHA + "[^/]+([-_a-zA-Z0-9/]+[.]efi)"));
       final List<List<String>> efi_gr=Query.GRS_EFI.getLists( //
                // Pattern.compile("^*"+SHA+SIZE7 +"[^/]*(/[-_a-zA-Z0-9/]+[.]efi)"+" (.+)"));
-               Pattern.compile("^*" + SHA + SIZE7 + "[^/]*(/[-_a-zA-Z0-9/]+[.]efi)" + "(.+)"));
+               Pattern.compile("^*" + SHA256 +" +"+ SIZE7 + " +"+"(/[-_a-zA-Z0-9/]+[.]efi)" +" +"+ "(.+)"));
       // return efi_ls.stream().map(fList -> {
       // ArrayList<String>rList=new ArrayList<String>(fList);
       // Collections.reverse(rList);

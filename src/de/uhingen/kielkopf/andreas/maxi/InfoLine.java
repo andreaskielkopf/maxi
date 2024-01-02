@@ -25,11 +25,13 @@ public class InfoLine {
    static final String                              TAGE      ="(?:[1-3 ]?[0-9] )?";
    static final String                              REST      ="(?:[ 0-9][0-9]{3}[ 0-9]|[0-9:]{5})";
    static final String                              DATE      ="(" + TAGD + MONAT + TAGE + REST + ").*";
-   static final String                              SIZE4     ="^([ 0-9KMG,]{4})";
-   static final String                              SIZE5     ="^([ 0-9KMG,]{4,5})";
-   static final String                              SIZE7     ="([ 0-9KMG,]{4,7})";
-   static final String                              SHA       ="([0-9a-fA-F]{" + SHALEN + "})";
+   static final String                              SIZE4     ="^([ 0-9KMGT,]{4})";
+   static final String                              SIZE5     ="^([ 0-9KMGT,]{4,5})";
+   static final String                              SIZE7     ="([0-9KMGTiB,]{2,7})";
+   static final String                              SHA256    ="([0-9a-fA-F]{" + SHALEN + "})";
    static final String                              NA        ="--";
+   static final String                              UUID      ="([-0-9a-f]{36})";
+   static final String                              UUIDMIX   ="([-0-9a-f]{36}|[-0-9A-F]{9} {27}| {36})";
    static final List<String>                        MISSING   =Arrays.asList("<missing>", "");
    static final List<String>                        MISSING_V =Arrays.asList("<vmlinuz missing>", "");
    static final List<String>                        MISSING_I =Arrays.asList("<initrd missing>", "");
@@ -71,12 +73,12 @@ public class InfoLine {
          final List<List<String>> kernels=Maxi.LIST_ALL.get()
                   ? Query.MHWD_L.getLists(Pattern.compile("[*].*(linux(.*))"))
                   : Query.MHWD_LI.getLists(Pattern.compile("[*].*(linux(.*))"));
-         final String             r      ="abcdef";
+         final String r="abcdef";
          for (final List<String> k:kernels) {
-            final ArrayList<String> info  =k.stream().collect(Collectors.toCollection(ArrayList<String>::new));
-            final String            kNr   =info.remove(1);
+            final ArrayList<String> info=k.stream().collect(Collectors.toCollection(ArrayList<String>::new));
+            final String kNr=info.remove(1);
             // * linux44 * linux515-rt
-            String                  search="linuxabcdef$"
+            String search="linuxabcdef$"
                      // initramfs-4.4-x86_64.img initramfs-5.15-rt-x86_64-fallback.img
                      + "|^initr.m.s-a[.]bcdef[-.][^r].*img"
                      // extramodules-4.4-MANJARO extramodules-5.15-rt-MANJAR
@@ -118,12 +120,12 @@ public class InfoLine {
    }
    /** @return one Line of the Info */
    public String getLine(Iterator<Integer> len) {
-      final StringBuilder sb     =new StringBuilder();
-      boolean             noSpace=false;
+      final StringBuilder sb=new StringBuilder();
+      boolean noSpace=false;
       for (final String text0:info) {
-         final String  text     =(text0 != null) ? text0 : "";
+         final String text=(text0 != null) ? text0 : "";
          final boolean separator=((text.equals("=")) || text.equals("|") || text.equals(UTF_SUM));
-         final boolean title    =((text.endsWith(":")) || text.startsWith(":"));
+         final boolean title=((text.endsWith(":")) || text.startsWith(":"));
          if (Maxi.COLOR.get())
             if ((sb.length() == 0) || separator || title)
                sb.append(GREEN);// hervorgehobene Spalte
@@ -133,8 +135,8 @@ public class InfoLine {
                else
                   sb.append(WHITE);
          int width=len.next();
-         if ((!noSpace && !separator && (width != 0)))
-            sb.append(" ");
+         if ((!noSpace && !separator && (width != 0))) 
+            sb.append(" "/*+": " */);
          sb.append(text);
          for (; width > text.length(); width--)
             sb.append(" ");
@@ -144,6 +146,6 @@ public class InfoLine {
          sb.deleteCharAt(sb.length() - 1);
       if (Maxi.COLOR.get())
          sb.append(RESET);
-      return sb.toString();
+      return sb.toString();// + "<";
    }
 }

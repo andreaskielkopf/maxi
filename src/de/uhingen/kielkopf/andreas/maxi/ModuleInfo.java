@@ -25,10 +25,10 @@ public class ModuleInfo extends InfoLine {
                .getLists(Pattern.compile("([0-9]+[KM]?)[^0-9]+/([-0-9rt.]+MANJARO)")/* , "§2 §1" */);
       final List<List<String>> du_extra   =Query.DU_MODULES.getLists(Pattern.compile("([0-9]+[KM]?)[^0-9]+/(extra.*)"));
       final List<List<String>> sha_modules=Maxi.SHASUM.get()
-               ? Query.SHA_MODULES.getLists(Pattern.compile("^.*[/]([0-9.-]+MANJARO) *" + SHA + ".*$"))
+               ? Query.SHA_MODULES.getLists(Pattern.compile("^.*[/]([0-9.-]+MANJARO) *" + SHA256 + ".*$"))
                : null;
       final List<List<String>> sha_extra  =Maxi.SHASUM.get()
-               ? Query.SHA_MODULES.getLists(Pattern.compile("^.*(extra.+MANJARO) *" + SHA + ".*$"))
+               ? Query.SHA_MODULES.getLists(Pattern.compile("^.*(extra.+MANJARO) *" + SHA256 + ".*$"))
                : null;
       // Für jeden einzelnen kernel untersuchen
       return getBasisStream().map(e -> {

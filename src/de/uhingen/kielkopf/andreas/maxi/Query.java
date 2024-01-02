@@ -26,17 +26,20 @@ public enum Query {
    // +"do echo -n \"$K \";for D in $(print -l $K/**/*(.)|sort);do cat $D;done|sha256sum; done;"),
    LS("ls", "-sh1", "/boot", "/boot/grub", "/lib/modules"),
    // LS_EFI(Maxi.SHELL, "-c", "for F in $(sudo find /efi /boot -iname \"*.efi\"); do sudo ls -sh1 $F ;done"),
-   GRS_EFI(Maxi.SHELL, "-c", "for F in $(sudo find /efi /boot -iname '*.efi');" // suche mit sudo nach *.efi-dateien
-            + "do sudo sha256sum $F|grep -Eo '[0-f]{64}'|tr '\\n' ' ';" // berechne sha256 und entferne den zeilenumbruch
-            + "sudo ls -sh1 $F|tr '\\n' ' ';" // berechne dateigrösse und namen und entferne den zeilenumbruch
-            + "echo \"-unknown-\"|sudo cat $F -|" // füge eine Schlusszeile in die pipe ein
-            + "grep -Eiao --max-count=1 '/grub|refind,0.{6}|shell/RELEASE|load memtest86 |-unknown-'"// erkenne den typ
-            + "; done"),
+   GRS_EFI(Maxi.SHELL, "-c", "for F in $( find /efi /boot -iname '*.efi');do " // suche mit sudo nach *.efi-dateien
+            + "sha256sum $F|grep -Eo '[0-f]{64}'|tr '\\n' ' ';" // berechne sha256 und entferne den zeilenumbruch
+            + "ls -sh1 $F|tr '\\n' ' ';" // berechne dateigrösse und namen und entferne den zeilenumbruch
+            + "echo \"-unknown-\"|cat $F -|" // füge eine Schlusszeile in die pipe ein
+            + "grep -Eiao --max-count=1 '[@a-z/A-Z]*/grub|refind,0.{6}|shell/RELEASE|load memtest86 |-unknown-';"// erkenne den typ
+            + "done"),
    // GR_EFI(Maxi.SHELL, "-c", "for F in $(find /efi /boot -iname '*.efi');"
    // + "do sha256sum $F|grep -Eo '[0-f]{64}'|tr '\\n' ' ';" + "ls -sh1 $F|tr '\\n' ' ';"
    // + "echo \"-unknown-\"|cat $F -|"
    // + "grep -Eiao --max-count=1 '@/boot/grub|refind,0.{5}|shell/RELEASE|load memtest86 |-unknown-'; done"),
-   LSBLK(Maxi.SHELL, "-c", "lsblk -o kname,pttype,ptuuid,parttypename,partuuid,partlabel,fstype,uuid,label"),
+   LSBLK(Maxi.SHELL, "-c",
+            "lsblk -o partuuid,kname,pttype,type,fstype,size,parttypename,uuid"
+                     /* +",mountpoint" */ + ",partlabel,label"),
+   // LSBLK(Maxi.SHELL, "-c", "lsblk -o kname,pttype,ptuuid,parttypename,partuuid,partlabel,fstype,uuid,label"),
    // BLKID(Maxi.SHELL, "-c", "blkid"),
    // , ZLS(SHELL, "-c", "print -l /boot/*(.) /boot/grub/*(.) /lib/modules/*(/)")
    MHWD_L("mhwd-kernel", "-l"),

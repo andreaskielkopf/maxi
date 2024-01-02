@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -75,6 +76,10 @@ public class ModuleInfo extends InfoLine {
       if (Maxi.COLOR.get())
          sb.append(RESET);
       return sb.toString();
+   }
+   public static void main(String[] args) {
+      System.out.println(ModuleInfo.getHeader());
+      ModuleInfo.analyseStream().collect(Collectors.toList())/* .toList() */.forEach(System.out::println);     
    }
    @Override
    public String toString() {

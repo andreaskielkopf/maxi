@@ -48,9 +48,14 @@ public enum Query {
    SHA_BOOT(Maxi.SHELL, "-c", "sha256sum /boot/*fallback* /boot/vmlinuz*"),
    // SHA_EFI(Maxi.SHELL, "-c", "for F in $(sudo find /efi /boot -iname \"*.efi\"); do sudo sha256sum $F ;done"),
    // , SHA_M_VMLINUZ(Maxi.SHELL, "-c", "sha256sum /lib/modules/*/vmlinuz")
+   // SHA_MODULES(Maxi.SHELL, "-c",
+   // "LC_ALL=C;for K in $(find /lib/modules/* -maxdepth 0 -type d|sort);"
+   // + "do cd $K;echo -n \"$K \";for D in $(find . -type f|sort);do cat $D;done|sha256sum; done"),
+   // SHA_MODULES(Maxi.SHELL, "-c", "LC_ALL=C;find /lib/modules/* -maxdepth 0 -type d|sort|parallel -j$(nproc) "//
+   // + "'cd {};echo -n \\\"{} \\\";find . -type f|sort|xargs cat|sha256sum'"),
    SHA_MODULES(Maxi.SHELL, "-c",
-            "LC_ALL=C;for K in $(find /lib/modules/* -maxdepth 0 -type d|sort);"
-                     + "do cd $K;echo -n \"$K \";for D in $(find . -type f|sort);do cat $D;done|sha256sum; done"),
+            "LC_ALL=C; find /lib/modules/* -maxdepth 0 -type d | sort | parallel -j$(nproc) 'cd {};"
+                     + " echo -n \"{} \"; find . -type f | sort | xargs cat | sha256sum'"),
    TERMINFO(Maxi.SHELL, "-c", "echoti colors"),
    TPUT("tput", "colors");
    static private List<String> EMPTY    =new ArrayList<>();

@@ -26,7 +26,7 @@ public class MkinitcpioInfo extends InfoLine {
    }
    public static Stream<InfoLine> analyseStream() {
       final List<List<String>>  mkinitcpio=Query.MKINITCPIO.getLists(Pattern   //
-               .compile("^(#?)(" + String.join("|", WICHTIG) + ")(=)(.+)"));
+               .compile("^(#?)((?:" + String.join("|", WICHTIG) + ")[A-Z_]*)(=)(.+)"));
       final ArrayList<String[]> tests     =new ArrayList<>();
       for (final List<String> list:Query.LS.getLists(Pattern.compile(SIZE4 + ".*(init.*64[.]img)"))) {
          final String   b=getBasisStream().filter(e -> e.getKey().test(list.get(1))).map(e -> e.getValue().get(0))

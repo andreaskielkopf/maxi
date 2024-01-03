@@ -21,7 +21,7 @@ public enum Query {
    CHROOT(Maxi.SHELL, "-c", "cat /proc/1/mountinfo"),
    DU_MODULES(Maxi.SHELL, "-c", "du -sh /lib/modules/*"),
    EFI_VAR(Maxi.SHELL, "-c", "efibootmgr -v"),
-   GRUB(Maxi.SHELL, "-c", "cat /etc/default/grub"),
+   GRUB(Maxi.SHELL, "-c", "cat /etc/default/grub.d/*.cfg|cat /etc/default/grub -"),
    // , ZSHA_MODULES("zsh", "-c", "LC_ALL=C;for K in $(print -o /lib/modules/*(/));"//
    // +"do echo -n \"$K \";for D in $(print -l $K/**/*(.)|sort);do cat $D;done|sha256sum; done;"),
    LS("ls", "-sh1", "/boot", "/boot/grub", "/lib/modules"),

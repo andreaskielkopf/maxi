@@ -110,6 +110,9 @@ public enum Query {
    public List<List<String>> getLists(Pattern pa) {
       return getSelected(pa).collect(Collectors.toList());// toList();
    }
+   public List<List<String>> getLists_C(Pattern pa) {
+      return getSelected_C(pa).collect(Collectors.toList());// toList();
+   }
    /**
     * liefert selektierte Daten aus dem cache
     *
@@ -127,6 +130,29 @@ public enum Query {
       return q.stream();
       // return cache.stream().map(s -> pa.matcher(s)).filter(Matcher::find).map(IterableMatchResult::new)
       // .map(i -> i.stream().collect(Collectors.toList()));// .toList());
+   }
+   public Stream<List<String>> getSelected_C(Pattern pa) {
+      if (!hasResult) {
+         StringBuilder offen=new StringBuilder();
+         cache=new ArrayList<>();
+         for (String s:query()) {
+            if (offen.length() == 0)
+               if (s.contains("=(") && !s.startsWith("#") && !s.contains(")"))
+                  offen.append(s);
+               else
+                  cache.add(s);
+            else {
+               offen.append(" ").append(s);
+               if (s.contains(")")) {
+                  cache.add(offen.toString());
+                  offen.setLength(0);
+               }
+            }
+         }
+      }
+      List<List<String>> q=cache.stream().map(s -> pa.matcher(s)).filter(Matcher::find).map(IterableMatchResult::new)
+               .map(i -> i.stream().collect(Collectors.toList())).collect(Collectors.toList());
+      return q.stream();
    }
    /**
     * macht die Abfrage und füllt den cache

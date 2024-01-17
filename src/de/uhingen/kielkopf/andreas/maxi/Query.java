@@ -30,7 +30,7 @@ public enum Query {
             + "sha256sum $F|grep -Eo '[0-f]{64}'|tr '\\n' ' ';" // berechne sha256 und entferne den zeilenumbruch
             + "ls -sh1 $F|tr '\\n' ' ';" // berechne dateigrösse und namen und entferne den zeilenumbruch
             + "echo \"-unknown-\"|cat $F -|" // füge eine Schlusszeile in die pipe ein
-            + "grep -Eiao --max-count=1 '[@a-z/A-Z]*/grub|refind,0.{6}|shell/RELEASE|load memtest86 |-unknown-';"// erkenne den typ
+            + "grep -Eiao --max-count=1 '[@a-z/A-Z0-9(),]*/grub|refind,0.{6}|shell/RELEASE|load memtest86 |-unknown-';"// erkenne den typ
             + "done"),
    // GR_EFI(Maxi.SHELL, "-c", "for F in $(find /efi /boot -iname '*.efi');"
    // + "do sha256sum $F|grep -Eo '[0-f]{64}'|tr '\\n' ' ';" + "ls -sh1 $F|tr '\\n' ' ';"

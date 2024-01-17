@@ -1,7 +1,7 @@
 package de.uhingen.kielkopf.andreas.maxi;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,32 +24,16 @@ public class Partition extends InfoLine {
    public Partition(Iterable<String> iterableInfo) {
       super(iterableInfo, spalten);
    }
-   static final String FLABEL="([^ ]+)?";
-   static final String KNAME ="([a-z0-9]{3,11})";
-   static final String PTTYPE="([a-z]+)";
-   static final String TYPE  ="(disk|part)";
-   static final String FSTYPE="((?:[a-zA-Z]+)|(?: {5}))";
-   static final String PTNAME="((?:[ a-zA-Z]+?)) +";
+   static final String       FLABEL="([^ ]+)?";
+   static final String       KNAME ="([a-z0-9]{3,11})";
+   static final String       PTTYPE="([a-z]+)";
+   static final String       TYPE  ="(disk|part)";
+   static final String       FSTYPE="((?:[a-zA-Z]+)|(?: {5}))";
+   static final String       PTNAME="((?:[ a-zA-Z]+?)) +";
+   static List<List<String>> partitions;
    public static Stream<InfoLine> analyseStream() {
-      // final String Y =" +([^ ]+)?";
-      // final String Y ="([^ ]+) +([-0-9a-fA-F]{9,})";
-      // final String PTYPE="((?:gpt| ) +" + "(?:[-0-9a-fA-F]{36})) +";
-      // final String PTNAME="((?:EFI System|Linux filesystem|BIOS boot| {12}) +(?:[-0-9a-fA-F]{36}))? ";
-      // final String PL="([^ ].{6}[^ ]*)? +";
-      final List<List<String>> partitions=Query.LSBLK.getLists(Pattern.compile("^" + UUID + " " + KNAME + " +"//
-               + PTTYPE + " +"//
-               + TYPE + " "//
-               + FSTYPE + " +"//
-               + SIZE7 + " "//
-               + PTNAME//
-               + UUIDMIX+ " *"
-               // + "(.....) " //
-               // +"...."
-               // + PTTYPE //
-               // + "[^a-z]+([a-z]+[^0-9a-zA-Z]+)"// + PTTYPE +"(.+?)"//+ TYPE + ""// +
-               // SIZE7 + PTNAME +
-               // UUID//
-               + "(.+)$"));
+      partitions=Query.LSBLK.getLists(Pattern.compile("^" + UUID + " " + KNAME + " +"//
+               + PTTYPE + " +" + TYPE + " " + FSTYPE + " +" + SIZE7 + " " + PTNAME + UUIDMIX + " *" + "(.+)$"));
       return partitions.stream().map(l -> {
          if (l.size() > 12) { // BUG
             while (l.size() > 5)
@@ -87,9 +71,37 @@ public class Partition extends InfoLine {
          sb.append(RESET);
       return sb.toString();
    }
+   /** Teste ob Partuids doppelt vorhanden sind */
+   public static void doubleError() {
+      if (partitions != null) {
+         ConcurrentHashMap<String, List<String>> l=new ConcurrentHashMap<>();
+         StringBuilder sb=new StringBuilder();
+         for (List<String> p:partitions) {
+            String uuid=p.get(0);
+            List<String> err=l.put(uuid, p);//            err=p;
+            if (err != null) {
+               if (!sb.toString().contains(uuid)) {
+                  sb.append("\n");
+                  sb.append(err);
+               }
+               sb.append("\n");
+               sb.append(p);
+            }
+         }
+         if (sb.length() > 0) {
+            if (Maxi.COLOR.get())
+               sb.insert(0, WHITE);
+            sb.insert(0, "Error: There are partitions with the same UUID");
+            if (Maxi.COLOR.get())
+               sb.insert(0, RED);
+            System.out.println(sb.toString());
+         }
+      }
+   }
    public static void main(String[] args) {
       System.out.println(Partition.getHeader());
       Partition.analyseStream().collect(Collectors.toList())/* .toList() */.forEach(System.out::println);
+      doubleError();
    }
    @Override
    public String toString() {

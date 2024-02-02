@@ -135,12 +135,14 @@ public class Flag {
       return (nr + 1 > parameterList.size()) ? standard : parameterList.get(nr);
    }
    public static List<String> getParameterList() {
-      if (parameterList == null) {
-         parameterList=new ArrayList<>();
-         final String findNonFlags=" [^ -][^ ]*";
-         final Matcher ma3=Pattern.compile(findNonFlags).matcher(args);
-         while (ma3.find())
-            parameterList.add(ma3.group().trim());
+      synchronized (args) {
+         if (parameterList == null) {
+            ArrayList<String> p=new ArrayList<>();
+            final Matcher ma3=Pattern.compile(" [^ -][^ ]*").matcher(args);
+            while (ma3.find())
+               p.add(ma3.group().trim());
+            parameterList=p;
+         }
       }
       return new ArrayList<>(parameterList); // gib das Original nicht aus der Hand
    }

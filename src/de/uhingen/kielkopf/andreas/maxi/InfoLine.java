@@ -14,7 +14,10 @@ import java.util.stream.Stream;
 public class InfoLine {
    static final int                                 SHALEN    =64;
    static final int                                 SHASHORT  =4;
-   static final String                              UTF_SUM   ="\u2211";
+   static final int                                 UUIDLEN   =36;
+   static final int                                 UUIDSHORT =4;
+  
+   static final String                              UTF_SUM   ="\u2211";                                                         // ∑
    static final String                              GREEN     ="\u001b[0;32m";
    static final String                              RED       ="\u001b[1;31m";
    static final String                              WHITE     ="\u001b[0;97m";
@@ -118,12 +121,23 @@ public class InfoLine {
       return (sha.length() != SHALEN) ? "<sha?>"
                : sha.substring(0, SHASHORT) + "~" + sha.substring(SHALEN - SHASHORT - 1, SHALEN - 1);
    }
-   /** @return one Line of the Info */
-   public String getLine(Iterator<Integer> len) {
+   /** Verkürzte UUID für die Ausgabe */
+   static String shortUUID(String uuid) {
+      return (uuid.length() != UUIDLEN) ? "<uuid?>"
+               : uuid.substring(0, UUIDSHORT) + "." + uuid.substring(UUIDLEN - UUIDSHORT - 1, UUIDLEN - 1);
+   }
+   /**
+    * Erzeugt eine Infoline mit Hervorhebungen in Farbe
+    * 
+    * = | ∑ und der erste block in der Zeile werden grün Texte zwischen \< und \> werden rot Der Rest wird weiß
+    * 
+    * @return one Line of the Info
+    */
+   static public String getLine(Iterable<String> blocks, Iterator<Integer> len) {
       final StringBuilder sb=new StringBuilder();
       boolean noSpace=false;
-      for (final String text0:info) {
-         final String text=(text0 != null) ? text0 : "";
+      for (final String block:blocks) {
+         final String text=(block != null) ? block : "";
          final boolean separator=((text.equals("=")) || text.equals("|") || text.equals(UTF_SUM));
          final boolean title=((text.endsWith(":")) || text.startsWith(":"));
          if (Maxi.COLOR.get())
@@ -135,8 +149,8 @@ public class InfoLine {
                else
                   sb.append(WHITE);
          int width=len.next();
-         if ((!noSpace && !separator && (width != 0))) 
-            sb.append(" "/*+": " */);
+         if ((!noSpace && !separator && (width != 0)))
+            sb.append(" "/* +": " */);
          sb.append(text);
          for (; width > text.length(); width--)
             sb.append(" ");

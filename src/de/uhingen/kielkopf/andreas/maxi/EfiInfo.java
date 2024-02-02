@@ -30,6 +30,11 @@ public class EfiInfo extends InfoLine {
       final List<List<String>> efi_gr=Query.GRS_EFI.getLists( //
                // Pattern.compile("^*"+SHA+SIZE7 +"[^/]*(/[-_a-zA-Z0-9/]+[.]efi)"+" (.+)"));
                Pattern.compile("^*" + SHA256 +" +"+ SIZE7 + " +"+"(/[-_a-zA-Z0-9/]+[.]efi)" +" +"+ "(.+)"));
+      for (List<String> list:efi_gr) {
+        String sha256=list.get(0);
+        String shor=InfoLine.shortSHA(sha256);
+        list.set(0, shor);
+      }
       // return efi_ls.stream().map(fList -> {
       // ArrayList<String>rList=new ArrayList<String>(fList);
       // Collections.reverse(rList);
@@ -64,6 +69,6 @@ public class EfiInfo extends InfoLine {
    }
    @Override
    public String toString() {
-      return getLine(spalten.iterator());
+      return getLine(info ,spalten.iterator());
    }
 }

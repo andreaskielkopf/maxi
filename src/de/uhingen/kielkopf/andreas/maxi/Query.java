@@ -26,7 +26,8 @@ public enum Query {
    // +"do echo -n \"$K \";for D in $(print -l $K/**/*(.)|sort);do cat $D;done|sha256sum; done;"),
    LS("ls", "-sh1", "/boot", "/boot/grub", "/lib/modules"),
    // LS_EFI(Maxi.SHELL, "-c", "for F in $(sudo find /efi /boot -iname \"*.efi\"); do sudo ls -sh1 $F ;done"),
-   GRS_EFI(Maxi.SHELL, "-c", "for F in $( find /efi /boot -iname '*.efi');do " // suche mit sudo nach *.efi-dateien
+   GRUB_PROBE(Maxi.SHELL,"-c","grub-probe -t efi_hints /boot/grub"),
+   GRS_EFI(Maxi.SHELL, "-c", "for F in $( find /efi /boot -iname '*.efi');do " // suche mit sudo nach *.efi-dateien            
             + "dd if=$F bs=1024 count=50 | sha256sum |grep -Eo '[0-f]{64}'|tr '\\n' ' ';" 
             // berechne sha256 von 50kByte und entferne den zeilenumbruch
             //+ "sha256sum $F|grep -Eo '[0-f]{64}'|tr '\\n' ' ';" // berechne sha256 und entferne den zeilenumbruch

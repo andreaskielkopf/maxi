@@ -193,9 +193,12 @@ Und ich hoffe, es gibt [andere Wünsche](https://forum.manjaro.org/t/maxi-call-f
 
 Installieren:
 -------------
-1. Laden Sie Maxi von [github](https://github.com/andreaskielkopf/maxi) herunter und speichern Sie es dort, wo Sie es möchten `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/jar/maxi -O /usr/local/bin/maxi`
-2. Überprüfen Sie die Prüfsumme `sha256sum /usr/local/bin/maxi`
-3. Machen Sie die Datei ausführbar `sudo chmod -c a+x /usr/local/bin/maxi`
+1. Laden Sie Maxi von [github](https://github.com/andreaskielkopf/maxi) herunter und speichern Sie es dort, wo Sie es möchten
+ `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/jar/maxi -O /usr/local/bin/maxi`
+2. Überprüfen Sie die Prüfsumme 
+ `sha256sum /usr/local/bin/maxi`
+3. Machen Sie die Datei ausführbar 
+ `sudo chmod -c a+x /usr/local/bin/maxi`
 
  `sudo wget https://github.com/andreaskielkopf/maxi/raw/master/jar/maxi -O /usr/local/bin/maxi ; sha256sum /usr/local/bin/maxi ; sudo chmod -c a+x /usr/local/bin/maxi`
 

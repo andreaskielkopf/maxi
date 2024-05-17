@@ -31,10 +31,14 @@ public class Partition extends InfoLine {
    static final String       FSTYPE="((?:[a-zA-Z]+)|(?: {5}))";
    static final String       PTNAME="((?:[ a-zA-Z]+?)) +";
    static List<List<String>> partitions;
+   public static synchronized List<List<String>> getPartitions() {
+      if (partitions == null)
+         partitions=Query.LSBLK.getLists(Pattern.compile("^" + UUID + " " + KNAME + " +"//
+                  + PTTYPE + " +" + TYPE + " " + FSTYPE + " +" + SIZE7 + " " + PTNAME + UUIDMIX + " *" + "(.+)$"));
+      return partitions;
+   }
    public static Stream<InfoLine> analyseStream() {
-      partitions=Query.LSBLK.getLists(Pattern.compile("^" + UUID + " " + KNAME + " +"//
-               + PTTYPE + " +" + TYPE + " " + FSTYPE + " +" + SIZE7 + " " + PTNAME + UUIDMIX + " *" + "(.+)$"));
-      return partitions.stream().map(l -> {
+      return getPartitions().stream().map(l -> {
          if (l.size() > 12) { // BUG
             while (l.size() > 5)
                l.remove(5);
@@ -78,14 +82,11 @@ public class Partition extends InfoLine {
          StringBuilder sb=new StringBuilder();
          for (List<String> p:partitions) {
             String uuid=p.get(0);
-            List<String> err=l.put(uuid, p);//            err=p;
+            List<String> err=l.put(uuid, p);// err=p;
             if (err != null) {
-               if (!sb.toString().contains(uuid)) {
-                  sb.append("\n");
-                  sb.append(err);
-               }
-               sb.append("\n");
-               sb.append(p);
+               if (!sb.toString().contains(uuid))
+                  sb.append("\n").append(err);
+               sb.append("\n").append(p);
             }
          }
          if (sb.length() > 0) {
@@ -105,6 +106,6 @@ public class Partition extends InfoLine {
    }
    @Override
    public String toString() {
-      return getLine(spalten.iterator());
+      return getLine(info, spalten.iterator());
    }
 }

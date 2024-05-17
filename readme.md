@@ -1,4 +1,4 @@
-maxi 0.7.14
+maxi 0.7.15
 ==========
 If your manjaro installation does not boot (any more), maxi may help to find what is missing. 
 Just use it from commandline or from a chroot environment. If you need help interpreting the output, read [Understand the boot process](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/99740) or contact a forum like [manjaro forum](https://forum.manjaro.org/) and ask for help.
@@ -55,7 +55,7 @@ Project Members
 Depends on
 ----------
 
-- `java` (1.8 or any newer. at best 21)
+- `java` (1.8 or any newer. At best 21)
 - `mhwd` (mhwd-kernel)
 - `coreutils` (ls cat sort du sha256sum)
 - `findutils` (find)
@@ -100,6 +100,8 @@ c7519180ec45fc004b75478c85ca4efc8c8d49ce10977a2fdd40c8da224b0ca0  maxi
 d486d666825436013b5287164180afc0a3c0dd7f609148a6a4ebc90acc8cb6ac  maxi
 #### sha256sum ov v0.7.14
 68c997a1e952b053237979c0f1d00e5965b0875fd953383c97d582ea36a5eeef  maxi
+####  sha256sum ov v0.7.15
+0c8bff3ed6399211345a6a56b004d3c5b487269f7129c631892e598ed83ba453  maxi
 
 P.S. If current developments trouble you, you can 
 [Find Peace](https://www.jw.org/en/library/series/more-topics/russia-invades-ukraine-bible-meaning-hope/) -

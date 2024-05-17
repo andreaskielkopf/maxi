@@ -1,16 +1,16 @@
 #!/bin/env -S bash
-# ©2023 Andreas Kielkopf
+# ©2024 Andreas Kielkopf
 # License: `GNU General Public License v3.0`
 java -jar "$0" "$@"
 EC="$?"
 [ "$EC" = 0 ] && exit;
 echo -n "$EC ==>"
 [ "$EC" = 127 ] && echo "$0 needs a java runntime"
-[ "$EC" = 1 ] && echo "$0 needs a java runtime with at least version 1.8"
+[ "$EC" = 1 ] && echo "$0 needs a java runtime with version 21"
 { cat; exit; } <<EOF
 
 Maxi is made for manjaro linux only
-This is version 0.7.14 from 17.1.2024
+This is version 0.7.15 from 17.5.2024
 
 Usage:
 ------
@@ -31,6 +31,7 @@ $0 [OPTIONS]
  
    default equals to: -km
    
-   compare sha256sum $0 at: https://github.com/andreaskielkopf/maxi
+ compare sha256sum $0 at: https://github.com/andreaskielkopf/maxi
    
+ For sources see@ https://github.com/andreaskielkopf/Maxi and inside this file   
 EOF

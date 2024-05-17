@@ -9,6 +9,6 @@ public class ConfigInfo extends InfoLine {
    }
    @Override
    public String toString() {
-      return getLine(spalten.iterator());
+      return getLine(info, spalten.iterator());
    }
 }

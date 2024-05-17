@@ -11,7 +11,7 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
-        <javaElement handleIdentifier="=maxi/src"/>
         <file path="/maxi/readme.md"/>
+        <javaElement handleIdentifier="=maxi/src"/>
     </selectedElements>
 </jardesc>

@@ -76,22 +76,22 @@ public class InfoLine {
          final List<List<String>> kernels=Maxi.LIST_ALL.get()
                   ? Query.MHWD_L.getLists(Pattern.compile("[*].*(linux(.*))"))
                   : Query.MHWD_LI.getLists(Pattern.compile("[*].*(linux(.*))"));
-         final String r="abcdef";
+         final String r="abCdef";
          for (final List<String> k:kernels) {
             final ArrayList<String> info=k.stream().collect(Collectors.toCollection(ArrayList<String>::new));
             final String kNr=info.remove(1);
             // * linux44 * linux515-rt
-            String search="linuxabcdef$"
+            String search="linuxabCdef$"
                      // initramfs-4.4-x86_64.img initramfs-5.15-rt-x86_64-fallback.img
-                     + "|^initr.m.s-a[.]bcdef[-.][^r].*img"
+                     + "|^initr.m.s-a[.]bCdef[-.][^r].*img"
                      // extramodules-4.4-MANJARO extramodules-5.15-rt-MANJAR
-                     + "|^.xtr.mo.ul.s-a[.]bcdef-MANJARO$"
+                     + "|^.xtr.mo.ul.s-a[.]bCdef-MANJARO$"
                      // cat kver -> 4.4.294-1-MANJARO x64 5.15.5-rt22-1-MANJARO x64
-                     + "|^a[.]bc[.][-0-9]*def[-0-9]*MANJARO(?:[ 0-9]+[KM])?"
+                     + "|^a[.]bC[.][-0-9rct]*def[-0-9]*MANJARO(?:[ 0-9]+[KM])?"
                      // vmlinuz-4.4-x86_64 vmlinuz-5.15-rt-x86_64
-                     + "|^vmlinuz-a[.]bcdef-x86_64$"
+                     + "|^vmlinuz-a[.]bCdef-x86_64$"
                      // initramfs-5.15-x86_64-fallback.img
-                     + "|^a[.]bcdef-x86_64-"
+                     + "|^a[.]bCdef-x86_64-"
             //
             ;
             for (int i=0; i < r.length(); i++)

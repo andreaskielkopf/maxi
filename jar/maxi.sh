@@ -9,8 +9,7 @@ echo -n "$EC ==>"
 [ "$EC" = 1 ] && echo "$0 needs a java runtime with version 21"
 { cat; exit; } <<EOF
 
-Maxi is made for manjaro linux only
-This is version 0.7.15 from 17.5.2024
+Maxi is made for manjaro linux
 
 Usage:
 ------
@@ -28,6 +27,7 @@ $0 [OPTIONS]
  -i --mkinitcpio   /etc/mkinitcpio.conf
  -e --efi          efi bootloaders 
  -f --forum        frame with backticks and [details] and copy to clipboard
+ -p --partitions   info about visible partitions
  
    default equals to: -km
    

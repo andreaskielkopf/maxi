@@ -1,6 +1,3 @@
-/**
- *
- */
 package de.uhingen.kielkopf.andreas.maxi;
 
 import java.time.Duration;
@@ -13,10 +10,10 @@ import java.util.stream.Collectors;
 import de.uhingen.kielkopf.andreas.beans.cli.Flag;
 
 /**
- * @author Andreas Kielkopf ©2022
+ * @author Andreas Kielkopf ©2022, 2024
  * @license GNU General Public License v3.0
  * @version 0.7.1
- * @date 18.4.2022
+ * @dates 18.4.2022, 16.12.2024
  */
 public class Maxi {
    static List<KernelInfo>       k_aktuell  =null;
@@ -44,10 +41,12 @@ public class Maxi {
    static final Flag             KVER       =new Flag('v', "kver");
    static final Flag             WATCH      =new Flag('w', "watch", "100");
    static final Flag             LISTONEXIT =new Flag('x', "listonexit");  // intern
-   static final Flag             ZSH        =new Flag('z');                // intern
+   static final Flag             ZSH        =new Flag('z');
+   static final String           VERSION    ="maxi v0.7.17 (16.12.2024) ";
    public Maxi() {}
    /**
     * Das Hauptprogramm das die Parameter annimmt
+    * 
     * @param args
     */
    public static void main(String[] args) {
@@ -55,7 +54,7 @@ public class Maxi {
       Runtime.getRuntime().addShutdownHook(new Thread(() -> {
          if (!HELP.get() && LISTONEXIT.get()) {
             clipSupport.println(); // Kernelinfo ausgeben
-            if (k_aktuell != null) 
+            if (k_aktuell != null)
                for (final KernelInfo kernelInfo1:k_aktuell)
                   clipSupport.println(kernelInfo1);
             else
@@ -70,9 +69,8 @@ public class Maxi {
          }
       }));
       ZSH.set(SHELL.contains("zsh"));
-      // Flag.setArgs(args, "-km");// -km -efgikmpsv
       Flag.setArgs(args, "-km");// -km -efgikmpsv
-      //
+      clipSupport.println(VERSION);
       if (HELP.get())
          System.exit(9);
       if (USAGE.get())
@@ -97,6 +95,7 @@ public class Maxi {
    }
    /**
     * Gib die 2-dimensionale Liste von Strings aus mit Zeilenvorschub nur in einer dimension
+    * 
     * @param f
     */
    public static void show(List<Iterable<String>> f) {
@@ -106,7 +105,6 @@ public class Maxi {
          clipSupport.println();
       }
    }
-   
    public static void start() {
       // können wir farbig ausgeben ?
       for (final List<String> list:(ZSH.get() ? Query.TERMINFO : Query.TPUT).getLists(Pattern.compile("([0-9])")))
@@ -117,7 +115,7 @@ public class Maxi {
          long pause=100L;
          try {
             final String s=WATCH.getParameter();
-            final int    i=Integer.parseInt(s);
+            final int i=Integer.parseInt(s);
             if ((i > 0) && (i <= 60000))
                pause=i;
          } catch (final NumberFormatException e1) {
@@ -126,7 +124,7 @@ public class Maxi {
          LISTONEXIT.set(true);
          clipSupport.println(KernelInfo.getHeader());
          clipSupport.printonly("will run until ^c is pressed");
-         k_aktuell=KernelInfo.analyseStream().collect(Collectors.toList());//.toList();
+         k_aktuell=KernelInfo.analyseStream().collect(Collectors.toList());// .toList();
          for (final KernelInfo kernelInfo:k_aktuell)
             clipSupport.println("  : 0.   " + kernelInfo); // Gib die aktuelle analyse aus
          final Instant startZeitpunkt=Instant.now();
@@ -137,7 +135,7 @@ public class Maxi {
             try {
                Thread.sleep(pause);
             } catch (final InterruptedException e) { /* nothing to do */}
-            k_aktuell=KernelInfo.analyseStream().collect(Collectors.toList());//.toList();
+            k_aktuell=KernelInfo.analyseStream().collect(Collectors.toList());// .toList();
             final ArrayList<KernelInfo> dif=new ArrayList<>();
             kein_dif: for (final KernelInfo a:k_aktuell) {
                final String b=a.toString().replaceAll(" ", "");
@@ -147,8 +145,8 @@ public class Maxi {
                dif.add(a);
             }
             if (!dif.isEmpty()) {
-               final long   milli=Duration.between(startZeitpunkt, Instant.now()).toMillis();
-               final String z    =String.format("%2d:%02d.%03d", milli / 60000L, (milli / 1000L) % 60, milli % 1000);
+               final long milli=Duration.between(startZeitpunkt, Instant.now()).toMillis();
+               final String z=String.format("%2d:%02d.%03d", milli / 60000L, (milli / 1000L) % 60, milli % 1000);
                for (final KernelInfo kernelInfo:dif)
                   clipSupport.println(z + kernelInfo);
             }
@@ -156,30 +154,30 @@ public class Maxi {
       }
       clipSupport.println(KernelInfo.getHeader());
       if (KERNEL.get() || LIST_ALL.get())
-         KernelInfo.analyseStream().collect(Collectors.toList())/*.toList()*/.forEach(clipSupport::println);
+         KernelInfo.analyseStream().collect(Collectors.toList())/* .toList() */.forEach(clipSupport::println);
       // Gib dieaktuelle analyse aus
       if (MODULES.get()) {
          clipSupport.println(ModuleInfo.getHeader());
          ModuleInfo.analyseStream()// .map(p -> { slipboardSupport.print(p.getInfo() + " "); return p; })
-         .collect(Collectors.toList())/*.toList()*/.forEach(clipSupport::println);
+                  .collect(Collectors.toList())/* .toList() */.forEach(clipSupport::println);
       }
       if (GRUB.get()) {
          clipSupport.println(GrubInfo.getHeader());
-         GrubInfo.analyseStream().collect(Collectors.toList())/*.toList()*/.forEach(clipSupport::println);
+         GrubInfo.analyseStream().collect(Collectors.toList())/* .toList() */.forEach(clipSupport::println);
       }
       if (MKINITCPIO.get()) {
          clipSupport.println(MkinitcpioInfo.getHeader());
-         MkinitcpioInfo.analyseStream().collect(Collectors.toList())/*.toList()*/.forEach(clipSupport::println);
+         MkinitcpioInfo.analyseStream().collect(Collectors.toList())/* .toList() */.forEach(clipSupport::println);
       }
       if (EFI.get()) {
          clipSupport.println(EfiInfo.getHeader());
-         EfiInfo.analyseStream().collect(Collectors.toList())/*.toList()*/.forEach(clipSupport::println);
+         EfiInfo.analyseStream().collect(Collectors.toList())/* .toList() */.forEach(clipSupport::println);
          clipSupport.println(EfiVars.getHeader());
-         EfiVars.analyseStream().collect(Collectors.toList())/*.toList()*/.forEach(clipSupport::println);
+         EfiVars.analyseStream().collect(Collectors.toList())/* .toList() */.forEach(clipSupport::println);
       }
       if (PARTITIONS.get()) {
          clipSupport.println(Partition.getHeader());
-         Partition.analyseStream().collect(Collectors.toList())/*.toList()*/.forEach(clipSupport::println);
+         Partition.analyseStream().collect(Collectors.toList())/* .toList() */.forEach(clipSupport::println);
       }
       if (FORUM.get()) {
          clipSupport.clipln(BACKTICKS);

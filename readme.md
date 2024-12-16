@@ -1,4 +1,4 @@
-maxi 0.7.15
+maxi 0.7.17
 ==========
 If your manjaro installation does not boot (any more), maxi may help to find what is missing. 
 Just use it from commandline or from a chroot environment. If you need help interpreting the output, read [Understand the boot process](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/99740) or contact a forum like [manjaro forum](https://forum.manjaro.org/) and ask for help.
@@ -98,18 +98,8 @@ Use it:
 3. The output is already in the clipoboard. If you want to post it in [manjaro forum](https://forum.manjaro.org/) you only have to create the post, and press `[Ctrl-v]`
 4. You may also have a look at [Understand the boot process](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/99740)
 
-#### sha256sum of v0.7.7
-c7519180ec45fc004b75478c85ca4efc8c8d49ce10977a2fdd40c8da224b0ca0  maxi 
-#### sha256sum of v0.7.9 
-3e5c35d0a73a192ef2e5b24da1165c5da5da6201c50b0a8aafdf0b31d1fea075  maxi
-#### sha256sum ov v0.7.11
-36c33a6347644150332cd39b03beea69271672bee8cfb8def5f39db5c66a3886  maxi
-#### sha256sum ov v0.7.12
-d486d666825436013b5287164180afc0a3c0dd7f609148a6a4ebc90acc8cb6ac  maxi
-#### sha256sum ov v0.7.14
-68c997a1e952b053237979c0f1d00e5965b0875fd953383c97d582ea36a5eeef  maxi
-####  sha256sum ov v0.7.15
-0c8bff3ed6399211345a6a56b004d3c5b487269f7129c631892e598ed83ba453  maxi
+#### sha256sum of V0.7.17 (16.12.2024)
+016a3c00e4be736db80b45ae394a28ab352cbca9cd64b6f83c2dd8cbad8c94b5  maxi
 
 P.S. If current developments trouble you, you can 
 [Find Peace](https://www.jw.org/en/library/series/more-topics/russia-invades-ukraine-bible-meaning-hope/) -
@@ -176,7 +166,7 @@ Projektmitglieder
 Kommt drauf an
 --------------
 
-- `java` (1.8 oder neuer)
+- `java` (1.8 oder neuer. Am besten 21)
 - `mhwd` (mhwd-Kernel)
 - `coreutils` (ls cat sort du sha256sum)
 - `findutils` (finden)

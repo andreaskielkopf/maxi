@@ -31,7 +31,7 @@ public class KernelInfo extends InfoLine {
                .getLists(Pattern.compile(SIZE4 + "[^0-9]+([0-9.]+.+).*(fallback)"));
       /// Zeige die Kernelversion
       final List<List<String>> kver        =Maxi.KVER.get()
-               ? Query.CAT_KVER.getLists(Pattern.compile("([-0-9.rt]+MANJARO).*"))
+               ? Query.CAT_KVER.getLists(Pattern.compile("([-0-9.rtc]+MANJARO).*"))
                : null;
       /// berechne die Prüfsummen
       final List<List<String>> sha_kernel  =Maxi.SHASUM.get()

@@ -98,8 +98,8 @@ Use it:
 3. The output is already in the clipoboard. If you want to post it in [manjaro forum](https://forum.manjaro.org/) you only have to create the post, and press `[Ctrl-v]`
 4. You may also have a look at [Understand the boot process](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/99740)
 
-#### sha256sum of V0.7.17 (16.12.2024)
-016a3c00e4be736db80b45ae394a28ab352cbca9cd64b6f83c2dd8cbad8c94b5  maxi
+#### sha256sum of V0.7.18 (17.12.2024)
+ae2ef03e8a9c1d0dad818438cd01f11e656ea53834be105f6ddbf4b5a9ab3949  maxi
 
 P.S. If current developments trouble you, you can 
 [Find Peace](https://www.jw.org/en/library/series/more-topics/russia-invades-ukraine-bible-meaning-hope/) -

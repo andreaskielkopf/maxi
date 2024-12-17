@@ -16,8 +16,7 @@ public class InfoLine {
    static final int                                 SHASHORT  =4;
    static final int                                 UUIDLEN   =36;
    static final int                                 UUIDSHORT =4;
-  
-   static final String                              UTF_SUM   ="\u2211";                                                         // ∑
+   static final String                              UTF_SUM   ="\u2211";                                 // ∑
    static final String                              GREEN     ="\u001b[0;32m";
    static final String                              RED       ="\u001b[1;31m";
    static final String                              WHITE     ="\u001b[0;97m";
@@ -32,7 +31,7 @@ public class InfoLine {
    static final String                              SIZE5     ="^([ 0-9KMGT,]{4,5})";
    static final String                              SIZE7     ="([0-9KMGTiB,]{2,7})";
    static final String                              SHA256    ="([0-9a-fA-F]{" + SHALEN + "})";
-   static final String                              NA        ="--";
+   static final String                              NA        ="-n/a-";
    static final String                              UUID      ="([-0-9a-f]{36})";
    static final String                              UUIDMIX   ="([-0-9a-f]{36}|[-0-9A-F]{9} {27}| {36})";
    static final List<String>                        MISSING   =Arrays.asList("<missing>", "");

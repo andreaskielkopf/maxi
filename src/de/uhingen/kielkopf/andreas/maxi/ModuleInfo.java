@@ -21,23 +21,23 @@ public class ModuleInfo extends InfoLine {
    @SuppressWarnings("null")
    public static Stream<ModuleInfo> analyseStream() {
       /// Zeige die Kernelversion
-      final List<List<String>> kver       =Query.CAT_KVER.getLists(Pattern.compile("([-0-9.rt]+MANJARO).*"));
-      final List<List<String>> du_module  =Query.DU_MODULES
+      final List<List<String>> kver=Query.CAT_KVER.getLists(Pattern.compile("([-0-9.rt]+MANJARO).*"));
+      final List<List<String>> du_module=Query.DU_MODULES
                .getLists(Pattern.compile("([0-9]+[KM]?)[^0-9]+/([-0-9rt.]+MANJARO)")/* , "§2 §1" */);
-      final List<List<String>> du_extra   =Query.DU_MODULES.getLists(Pattern.compile("([0-9]+[KM]?)[^0-9]+/(extra.*)"));
+      final List<List<String>> du_extra=Query.DU_MODULES.getLists(Pattern.compile("([0-9]+[KM]?)[^0-9]+/(extra.*)"));
       final List<List<String>> sha_modules=Maxi.SHASUM.get()
                ? Query.SHA_MODULES.getLists(Pattern.compile("^.*[/]([0-9.-]+MANJARO) *" + SHA256 + ".*$"))
                : null;
-      final List<List<String>> sha_extra  =Maxi.SHASUM.get()
+      final List<List<String>> sha_extra=Maxi.SHASUM.get()
                ? Query.SHA_MODULES.getLists(Pattern.compile("^.*(extra.+MANJARO) *" + SHA256 + ".*$"))
                : null;
       // Für jeden einzelnen kernel untersuchen
       return getBasisStream().map(e -> {
-         final Predicate<String> key  =e.getKey();
+         final Predicate<String> key=e.getKey();
          final ArrayList<String> value=new ArrayList<>(e.getValue());
          value.add(value.remove(0).replace("linux", "modules"));
          String        kernelVersion=deepSearch(kver, key, "§", "<kver missing>");
-         final Matcher ma           =Pattern.compile("(.*)-rt(.*)-1-(.*)").matcher(kernelVersion);
+         final Matcher ma=Pattern.compile("(.*)-rt(.*)-1-(.*)").matcher(kernelVersion);
          if (ma.find()) // bugfix wegen rt-kernels
             kernelVersion=new IterableMatchResult(ma).replace("§1-1-rt§2-§3");
          select(du_module.stream(), Pattern.compile(kernelVersion, Pattern.LITERAL).asPredicate(), MISSING)
@@ -79,7 +79,7 @@ public class ModuleInfo extends InfoLine {
    }
    public static void main(String[] args) {
       System.out.println(ModuleInfo.getHeader());
-      ModuleInfo.analyseStream().collect(Collectors.toList())/* .toList() */.forEach(System.out::println);     
+      ModuleInfo.analyseStream().collect(Collectors.toList())/* .toList() */.forEach(System.out::println);
    }
    @Override
    public String toString() {

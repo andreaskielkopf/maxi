@@ -15,43 +15,47 @@ import de.uhingen.kielkopf.andreas.beans.cli.Flag;
  * @version 0.7.1
  * @dates 18.4.2022, 16.12.2024
  * 
+ *        <pre>
  * Ein Programm um in einem manjaro-system zu prüfen ob eventuell notwendige Dateien für dennächsten Boot fehlen
  * * Welche kernels installiert und vorhanden sind
  * * Ob alle intramdisks einen Inhalt haben (Länge)
  * * Ob eine Configdatei für Grub aktuell ist
  * * Ob UEFI-Booteinträge existieren
- * * Ob in der EFI-Partition bootloader da sind
+ * * Ob in der EFI-Partition bootloader da sind 
  * 
- * Aus Kompatibilitätsgründen wird ein Zweig für java8 abgespalten. Ausserdem ein Zweig für java21 und für
+ *        Aus Kompatibilitätsgründen wird ein Zweig für java8 abgespalten. Ausserdem ein Zweig für java21 und für
+ *        </pre>
  */
 public class Maxi {
    static List<KernelInfo>       k_aktuell  =null;
    static List<KernelInfo>       last       =null;
    static List<ModuleInfo>       m_aktuell  =null;
-   final public static String    SHELL      =System.getenv("SHELL");       // get the used shell
-   final public static String    BACKTICKS  ="```";                        // comments in manjaro forum
+   final public static String    SHELL      =System.getenv("SHELL");                                                   // get the used shell
+   final public static String    BACKTICKS  ="```";                                                                    // comments in manjaro forum
    final public static String    DETAILS0   ="[details=\"maxi";
    final public static String    DETAILS1   ="\"]";
    final public static String    DETAILS2   ="[/details]";
-   static final ClipboardSupport clipSupport=new ClipboardSupport();       // suport the clipboard when used in GUI
-   static final Flag             COLOR      =new Flag('c', "color");
+   static final ClipboardSupport clipSupport=new ClipboardSupport();                                                   // suport the clipboard when
+                                                                                                                       // used in GUI
+   static final Flag             COLOR      =new Flag('c', "color", "colorize output unconditionally");
    // static final Flag DATES=new Flag('d',"dates");
-   static final Flag             EFI        =new Flag('e', "efi");
-   static final Flag             FORUM      =new Flag('f', "forum");
-   static final Flag             GRUB       =new Flag('g', "grub");
-   static final Flag             HELP       =new Flag('h', "help");        //
-   static final Flag             MKINITCPIO =new Flag('i', "mkinitcpio");
-   static final Flag             KERNEL     =new Flag('k', "kernel");
-   static final Flag             LIST_ALL   =new Flag('l', "list_all");
-   static final Flag             MODULES    =new Flag('m', "modules");
-   static final Flag             PARTITIONS =new Flag('p', "partitions");
-   static final Flag             SHASUM     =new Flag('s', "shasum");
-   static final Flag             USAGE      =new Flag('u', "usage");
-   static final Flag             KVER       =new Flag('v', "kver");
-   static final Flag             WATCH      =new Flag('w', "watch", "100");
-   static final Flag             LISTONEXIT =new Flag('x', "listonexit");  // intern
-   static final Flag             ZSH        =new Flag('z');
-   static final String           VERSION    ="maxi v0.7.18 (17.12.2024) ";
+   static final Flag             EFI        =new Flag('e', "efi", "efi bootloaders");
+   static final Flag             FORUM      =new Flag('f', "forum",
+            "frame with backticks and [details] and copy to clipboard");
+   static final Flag             GRUB       =new Flag('g', "grub", "/boot/grub/grub.cfg, /etc/default/grub");
+   static final Flag             HELP       =new Flag('h', "help", "print this page");                                 //
+   static final Flag             MKINITCPIO =new Flag('i', "mkinitcpio", "/etc/mkinitcpio.conf");
+   static final Flag             KERNEL     =new Flag('k', "kernel", "installed kernels, initrd, chroot");
+   static final Flag             LIST_ALL   =new Flag('l', "list_all", "all kernels (not only installed)");
+   static final Flag             MODULES    =new Flag('m', "modules", "list modules and extramodules");
+   static final Flag             PARTITIONS =new Flag('p', "partitions", "info about visible partitions");
+   static final Flag             SHASUM     =new Flag('s', "shasum", "produce short hash to compare kernel & modules");
+   // static final Flag USAGE =new Flag('u', "usage","print this page");
+   static final Flag             KVER       =new Flag('v', "kver", "kernelversion (includes -k)");
+   static final Flag             WATCH      =new Flag('w', "watch", "watch how everything changes over time", "100");
+   static final Flag             LISTONEXIT =new Flag('x', "listonexit", null);                                        // intern
+   static final Flag             ZSH        =new Flag('z', null, null);
+   static final String           VERSION    ="maxi v0.7.20 (01.06.2025) ";
    public Maxi() {}
    /**
     * Das Hauptprogramm das die Parameter annimmt
@@ -80,10 +84,14 @@ public class Maxi {
       ZSH.set(SHELL.contains("zsh"));
       Flag.setArgs(args, "-km");// -km -efgikmpsv
       clipSupport.println(VERSION);
-      if (HELP.get())
+      if (HELP.get()) {
+         for (String line:Flag.getUsage(HELP, COLOR, KERNEL, LIST_ALL, KVER, MODULES, SHASUM, WATCH, GRUB, MKINITCPIO,
+                  EFI, FORUM, PARTITIONS))
+            System.out.println(line);
          System.exit(9);
-      if (USAGE.get())
-         System.exit(8);
+      }
+      // if (USAGE.get())
+      // System.exit(8);
       if (KVER.get())
          KERNEL.set(true);
       if (FORUM.get()) {

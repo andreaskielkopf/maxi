@@ -10,10 +10,19 @@ import java.util.stream.Collectors;
 import de.uhingen.kielkopf.andreas.beans.cli.Flag;
 
 /**
- * @author Andreas Kielkopf ©2022, 2024
+ * @author Andreas Kielkopf ©2022, 2024, 2025
  * @license GNU General Public License v3.0
  * @version 0.7.1
  * @dates 18.4.2022, 16.12.2024
+ * 
+ * Ein Programm um in einem manjaro-system zu prüfen ob eventuell notwendige Dateien für dennächsten Boot fehlen
+ * * Welche kernels installiert und vorhanden sind
+ * * Ob alle intramdisks einen Inhalt haben (Länge)
+ * * Ob eine Configdatei für Grub aktuell ist
+ * * Ob UEFI-Booteinträge existieren
+ * * Ob in der EFI-Partition bootloader da sind
+ * 
+ * Aus Kompatibilitätsgründen wird ein Zweig für java8 abgespalten. Ausserdem ein Zweig für java21 und für
  */
 public class Maxi {
    static List<KernelInfo>       k_aktuell  =null;

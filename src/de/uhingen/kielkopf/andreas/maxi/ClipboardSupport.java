@@ -10,9 +10,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ClipboardSupport {
    static final CopyOnWriteArrayList<String> clip=new CopyOnWriteArrayList<>();
    static String                             line="";
+   @SuppressWarnings("static-method")
    public void clipln(String s) {
       clip.add(s.replaceAll(InfoLine.ANY_ESC, ""));
    }
+   @SuppressWarnings("static-method")
    public void print(String s) {
       line+=s;
    }
@@ -27,6 +29,7 @@ public class ClipboardSupport {
       clipln(s);
       System.out.println(s);
    }
+   @SuppressWarnings("static-method")
    public void printonly(String s) {
       System.out.println(s);
    }

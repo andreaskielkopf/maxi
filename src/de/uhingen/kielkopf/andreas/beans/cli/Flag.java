@@ -65,7 +65,7 @@ public class Flag {
       lang=(lang1 != null && lang1.matches("[a-zA-Z_]+")) ? lang1 : null;
       if (kurz == null && lang == null)
          throw new IllegalArgumentException("Flag needs to be [a-zA-Z]*");
-      usage=(usage1 != null && !usage1.isBlank()) ? usage1 : "";
+      usage=(usage1 != null && !usage1.isEmpty()) ? usage1 : "";
       param=parameter1;
       flagList.add(this);
    }
@@ -158,7 +158,7 @@ public class Flag {
     */
    public Object getParameterOrDefault(Object ersatz) {
       String parameter=getParameter();
-      if ((parameter == null) || parameter.isBlank())
+      if ((parameter == null) || parameter.isEmpty())
          return ersatz;
       /// @todo switch case über den Typ
       if (ersatz instanceof Integer)
@@ -273,16 +273,19 @@ public class Flag {
       StringBuilder zeile=new StringBuilder(" * ");
       zeile.append((kurz == null) ? "  " : "-" + kurz).append(" ");
       if (breite() > 0) {
-         if (lang != null && !lang.isBlank())
-            zeile.append("--").append(lang).append(" ".repeat(breite() - lang.length() + 1));
-         else
-            zeile.append(" ".repeat(breite() + 3));
+         if (lang != null && !lang.isEmpty()) {
+            zeile.append("--").append(lang);
+            for (int i=0; i < breite() - lang.length() + 1; i++)
+               zeile.append(" ");
+         } else
+            for (int i=0; i < breite() + 3; i++)
+               zeile.append(" ");
       }
-      if (usage != null && !usage.isBlank())
+      if (usage != null && !usage.isEmpty())
          zeile.append(usage).append(" ");
-      if (param != null && !param.isBlank())
+      if (param != null && !param.isEmpty())
          zeile.append("[=").append(param).append("] ");
-      return zeile.toString().stripTrailing();
+      return zeile.toString();// .stripTrailing();
    }
    /** ermittle wie breit die Spalte für lange flags sein muß */
    static private int breite() {

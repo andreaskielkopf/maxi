@@ -55,7 +55,7 @@ public class Maxi {
    static final Flag             WATCH      =new Flag('w', "watch", "watch how everything changes over time", "100");
    static final Flag             LISTONEXIT =new Flag('x', "listonexit", "internal use");                                        // intern
    static final Flag             ZSH        =new Flag('z', "zsh", "internal use");
-   static final String           VERSION    ="maxi v0.7.20 (01.06.2025) ";
+   static final String           VERSION    ="maxi v0.7.21 (02.06.2025) ";
    public Maxi() {}
    /**
     * Das Hauptprogramm das die Parameter annimmt

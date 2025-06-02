@@ -53,8 +53,8 @@ public class Maxi {
    // static final Flag USAGE =new Flag('u', "usage","print this page");
    static final Flag             KVER       =new Flag('v', "kver", "kernelversion (includes -k)");
    static final Flag             WATCH      =new Flag('w', "watch", "watch how everything changes over time", "100");
-   static final Flag             LISTONEXIT =new Flag('x', "listonexit", null);                                        // intern
-   static final Flag             ZSH        =new Flag('z', null, null);
+   static final Flag             LISTONEXIT =new Flag('x', "listonexit", "internal use");                                        // intern
+   static final Flag             ZSH        =new Flag('z', "zsh", "internal use");
    static final String           VERSION    ="maxi v0.7.20 (01.06.2025) ";
    public Maxi() {}
    /**

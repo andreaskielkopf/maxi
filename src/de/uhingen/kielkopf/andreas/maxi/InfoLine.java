@@ -54,7 +54,7 @@ public class InfoLine {
          index++;
       }
    }
-   static void clear() {
+   static void clearQ() {
       Query.MHWD_LI.clear();
    }
    /**

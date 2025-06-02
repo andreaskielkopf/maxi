@@ -64,9 +64,10 @@ public class KernelInfo extends InfoLine {
          return new KernelInfo(list);
       });
    }
+   
    /** Bei mehrfachen analyse müssen diese querys neu gemacht werden */
    static public void clear() {
-      InfoLine.clear(); // MHWD_LI
+      InfoLine.clearQ(); // MHWD_LI
       Query.LS.clear();
       Query.CAT_KVER.clear();
    }

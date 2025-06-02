@@ -54,7 +54,7 @@ public class ModuleInfo extends InfoLine {
    }
    /** Bei mehrfachen analyse müssen diese querys neu gemacht werden */
    static public void clear() {
-      InfoLine.clear();
+      InfoLine.clearQ();
       Query.LS.clear();
       Query.CAT_KVER.clear();
       Query.DU_MODULES.clear();

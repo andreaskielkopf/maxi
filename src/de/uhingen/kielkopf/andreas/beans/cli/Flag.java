@@ -1,5 +1,5 @@
 /**
- * Framework zur Handhabung von CLI-Flags unter linux
+ * Framework zur Handhabung von CLI-Flags unter linux (needs java 21)
  */
 package de.uhingen.kielkopf.andreas.beans.cli;
 
@@ -65,7 +65,7 @@ public class Flag {
       lang=(lang1 != null && lang1.matches("[a-zA-Z_]+")) ? lang1 : null;
       if (kurz == null && lang == null)
          throw new IllegalArgumentException("Flag needs to be [a-zA-Z]*");
-      usage=(usage1 != null && !usage1.isEmpty()) ? usage1 : "";
+      usage=(usage1 != null && !usage1.isBlank()) ? usage1 : "";
       param=parameter1;
       flagList.add(this);
    }
@@ -158,7 +158,7 @@ public class Flag {
     */
    public Object getParameterOrDefault(Object ersatz) {
       String parameter=getParameter();
-      if ((parameter == null) || parameter.isEmpty())
+      if ((parameter == null) || parameter.isBlank())
          return ersatz;
       /// @todo switch case über den Typ
       if (ersatz instanceof Integer)
@@ -273,17 +273,14 @@ public class Flag {
       StringBuilder zeile=new StringBuilder(" * ");
       zeile.append((kurz == null) ? "  " : "-" + kurz).append(" ");
       if (breite() > 0) {
-         if (lang != null && !lang.isEmpty()) {
-            zeile.append("--").append(lang);
-            for (int i=0; i < breite() - lang.length() + 1; i++)
-               zeile.append(" ");
-         } else
-            for (int i=0; i < breite() + 3; i++)
-               zeile.append(" ");
+         if (lang != null && !lang.isBlank())
+            zeile.append("--").append(lang).append(" ".repeat(breite() - lang.length() + 1));
+         else
+            zeile.append(" ".repeat(breite() + 3));
       }
-      if (usage != null && !usage.isEmpty())
+      if (usage != null && !usage.isBlank())
          zeile.append(usage).append(" ");
-      if (param != null && !param.isEmpty())
+      if (param != null && !param.isBlank())
          zeile.append("[=").append(param).append("] ");
       return zeile.toString();// .stripTrailing();
    }

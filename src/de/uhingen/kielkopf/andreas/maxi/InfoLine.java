@@ -77,6 +77,7 @@ public class InfoLine {
                   : Query.MHWD_LI.getLists(Pattern.compile("[*].*(linux(.*))"));
          final String r="abCdef";
          for (final List<String> k:kernels) {
+            @SuppressWarnings("null")
             final ArrayList<String> info=k.stream().collect(Collectors.toCollection(ArrayList<String>::new));
             final String kNr=info.remove(1);
             // * linux44 * linux515-rt

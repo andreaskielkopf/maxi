@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="package" author="true" classpath="/home/andreas/eclipse-workspace/Beans/jsr-305.jar:/home/andreas/eclipse-workspace/Beans/org.eclipse.jdt.annotation_2.2.600.v20200408-1511.jar" destdir="javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="de.uhingen.kielkopf.andreas.maxi,de.uhingen.kielkopf.andreas.beans.cli" source="21" sourcepath="src" splitindex="true" use="true" version="true"/>
+    </target>
+</project>

@@ -36,24 +36,21 @@ public class Maxi {
    final public static String DETAILS1  ="\"]";
    final public static String DETAILS2  ="[/details]";
    static final Flag          COLOR     =new Flag('c', "use_color", "colorize output unconditionally");
-   // static final Flag DATES=new Flag('d',"dates");
    static final Flag          EFI       =new Flag('e', "efi", "efi bootloaders");
-   static final Flag          FORUM     =new Flag('f', "forum",
-            "frame with backticks and [details] and copy to clipboard");
+   static final Flag          FORUM     =new Flag('f', "forum", "copy with backticks and [details] to clipboard");
    static final Flag          GRUB      =new Flag('g', "grub", "/boot/grub/grub.cfg, /etc/default/grub");
-   static final Flag          HELP      =new Flag('h', "help", "print this page");                                 //
+   static final Flag          HELP      =new Flag('h', "help", "print this page");
    static final Flag          MKINITCPIO=new Flag('i', "mkinitcpio", "/etc/mkinitcpio.conf");
    static final Flag          KERNEL    =new Flag('k', "kernel", "installed kernels, initrd, chroot");
    static final Flag          LIST_ALL  =new Flag('l', "list_all", "all kernels (not only installed)");
    static final Flag          MODULES   =new Flag('m', "modules", "list modules and extramodules");
    static final Flag          PARTITIONS=new Flag('p', "partitions", "info about visible partitions");
    static final Flag          SHASUM    =new Flag('s', "shasum", "produce short hash to compare kernel & modules");
-   // static final Flag USAGE =new Flag('u', "usage","print this page");
    static final Flag          KVER      =new Flag('v', "kver", "kernelversion (includes -k)");
    static final Flag          WATCH     =new Flag('w', "watch", "watch how everything changes over time", "100");
-   static final Flag          LISTONEXIT=new Flag('x', "listonexit", "internal use");                              // intern
+   static final Flag          LISTONEXIT=new Flag('x', "listonexit", "internal use");
    static final Flag          ZSH       =new Flag('z', "zsh", "internal use");
-   static final String        VERSION   ="maxi v0.7.24 (15.06.2025) ";
+   static final String        VERSION   ="maxi v0.7.26 (15.06.2025) ";
    public Maxi() {}
    /**
     * Das Hauptprogramm das die Parameter annimmt

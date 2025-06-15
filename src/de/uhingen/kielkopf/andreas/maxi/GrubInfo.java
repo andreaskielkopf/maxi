@@ -23,10 +23,10 @@ public class GrubInfo extends InfoLine {
    /** {@value} Zeiger auf die Konfiguration von Grub in /etc */
    static final String             GRUB_ETC   ="/etc/default/grub";
    /** {@value} Warnhinweis */
-   static final String             GRUB_UPDATE="Please update grub.cfg:";
+   static final String             GRUB_WARNING="Please update grub.cfg:";
    /** gemeinsame Spaltenbreite */
    static final ArrayList<Integer> spalten    =new ArrayList<>();
-   /** {@value} Namensteile von wichtigen VARIABLEN für grub */
+   /** {@value} Namensteile von bedeutenden VARIABLEN für grub */
    static final String             WICHTIG    ="CMDLINE|DEFAULT|TIMEOUT|DISTRIBUTOR|PRELOAD|_OS_PROBER|THEME";
    /**
     * Konstruktor mit gemeinsamer Spaltenbreite
@@ -41,7 +41,7 @@ public class GrubInfo extends InfoLine {
     * Info über die Konfiguration von Grub.
     * 
     * <pre>
-    * Ist die {@link GRUB_CFG}-Datei neuer als {@link GRUB_ETC} ? Dann empfehle {@linkplain GRUB_UPDATE}
+    * Ist die {@link GRUB_CFG}-Datei neuer als {@link GRUB_ETC} ? Dann empfehle {@link GRUB_WARNING}
     * </pre>
     * 
     * @return Warnhinweise + Tabelle
@@ -49,10 +49,10 @@ public class GrubInfo extends InfoLine {
    public static Stream<InfoLine> analyseStream() {
       /** Teste ob grub.cfg nicht dem neuesten Stand entspricht */
       final ArrayList<String[]> tests=new ArrayList<>(
-               Arrays.asList(new String[][] {{GRUB_CFG, GRUB_ETC, GRUB_UPDATE}}));
+               Arrays.asList(new String[][] {{GRUB_CFG, GRUB_ETC, GRUB_WARNING}}));
       /** Teste ob irgend eine initrd veraltet ist */
       final List<List<String>> initrd=Query.LS.getLists(Pattern.compile(SIZE4 + ".*(init.*64[.]img)"));
-      tests.addAll(initrd.stream().map(l -> new String[] {"/boot/" + l.get(1), GRUB_ETC, GRUB_UPDATE})
+      tests.addAll(initrd.stream().map(l -> new String[] {"/boot/" + l.get(1), GRUB_ETC, GRUB_WARNING})
                .collect(Collectors.toList()));// .toList());
       @SuppressWarnings("null")
       final Stream<TestInfo> testStream=tests.stream().map(Query::test).filter(l -> (l.size() > 1)).map(l -> {
@@ -72,7 +72,7 @@ public class GrubInfo extends InfoLine {
     * @return Titelzeile
     */
    public static String getHeader() {
-      return getHeader(" /etc/default/grub");
+      return getHeader("/etc/default/grub");
    }
    @Override
    public String toString() {

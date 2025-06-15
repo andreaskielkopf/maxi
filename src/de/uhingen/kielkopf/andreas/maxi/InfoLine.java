@@ -270,7 +270,7 @@ public class InfoLine {
     * @return
     */
    static String getHeader(String b) {
-      return getHeader("Info about:", b);
+      return getHeader("Info about: ", b);
    }
    /**
     * Eine farbige Titelzeile für die Tabelle mit 2 Texten in grün und weiß

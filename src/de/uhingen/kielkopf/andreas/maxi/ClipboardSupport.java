@@ -76,7 +76,6 @@ public class ClipboardSupport {
    public static void println(Stream<? extends InfoLine> info) {
       info.forEach(t -> println(t));
    }
-   
    /**
     * Druckt die Zeile ins Clipboard und auf die Konsole
     * 

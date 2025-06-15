@@ -59,7 +59,7 @@ public class EfiInfo extends InfoLine {
     * @return Titelzeile
     */
    public static String getHeader() {
-      return getHeader(" efi bootloaders");
+      return getHeader("efi bootloaders");
    }
    /**
     * Tabelle mit den erkennbaren Partitionen

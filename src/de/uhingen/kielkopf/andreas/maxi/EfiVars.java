@@ -94,7 +94,7 @@ public class EfiVars extends InfoLine {
     * @return Titelzeile
     */
    public static String getHeader() {
-      return getHeader(" efi vars (needs efibootmgr)");
+      return getHeader("efi vars (needs efibootmgr)");
    }
    /**
     * Komplette Tabelle

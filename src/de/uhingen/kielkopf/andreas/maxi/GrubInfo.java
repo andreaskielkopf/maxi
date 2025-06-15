@@ -19,15 +19,15 @@ import java.util.stream.Stream;
  */
 public class GrubInfo extends InfoLine {
    /** {@value} Zeiger auf die aktuell verwendete grub.cfg Datei */
-   static final String             GRUB_CFG   ="/boot/grub/grub.cfg";
+   static final String             GRUB_CFG    ="/boot/grub/grub.cfg";
    /** {@value} Zeiger auf die Konfiguration von Grub in /etc */
-   static final String             GRUB_ETC   ="/etc/default/grub";
+   static final String             GRUB_ETC    ="/etc/default/grub";
    /** {@value} Warnhinweis */
    static final String             GRUB_WARNING="Please update grub.cfg:";
    /** gemeinsame Spaltenbreite */
-   static final ArrayList<Integer> spalten    =new ArrayList<>();
+   static final ArrayList<Integer> spalten     =new ArrayList<>();
    /** {@value} Namensteile von bedeutenden VARIABLEN für grub */
-   static final String             WICHTIG    ="CMDLINE|DEFAULT|TIMEOUT|DISTRIBUTOR|PRELOAD|_OS_PROBER|THEME";
+   static final String             WICHTIG     ="CMDLINE|DEFAULT|TIMEOUT|DISTRIBUTOR|PRELOAD|_OS_PROBER|THEME";
    /**
     * Konstruktor mit gemeinsamer Spaltenbreite
     * 
@@ -68,7 +68,9 @@ public class GrubInfo extends InfoLine {
       /** Füge Warnung und Tabelle zusammen */
       return Stream.concat(testStream, configStream);
    }
-   /**Titelzeile für Grub-Informationen
+   /**
+    * Titelzeile für Grub-Informationen
+    * 
     * @return Titelzeile
     */
    public static String getHeader() {

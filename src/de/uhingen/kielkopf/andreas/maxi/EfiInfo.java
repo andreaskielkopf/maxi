@@ -1,6 +1,7 @@
 package de.uhingen.kielkopf.andreas.maxi;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -82,6 +83,7 @@ public class EfiInfo extends InfoLine {
     * Main um Tests durchzuführen
     * 
     * @param args
+    *           von der Commandline
     */
    public static void main(String[] args) {
       System.out.println(EfiInfo.getHeader());

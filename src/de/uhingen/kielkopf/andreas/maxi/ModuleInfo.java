@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
+ * Informationen über die Kernel-Module
+ * 
  * @author Andreas Kielkopf ©2022
- * @license GNU General Public License v3.0
+ * @version GNU General Public License v3.0
  */
 public class ModuleInfo extends InfoLine {
    /** gemeinsame Liste der Spaltenbreite */
@@ -90,10 +91,11 @@ public class ModuleInfo extends InfoLine {
     * Testroutine
     * 
     * @param args
+    *           von der Commandline
     */
    public static void main(String[] args) {
       System.out.println(ModuleInfo.getHeader());
-      ModuleInfo.analyseStream().collect(Collectors.toList())/* .toList() */.forEach(System.out::println);
+      ModuleInfo.analyseStream().forEach(System.out::println);
    }
    @Override
    public String toString() {

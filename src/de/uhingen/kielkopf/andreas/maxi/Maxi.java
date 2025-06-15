@@ -22,40 +22,63 @@ import de.uhingen.kielkopf.andreas.beans.cli.Flag;
  * </pre>
  * 
  * @author Andreas Kielkopf ©2022, 2024, 2025
- * @license GNU General Public License v3.0
- * @version 0.7.1
- * @dates 18.4.2022, 16.12.2024
+ * @version GNU General Public License v3.0
+ * @since 18.4.2022, 16.12.2024, 15.6.2025
  */
 public class Maxi {
-   static List<KernelInfo>    k_aktuell =null;
-   static List<KernelInfo>    last      =null;
-   // static List<ModuleInfo> m_aktuell =null;
-   final public static String SHELL     =System.getenv("SHELL");                                                   // get the used shell
-   final public static String BACKTICKS ="```";                                                                    // comments in manjaro forum
-   final public static String DETAILS0  ="[details=\"maxi";
-   final public static String DETAILS1  ="\"]";
-   final public static String DETAILS2  ="[/details]";
-   static final Flag          COLOR     =new Flag('c', "use_color", "colorize output unconditionally");
-   static final Flag          EFI       =new Flag('e', "efi", "efi bootloaders");
-   static final Flag          FORUM     =new Flag('f', "forum", "copy with backticks and [details] to clipboard");
-   static final Flag          GRUB      =new Flag('g', "grub", "/boot/grub/grub.cfg, /etc/default/grub");
-   static final Flag          HELP      =new Flag('h', "help", "print this page");
-   static final Flag          MKINITCPIO=new Flag('i', "mkinitcpio", "/etc/mkinitcpio.conf");
-   static final Flag          KERNEL    =new Flag('k', "kernel", "installed kernels, initrd, chroot");
-   static final Flag          LIST_ALL  =new Flag('l', "list_all", "all kernels (not only installed)");
-   static final Flag          MODULES   =new Flag('m', "modules", "list modules and extramodules");
-   static final Flag          PARTITIONS=new Flag('p', "partitions", "info about visible partitions");
-   static final Flag          SHASUM    =new Flag('s', "shasum", "produce short hash to compare kernel & modules");
-   static final Flag          KVER      =new Flag('v', "kver", "kernelversion (includes -k)");
-   static final Flag          WATCH     =new Flag('w', "watch", "watch how everything changes over time", "100");
-   static final Flag          LISTONEXIT=new Flag('x', "listonexit", "internal use");
-   static final Flag          ZSH       =new Flag('z', "zsh", "internal use");
-   static final String        VERSION   ="maxi v0.7.26 (15.06.2025) ";
+   private static List<KernelInfo> k_aktuell =null;
+   private static List<KernelInfo> last      =null;
+   /** Ermittle die aktive SHELL */
+   final public static String      SHELL     =System.getenv("SHELL");                                                   // get the used shell
+   /** {@value} */
+   final public static String      BACKTICKS ="```";                                                                    // comments in manjaro forum
+   /** {@value} */
+   final public static String      DETAILS0  ="[details=\"maxi";
+   /** {@value} */
+   final public static String      DETAILS1  ="\"]";
+   /** {@value} */
+   final public static String      DETAILS2  ="[/details]";
+   /** Flag('c', "use_color", "colorize output unconditionally") */
+   static final Flag               COLOR     =new Flag('c', "use_color", "colorize output unconditionally");
+   /** Flag('e', "efi", "efi bootloaders") */
+   static final Flag               EFI       =new Flag('e', "efi", "efi bootloaders");
+   /** Flag('f', "forum", "copy with backticks and [details] to clipboard") */
+   static final Flag               FORUM     =new Flag('f', "forum", "copy with backticks and [details] to clipboard");
+   /** Flag('g', "grub", "/boot/grub/grub.cfg, /etc/default/grub") */
+   static final Flag               GRUB      =new Flag('g', "grub", "/boot/grub/grub.cfg, /etc/default/grub");
+   /** Flag('h', "help", "print this page") */
+   static final Flag               HELP      =new Flag('h', "help", "print this page");
+   /** Flag('i', "mkinitcpio", "/etc/mkinitcpio.conf") */
+   static final Flag               MKINITCPIO=new Flag('i', "mkinitcpio", "/etc/mkinitcpio.conf");
+   /** Flag('k', "kernel", "installed kernels, initrd, chroot") */
+   static final Flag               KERNEL    =new Flag('k', "kernel", "installed kernels, initrd, chroot");
+   /** Flag('l', "list_all", "all kernels (not only installed)") */
+   static final Flag               LIST_ALL  =new Flag('l', "list_all", "all kernels (not only installed)");
+   /** Flag('m', "modules", "list modules and extramodules") */
+   static final Flag               MODULES   =new Flag('m', "modules", "list modules and extramodules");
+   /** Flag('p', "partitions", "info about visible partitions") */
+   static final Flag               PARTITIONS=new Flag('p', "partitions", "info about visible partitions");
+   /** Flag('s', "shasum", "produce short hash to compare kernel &amp; modules") */
+   static final Flag               SHASUM    =new Flag('s', "shasum", "produce short hash to compare kernel & modules");
+   /** Flag('v', "kver", "kernelversion (includes -k)") */
+   static final Flag               KVER      =new Flag('v', "kver", "kernelversion (includes -k)");
+   /** Flag('w', "watch", "watch how everything changes over time", "100") */
+   static final Flag               WATCH     =new Flag('w', "watch", "watch how everything changes over time", "100");
+   /** Flag('x', "listonexit", "internal use") */
+   static final Flag               LISTONEXIT=new Flag('x', "listonexit", "internal use");
+   /** Flag('z', "zsh", "internal use") */
+   static final Flag               ZSH       =new Flag('z', "zsh", "internal use");
+   /** {@value} */
+   static final String             VERSION   ="maxi v0.7.27 (15.06.2025) ";
+   /**
+    * Konstruktor ungenutzt weil alles statisch abläuft
+    */
    public Maxi() {}
    /**
     * Das Hauptprogramm das die Parameter annimmt
     * 
     * @param args
+    *           von der Commandline
     */
    public static void main(String[] args) {
       // Beim Shutdown soll noch folgendes erledigt werden (z.B. nach -w)
@@ -109,15 +132,19 @@ public class Maxi {
     * Gib die 2-dimensionale Liste von Strings aus mit Zeilenvorschub nur in einer dimension
     * 
     * @param f
+    *           Liste mit anzuzeigenden Zeilen
     */
-   public static void show(List<Iterable<String>> f) {
+   static void show(List<Iterable<String>> f) {
       for (final Iterable<String> list:f) {
          for (final String s:list)
             ClipboardSupport.print(s);
          ClipboardSupport.println();
       }
    }
-   public static void start() {
+   /**
+    * Hauptprogramm
+    */
+   static void start() {
       // können wir farbig ausgeben ?
       for (final List<String> list:(ZSH.get() ? Query.TERMINFO : Query.TPUT).getLists(Pattern.compile("([0-9])")))
          if (!list.isEmpty())

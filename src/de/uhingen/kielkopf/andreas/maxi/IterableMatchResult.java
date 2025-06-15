@@ -25,12 +25,13 @@ record IterableMatchResult(MatchResult matchResult, int start) implements Iterab
     * Übernimmt den MatchResult, und macht ihn iterable
     * 
     * @param mr
+    *           {@link MatchResult}
     */
    public IterableMatchResult(MatchResult mr) {
       this(mr, (mr.groupCount() == 0) ? 0 : 1);
    }
    /**
-    * private implementation von Iterable<String>
+    * private Implementation von {@link Iterable} für den Typ {@link String}
     */
    @Override
    public Iterator<String> iterator() {
@@ -50,6 +51,7 @@ record IterableMatchResult(MatchResult matchResult, int start) implements Iterab
     * Ersetzt alle "§"-Zeichen durch den vorgegebenen Text
     * 
     * @param replacement
+    *           ersatz
     * @return changed text
     */
    public String replaceP(String replacement) {

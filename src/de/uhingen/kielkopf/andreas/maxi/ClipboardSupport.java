@@ -6,6 +6,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.Console;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -74,7 +75,10 @@ public class ClipboardSupport {
     *           {@link InfoLine}
     */
    public static void println(Stream<? extends InfoLine> info) {
-      info.forEach(t -> println(t));
+      /**
+       * Unbedingt temporär zwischenspeichern um die Tabellenbreite für alle Zeilen zu berechnen
+       */
+      info.collect(Collectors.toList()).forEach(t -> println(t));
    }
    /**
     * Druckt die Zeile ins Clipboard und auf die Konsole

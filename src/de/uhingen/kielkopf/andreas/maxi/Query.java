@@ -1,20 +1,17 @@
 package de.uhingen.kielkopf.andreas.maxi;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Definition von Abfragen mit eingebautem Caching
  *
  * @author Andreas Kielkopf ©2022
- * @license GNU General Public License v3.0
+ * @version GNU General Public License v3.0
  */
 public enum Query {
    /** Liste die Dateien mit der Endung .kver in /boot */
@@ -83,13 +80,11 @@ public enum Query {
    TERMINFO(Maxi.SHELL, "-c", "echoti colors"),
    /** Sind Farben erlaubt ? */
    TPUT("tput", "colors");
-   final static private List<String>   EMPTY    =new ArrayList<>();
-   final static private ProcessBuilder pb       =new ProcessBuilder();
-   final static private List<String>   TEST_OK  =Arrays.asList(new String[] {"OK"});
-   // /* private */ List<String> cache =null; // new ArrayList<String>();
+   final static private List<String>   EMPTY  =new ArrayList<>();
+   final static private ProcessBuilder pb     =new ProcessBuilder();
+   final static private List<String>   TEST_OK=Arrays.asList(new String[] {"OK"});
    final private String[]              cmd;
-   /* private */ boolean               hasResult=false;
-   private List<String>                qCache   =null;                              // new ArrayList<String>();
+   private List<String>                qCache =null;                              // new ArrayList<String>();
    /**
     * Definiert die Abfrage auf der Kommandozeile
     *
@@ -98,14 +93,11 @@ public enum Query {
    Query(String... command) {
       cmd=command;
    }
-   // @Override
-   // public String toString() {
-   // return String.join("', '", cmd);
-   // }
    /**
     * Vergleicht das Datum der letzten Änderung verschiedener Dateien
     * 
     * @param test
+    *           texte
     * @return TEST_OK / null
     */
    public static List<String> test(String[] test) {
@@ -136,8 +128,6 @@ public enum Query {
    }
    /** Lösche die vorhandenen Informationen im cache */
    public void clear() {
-      // cache=null;
-      hasResult=false;
       qCache=null;
    }
    /**
@@ -160,7 +150,6 @@ public enum Query {
    public Stream<List<String>> getSelected(Pattern pa) {
       return query().stream().map(s -> pa.matcher(s)).filter(Matcher::find).map(IterableMatchResult::new)
                .map(i -> i.stream().collect(Collectors.toList()));
-      // .collect(Collectors.toList()).stream();
    }
    /**
     * macht die Abfrage und füllt den cache
@@ -173,7 +162,6 @@ public enum Query {
             final Process p=pb.command(cmd).redirectErrorStream(true).start();
             final InputStreamReader ir=new InputStreamReader(p.getInputStream());
             try (BufferedReader br=new BufferedReader(ir); Stream<String> li=br.lines()) {
-               hasResult=true;
                qCache=li.collect(Collectors.toList());
             }
          } catch (final IOException e) {

@@ -1,6 +1,7 @@
 package de.uhingen.kielkopf.andreas.maxi;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;

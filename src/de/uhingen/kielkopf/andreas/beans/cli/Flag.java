@@ -269,7 +269,8 @@ public class Flag {
     * 
     * Wenn das Flag nicht explizit in den [args] vorkommt wird dieser Status angenommen
     *
-    * @param b1 defaultwert für das Flag
+    * @param b1
+    *           defaultwert für das Flag
     * @return Flag
     */
    synchronized public Flag setDefault(boolean b1) {
@@ -281,7 +282,8 @@ public class Flag {
    /**
     * Main um einige Tests zu fahren
     * 
-    * @param argumente Argumente von der Commandline
+    * @param argumente
+    *           Argumente von der Commandline
     */
    public static void main(String[] argumente) {
       Flag.setArgs(argumente, "-a test test1 -c /home /usr/local/bin --zweihundert=200 -f=16");
@@ -291,7 +293,8 @@ public class Flag {
    /**
     * Manuelles setzen des Paramters zu diesem Flag
     * 
-    * @param p Setzt den Parameter für dieses Flag
+    * @param p
+    *           Setzt den Parameter für dieses Flag
     */
    public void setParameter(String p) {
       param=p;
@@ -321,7 +324,9 @@ public class Flag {
          alle.add(flag.getHilfe());
       return alle;
    }
-   /** Gibt eine Hilfe-Zeile für dieses Flag zurück 
+   /**
+    * Gibt eine Hilfe-Zeile für dieses Flag zurück
+    * 
     * @return Hilfezeile für dieses Flag
     */
    public String getHilfe() {

@@ -79,7 +79,11 @@ public class KernelInfo extends InfoLine {
       Query.LS.clear();
       Query.CAT_KVER.clear();
    }
-   /** @return die Meldung vom MHWD übernehmen */
+   /**
+    * Titel für die Kernel
+    * 
+    * @return Titel
+    */
    static public String getHeader() {
       // teste ob wir in chroot laufen
       final List<List<String>> mounts=Query.CHROOT.getLists(Pattern.compile(" /.* / .*"));

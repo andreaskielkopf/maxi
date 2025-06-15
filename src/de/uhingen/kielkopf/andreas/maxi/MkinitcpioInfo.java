@@ -1,6 +1,7 @@
 package de.uhingen.kielkopf.andreas.maxi;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -16,7 +17,7 @@ import java.util.stream.Stream;
  * </pre>
  *
  * @author Andreas Kielkopf ©2022
- * @license GNU General Public License v3.0
+ * @version GNU General Public License v3.0
  */
 public class MkinitcpioInfo extends InfoLine {
    /** {@value} Pfad */
@@ -82,6 +83,7 @@ public class MkinitcpioInfo extends InfoLine {
     * Spezialbehandlung für mkinitcpio
     * 
     * @param pa
+    *           Pattern
     * @return liste
     */
    @Deprecated
@@ -92,6 +94,7 @@ public class MkinitcpioInfo extends InfoLine {
     * Spezialbehandlung für mkinitcpio um geteilte Zeilen zusammenzufügen
     * 
     * @param pa
+    *           Pattern
     * @return stream
     */
    synchronized static public Stream<List<String>> getSelected_C(Pattern pa) {

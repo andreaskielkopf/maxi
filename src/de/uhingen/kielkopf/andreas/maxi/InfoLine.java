@@ -98,7 +98,6 @@ public class InfoLine {
    }
    /** Sollen die Farb-ESC-Sequenzen eingefügt werden ? */
    protected static boolean use_color=true;
-  
    /** Lösche die Liste der installierten Kernel */
    static void clearQ() {
       Query.MHWD_LI.clear();
@@ -167,7 +166,7 @@ public class InfoLine {
     *           liste
     * @param exclude
     *           ausnahme
-    * @return
+    * @return Treffer / &lt;?&gt;
     */
    static List<String> insert(List<String> source, String exclude) {
       return Arrays.asList(UTF_SUM, source.stream().filter(s -> !s.isEmpty()).filter(s -> !s.contains(exclude))
@@ -186,7 +185,7 @@ public class InfoLine {
     *           Bedingung
     * @param missing
     *           Ersatztexte
-    * @return
+    * @return gefundene Zeile
     */
    static List<String> select(Stream<List<String>> sl, Predicate<String> pr, List<String> missing) {
       return sl.filter(text -> text.stream().anyMatch(pr)).map(fList -> {
@@ -224,7 +223,7 @@ public class InfoLine {
     * 
     * <pre>
     *    = | ∑ und der erste block in der Zeile werden grün 
-    *    Texte zwischen \< und \> werden rot 
+    *    Texte zwischen &lt; und &gt; werden rot 
     *    Der Rest wird weiß
     * </pre>
     * 
@@ -267,7 +266,8 @@ public class InfoLine {
     * Eine farbige Titelzeile für die Tabelle mit "Info about:"
     * 
     * @param b
-    * @return
+    *           Text in weiß
+    * @return Titel
     */
    static String getHeader(String b) {
       return getHeader("Info about: ", b);
@@ -275,8 +275,12 @@ public class InfoLine {
    /**
     * Eine farbige Titelzeile für die Tabelle mit 2 Texten in grün und weiß
     * 
+    * @param a
+    *           Text in grün
     * @param b
-    * @return
+    *           Text in weiß
+    * 
+    * @return Titel
     */
    static String getHeader(String a, String b) {
       final StringBuilder sb=new StringBuilder();

@@ -3,25 +3,24 @@ package de.uhingen.kielkopf.andreas.maxi;
 import java.util.ArrayList;
 
 /**
- * Beispielhafte Implementierung
+ * Wo ist EFI gemountet
  * 
  * @author Andreas Kielkopf
  *
  */
-public class TestInfo extends InfoLine {
+public class EfiMount extends InfoLine {
    /** gemeinsame Liste der Spaltenbreite */
    static ArrayList<Integer> spalten=new ArrayList<>();
    /**
     * Konstruktor mit gemeinsamer Spaltenbreite
     * 
     * @param iterableInfo
-    *           Liste mit den Texten (Spaltenweise)
+    *           Liste der Infos
+    *
     */
-   public TestInfo(Iterable<String> iterableInfo) {
+   public EfiMount(Iterable<String> iterableInfo) {
       super(iterableInfo, spalten);
    }
-   @Override
-   public String toString() {
-      return getLine(info, spalten.iterator());
-   }
+   @SuppressWarnings("unused") private static final String VFAT=" vfat ";
+   @SuppressWarnings("unused") private static final String EFI ="efi ";
 }

@@ -8,51 +8,61 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Makes some tests on /boot/efi
- *
- * <pre>
- * - mkinitcpio.conf newer than: initrdisks, /etc/mkinitcpio.conf
- * -
- * -
- * </pre>
+ * Zeigt die EFI-Variable an
  *
  * @author Andreas Kielkopf ©2022
- * @license GNU General Public License v3.0
+ * @version GNU General Public License v3.0
  */
 public class EfiVars extends InfoLine {
+   /** gemeinsame Spaltenbreite */
    static ArrayList<Integer> spalten=new ArrayList<>();
+   /** Zwischenspeicher für EFI-Tabelle */
+   static List<List<String>> efi_var;
+   /**
+    * Konstruktor mit gemeinsamer Spaltenbreite
+    * 
+    * @param iterableInfo
+    *           Liste mit den Texten (Spaltenweise)
+    */
    public EfiVars(Iterable<String> iterableInfo) {
       super(iterableInfo, spalten);
    }
+   /**
+    * Tabelle mit EFI-Variablen
+    * 
+    * @return Tabelle
+    */
    public static Stream<InfoLine> analyseStream() {
-      final List<List<String>> efi_vars=getEfiVars();
-      return efi_vars.stream()
+      return getEfi_VAR()
                .map(l -> l.stream().map(s -> s.replaceFirst(".File.(.+).", "$1")).collect(Collectors.toList()))// .toList())
                .map(EfiVars::new);
    }
-   static final String  x     ="[-0-9a-fA-F]";
-   static final String  nr    ="^(Boot" + x + "+[*]) ";
-   static final String  name  ="([-:/ a-zA-Z]+)\t";
-   static final String  place ="([0-9a-zA-Z]+[(][^)]+[)])";
-   static final String  pfad  ="(.+File[^)]+[)]|)";                                   // String pfad
+   /** {@value} Hex digit */
+   static final String HEX      ="[-0-9a-fA-F]";
+   /** {@value} */
+   static final String BOOT_NR  ="^(Boot" + HEX + "+[*]) ";
+   /** {@value} */
+   static final String NAME     ="([-:/ a-zA-Z]+)\t";
+   /** {@value} */
+   static final String PLACE    ="([0-9a-zA-Z]+[(][^)]+[)])";
+   /** {@value} */
+   static final String FILE_PFAD="(.+File[^)]+[)]|)";        // String pfad
    // ="(?:/File[(]([0-9A-Z.\\]+)[)])|)";
-   static final String  boo   ="(..[BG]O|)";
-   static final String  rest  =".*?$";
-   static final Pattern pa    =Pattern.compile(nr + name + place + pfad + boo + rest);
-   static final String  placeU="(:?[0-9a-zA-Z]+[(][^)]+[)])+GPT,(-0-9a-fA-F)[36]";
-   static final String  place2="([0-9a-zA-Z]+[(][^)]+[)])";
-   static final String  place3="([0-9a-zA-Z]+[(][^)]+[)])";
-   static final String  place4="([0-9a-zA-Z]+[(][^)]+[)])";
-   static final Pattern pb    =Pattern.compile(nr + name + place + pfad + boo + rest);
-   static List<List<String>> getEfiVars() {
-      return Query.EFI_VAR.getLists(pa);
-   }
+   /** {@value} */
+   static final String BGO      ="(..[BG]O|)";
+   /** {@value} */
+   static final String RESTt    =".*?$";
+   /**
+    * Tabelle mit möglichen Booteinträgen im UEFI
+    * 
+    * @return Tabelle
+    */
    public static List<List<String>> getBootStanzas() {
       final ConcurrentSkipListMap<String, List<String>> pl=new ConcurrentSkipListMap<String, List<String>>();
       for (List<String> list:EfiInfo.getEfiPartitions())
          pl.put(list.get(0), list);
       List<List<String>> ep=EfiInfo.getEfiPartitions();
-      return getEfiVars().stream().map(a -> {
+      return getEfi_VAR().map(a -> {
          String hd=a.get(2);
          String file=a.get(3);
          a.set(3, file.replaceAll("/File\\((.+)\\)", "$1"));
@@ -68,18 +78,27 @@ public class EfiVars extends InfoLine {
          return a;
       }).filter(b -> !b.get(2).equals("unknown")).collect(Collectors.toList());
    }
-   public static String getHeader() {
-      final StringBuilder sb=new StringBuilder();
-      if (Maxi.COLOR.get())
-         sb.append(GREEN);
-      sb.append("Info about:");
-      if (Maxi.COLOR.get())
-         sb.append(WHITE);
-      sb.append(" efi vars (needs efibootmgr)");
-      if (Maxi.COLOR.get())
-         sb.append(RESET);
-      return sb.toString();
+   /**
+    * Berechne eine Tabelle mit den EFI-Dateien und versuche zu ermitteln, welchen typ sie haben
+    * 
+    * @return Liste der EFI-Dateien
+    */
+   synchronized static Stream<List<String>> getEfi_VAR() {
+      if (efi_var == null) /** Pattern um eine Zeile zu zerlegen */
+         efi_var=Query.EFI_VAR.getLists(Pattern.compile(BOOT_NR + NAME + PLACE + FILE_PFAD + BGO + RESTt));
+      return efi_var.stream();
    }
+   /**
+    * Titelzeile für EFI-Booteinträge
+    * 
+    * @return Titelzeile
+    */
+   public static String getHeader() {
+      return getHeader("efi vars (needs efibootmgr)");
+   }
+   /**
+    * Komplette Tabelle
+    */
    @Override
    public String toString() {
       return getLine(info, spalten.iterator());

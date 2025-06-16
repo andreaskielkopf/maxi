@@ -1,42 +1,65 @@
 package de.uhingen.kielkopf.andreas.maxi;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Makes some tests on /boot/efi
+ * Sucht nach allen sichtbaren Partitionen
  *
  * <pre>
- * - sda        -->      gpt    9a2fddb7-cc8e-43e2-9ea8-3906b11c402d
- * - sda1      EFI System       b1d3d562-88ff-4ac2-8326-9c5d82892379 vfat   C579-EF18
- * - sda2      Linux filesystem 3ee1dfe1-18af-4102-945d-90d957d3c199 btrfs  3487ba3d-1cba-4cdc-a043-c420ebc82aca
- * - sda3      Linux filesystem bda8bdec-4168-4429-8fed-7e0c6ddd0570
+ *  b1d3d562-88ff-4ac2-8326-9c5d82892379 sda1      gpt part vfat  953M   EFI System           C579-EF17                           
+ *  3ee1dfe1-19af-4102-945d-90d957d3c199 sda2      gpt part btrfs 900G   Linux filesystem     3487ba3d-1cba-4cdc-a043-c420ebca2aca
+ *  bdaabdec-4168-4429-8fed-7e0c6ddd0570 sda3      gpt part swap  28,1G  Linux swap           dac5a191-1376-4b6f-9323-f4b2fff4a40b
  * </pre>
  *
  * @author Andreas Kielkopf ©2022
- * @license GNU General Public License v3.0
+ * @version GNU General Public License v3.0
  */
 public class Partition extends InfoLine {
+   /** gemeinsame Liste der Spaltenbreite */
    static ArrayList<Integer> spalten=new ArrayList<>();
+   /**
+    * Konstruktor mit gemeinsamer Spaltenbreite
+    * 
+    * @param iterableInfo
+    *           Liste mit den Texten (Spaltenweise)
+    */
    public Partition(Iterable<String> iterableInfo) {
       super(iterableInfo, spalten);
    }
-   static final String       FLABEL="([^ ]+)?";
-   static final String       KNAME ="([a-z0-9]{3,11})";
-   static final String       PTTYPE="([a-z]+)";
-   static final String       TYPE  ="(disk|part)";
-   static final String       FSTYPE="((?:[a-zA-Z]+)|(?: {5}))";
-   static final String       PTNAME="((?:[ a-zA-Z]+?)) +";
+   // static final String FLABEL="([^ ]+)?";
+   /** {@value} */
+   private static final String KNAME ="([a-z0-9]{3,11})";
+   /** {@value} */
+   private static final String PTTYPE="([a-z]+)";
+   /** {@value} */
+   private static final String TYPE  ="(disk|part)";
+   /** {@value} */
+   private static final String FSTYPE="((?:[a-zA-Z]+)|(?: {5}))";
+   /** {@value} */
+   private static final String PTNAME="((?:[ a-zA-Z]+?)) +";
+   /** Zwischenspeicher für Partitionstabelle */
    static List<List<String>> partitions;
+   /**
+    * Tabelle mit den erkennbaren Partitionen
+    * 
+    * @return tabelle
+    */
    public static synchronized List<List<String>> getPartitions() {
       if (partitions == null)
          partitions=Query.LSBLK.getLists(Pattern.compile("^" + UUID + " " + KNAME + " +"//
                   + PTTYPE + " +" + TYPE + " " + FSTYPE + " +" + SIZE7 + " " + PTNAME + UUIDMIX + " *" + "(.+)$"));
       return partitions;
    }
+   /**
+    * gefilterte Tabelle mit den Infos über die Partitionen
+    * 
+    * @return tabelle
+    */
    public static Stream<InfoLine> analyseStream() {
       return getPartitions().stream().map(l -> {
          if (l.size() > 12) { // BUG
@@ -63,17 +86,13 @@ public class Partition extends InfoLine {
          return l;
       }).map(Partition::new);
    }
+   /**
+    * Titelzeile für Partitionstabelle
+    * 
+    * @return Titel
+    */
    public static String getHeader() {
-      final StringBuilder sb=new StringBuilder();
-      if (Maxi.COLOR.get())
-         sb.append(GREEN);
-      sb.append("Info about:");
-      if (Maxi.COLOR.get())
-         sb.append(WHITE);
-      sb.append(" visible partitions (needs lsblk)");
-      if (Maxi.COLOR.get())
-         sb.append(RESET);
-      return sb.toString();
+      return getHeader("visible partitions (needs lsblk)");
    }
    /** Teste ob Partuids doppelt vorhanden sind */
    public static void doubleError() {
@@ -90,15 +109,22 @@ public class Partition extends InfoLine {
             }
          }
          if (sb.length() > 0) {
-            if (Maxi.COLOR.get())
+            if (use_color)
                sb.insert(0, WHITE);
             sb.insert(0, "Error: There are partitions with the same UUID");
-            if (Maxi.COLOR.get())
+            if (use_color)
                sb.insert(0, RED);
             System.out.println(sb.toString());
          }
       }
    }
+   /**
+    * Test für Ausgabe der Partitionen
+    * 
+    * @param args
+    *           leer
+    * 
+    */
    public static void main(String[] args) {
       System.out.println(Partition.getHeader());
       Partition.analyseStream().collect(Collectors.toList())/* .toList() */.forEach(System.out::println);

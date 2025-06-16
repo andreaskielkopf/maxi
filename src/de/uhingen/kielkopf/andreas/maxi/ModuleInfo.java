@@ -5,21 +5,33 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
+ * Informationen über die Kernel-Module
+ * 
  * @author Andreas Kielkopf ©2022
- * @license GNU General Public License v3.0
+ * @version GNU General Public License v3.0
  */
 public class ModuleInfo extends InfoLine {
+   /** gemeinsame Liste der Spaltenbreite */
    static ArrayList<Integer> spalten=new ArrayList<>();
+   /**
+    * Konstruktor mit gemeinsamer Spaltenbreite
+    * 
+    * @param iterableInfo
+    *           Liste mit den Texten (Spaltenweise)
+    */
    public ModuleInfo(ArrayList<String> iterableInfo) {
       super(iterableInfo, spalten);
    }
-   /** @return */
+   /**
+    * Infos über die Module als Stream
+    * 
+    * @return stream
+    */
    @SuppressWarnings("null")
-   public static Stream<ModuleInfo> analyseStream() {
+   public static Stream<InfoLine> analyseStream() {
       /// Zeige die Kernelversion
       final List<List<String>> kver=Query.CAT_KVER.getLists(Pattern.compile("([-0-9.rt]+MANJARO).*"));
       final List<List<String>> du_module=Query.DU_MODULES
@@ -39,7 +51,7 @@ public class ModuleInfo extends InfoLine {
          String        kernelVersion=deepSearch(kver, key, "§", "<kver missing>");
          final Matcher ma=Pattern.compile("(.*)-rt(.*)-1-(.*)").matcher(kernelVersion);
          if (ma.find()) // bugfix wegen rt-kernels
-            kernelVersion=new IterableMatchResult(ma).replace("§1-1-rt§2-§3");
+            kernelVersion=new IterableMatchResult(ma).replaceP("§1-1-rt§2-§3");
          select(du_module.stream(), Pattern.compile(kernelVersion, Pattern.LITERAL).asPredicate(), MISSING)
                   .forEach(s -> value.add(s));
          select(du_extra.stream(), key, MISSING).forEach(s -> value.add(s));
@@ -52,34 +64,38 @@ public class ModuleInfo extends InfoLine {
          return new ModuleInfo(value);
       });
    }
-   /** Bei mehrfachen analyse müssen diese querys neu gemacht werden */
+   /** Bei mehrfacher Analyse müssen diese Querys jeweils neu gemacht werden */
    static public void clear() {
-      InfoLine.clearQ();
+      Query.MHWD_LI.clear();
       Query.LS.clear();
       Query.CAT_KVER.clear();
       Query.DU_MODULES.clear();
    }
-   /** @return */
+   /**
+    * Titelzeile für die Module
+    * 
+    * @return Titelzeile
+    */
    static public String getHeader() {
-      final StringBuilder sb=new StringBuilder();
-      if (Maxi.COLOR.get())
-         sb.append(GREEN);
-      sb.append("Modules in:");
-      if (Maxi.COLOR.get())
-         sb.append(WHITE);
-      sb.append(" /lib/modules");
-      if (Maxi.SHASUM.get()) {
-         if (Maxi.COLOR.get())
+      if (!Maxi.SHASUM.get())
+         return getHeader("/lib/modules");
+      final StringBuilder sb=new StringBuilder(getHeader("/lib/modules"));
+      if (use_color)
             sb.append(WHITE);
          sb.append(" Checksumming all modules may take a while");
-      }
-      if (Maxi.COLOR.get())
+      if (use_color)
          sb.append(RESET);
       return sb.toString();
    }
+   /**
+    * Testroutine
+    * 
+    * @param args
+    *           von der Commandline
+    */
    public static void main(String[] args) {
       System.out.println(ModuleInfo.getHeader());
-      ModuleInfo.analyseStream().collect(Collectors.toList())/* .toList() */.forEach(System.out::println);
+      ModuleInfo.analyseStream().forEach(System.out::println);
    }
    @Override
    public String toString() {

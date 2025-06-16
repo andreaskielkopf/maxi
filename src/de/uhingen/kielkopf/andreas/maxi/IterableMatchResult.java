@@ -6,19 +6,33 @@ import java.util.regex.MatchResult;
 import java.util.stream.Stream;
 
 /**
- * Iterator über Matchresult Ein Match ohne Klammern liefert einen GesamtString Ein Match mit Klammern liefert für jede
- * Klammer einen String, aber keinen Gesamtstring
- *
+ * Iterator über Matchresult.
+ * 
+ * <pre>
+ * Ein Match ohne Klammern liefert einen GesamtString 
+ * Ein Match mit Klammern liefert für jede Klammer einen String, aber keinen Gesamtstring
+ * </pre>
+ * 
  * @author Andreas Kielkopf ©2022
- * @license GNU General Public License v3.0
+ * @version GNU General Public License v3.0
+ * @param matchResult
+ *           übernommener MatchResult
+ * @param start
+ *           startpunkt (0 oder 1)
  */
-public class IterableMatchResult implements Iterable<String> {
-   final MatchResult matchResult;
-   final int         start;
+record IterableMatchResult(MatchResult matchResult, int start) implements Iterable<String> {
+   /**
+    * Übernimmt den MatchResult, und macht ihn iterable
+    * 
+    * @param mr
+    *           {@link MatchResult}
+    */
    public IterableMatchResult(MatchResult mr) {
-      matchResult=mr;
-      start=(matchResult.groupCount() == 0) ? 0 : 1;
+      this(mr, (mr.groupCount() == 0) ? 0 : 1);
    }
+   /**
+    * private Implementation von {@link Iterable} für den Typ {@link String}
+    */
    @Override
    public Iterator<String> iterator() {
       return new Iterator<String>() {
@@ -33,17 +47,27 @@ public class IterableMatchResult implements Iterable<String> {
          }
       };
    }
-   public String replace(String replacement) {
+   /**
+    * Ersetzt alle "§"-Zeichen durch den vorgegebenen Text
+    * 
+    * @param replacement
+    *           ersatz
+    * @return changed text
+    */
+   public String replaceP(String replacement) {
       if (matchResult.groupCount() == 0)
          return replacement.replaceAll("$0", matchResult.group(0));
       String erg=replacement;
-      char   nr ='1';
-      for (final String s:this) {
-         final String q="§" + nr++;
-         erg=erg.replaceAll(q, s);
-      }
+      char nr='1';
+      for (final String s:this)
+         erg=erg.replaceAll("§" + nr++, s);
       return erg;
    }
+   /**
+    * Stream mit allen Matches
+    * 
+    * @return matches
+    */
    public Stream<String> stream() {
       final ArrayList<String> erg=new ArrayList<>();
       for (final String s:this)

@@ -20,4 +20,15 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>edu.umd.cs.findbugs.plugin.eclipse.findbugsNature</nature>
 	</natures>
+	<filteredResources>
+		<filter>
+			<id>1749904828065</id>
+			<name>javadoc</name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-true-.*</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 </projectDescription>

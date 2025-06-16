@@ -7,17 +7,28 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
- * Collects the infos for one kernel and aligns columns
+ * Sammelt Informationen über die Kernel
  *
  * @author Andreas Kielkopf ©2022
- * @license GNU General Public License v3.0
+ * @version GNU General Public License v3.0
  */
 public class KernelInfo extends InfoLine {
+   /** gemeinsame Liste der Spaltenbreite */
    static ArrayList<Integer> spalten=new ArrayList<>();
+   /**
+    * Konstruktor mit gemeinsamer Spaltenbreite
+    * 
+    * @param iterableInfo
+    *           Liste mit den Texten (Spaltenweise)
+    */
    public KernelInfo(Iterable<String> iterableInfo) {
       super(iterableInfo, spalten);
    }
-   /** @return */
+   /**
+    * Stream mit infos zu allen kerneln
+    * 
+    * @return stream
+    */
    @SuppressWarnings("null")
    static public Stream<KernelInfo> analyseStream() {
       /// Prüfe ob der Kernel noch unterstützt wird OK/[EOL]
@@ -27,11 +38,9 @@ public class KernelInfo extends InfoLine {
       /// Zeige den Kernel und die initramdisks in /boot
       final List<List<String>> vmlinuz=Query.LS.getLists(Pattern.compile(SIZE4 + ".*(vmlinuz.*)"));
       final List<List<String>> initrd=Query.LS.getLists(Pattern.compile(SIZE4 + ".*(init.*64[.]img)"));
-      final List<List<String>> fallback    =Query.LS
-               .getLists(Pattern.compile(SIZE4 + "[^0-9]+([0-9.]+.+).*(fallback)"));
+      final List<List<String>> fallback=Query.LS.getLists(Pattern.compile(SIZE4 + "[^0-9]+([0-9.]+.+).*(fallback)"));
       /// Zeige die Kernelversion
-      final List<List<String>> kver        =Maxi.KVER.get()
-               ? Query.CAT_KVER.getLists(Pattern.compile("([-0-9.rtc]+MANJARO).*"))
+      final List<List<String>> kver=Maxi.KVER.get() ? Query.CAT_KVER.getLists(Pattern.compile("([-0-9.rtc]+MANJARO).*"))
                : null;
       /// berechne die Prüfsummen
       final List<List<String>> sha_kernel=Maxi.SHASUM.get()
@@ -64,20 +73,24 @@ public class KernelInfo extends InfoLine {
          return new KernelInfo(list);
       });
    }
-   /** Bei mehrfachen analyse müssen diese querys neu gemacht werden */
+   /** Bei mehrfacher Analyse müssen diese Querys jeweils neu gemacht werden */
    static public void clear() {
-      InfoLine.clear(); // MHWD_LI
+      Query.MHWD_LI.clear();
       Query.LS.clear();
       Query.CAT_KVER.clear();
    }
-   /** @return die Meldung vom MHWD übernehmen */
+   /**
+    * Titel für die Kernel
+    * 
+    * @return Titel
+    */
    static public String getHeader() {
       // teste ob wir in chroot laufen
       final List<List<String>> mounts=Query.CHROOT.getLists(Pattern.compile(" /.* / .*"));
       final String chroot=(mounts.isEmpty()) ? "running in CHROOT" : "running";
       return Query.MHWD_LI.getLists(Pattern.compile(".*running.*")).stream().flatMap(List::stream).findAny().orElse("")
-               .replaceFirst("running", chroot).replaceAll(ANY_ESC, Maxi.COLOR.get() ? WHITE : "")
-               .replaceFirst(ANY_ESC, Maxi.COLOR.get() ? GREEN : "");
+               .replaceFirst("running", chroot).replaceAll(ANY_ESC, use_color ? WHITE : "")
+               .replaceFirst(ANY_ESC, use_color ? GREEN : "");
    }
    @Override
    public String toString() {

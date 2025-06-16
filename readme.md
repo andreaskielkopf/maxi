@@ -46,7 +46,7 @@ maxi [OPTIONS]
 - ©2022 [Andreas Kielkopf](https://github.com/andreaskielkopf)
 
 ### Depends on
-- `java-21-openjdk`
+- `jdk-openjdk`
 - `mhwd` (mhwd-kernel)
 - `coreutils` (ls cat sort du sha256sum)
 - `findutils` (find)
@@ -141,7 +141,7 @@ Maxi [OPTIONEN]
 - ©2023,2025 [Andreas Kielkopf](https://github.com/andreaskielkopf)
 
 #### Abhängig von:
-- `java-21-openjdk`
+- `jdk-openjdk`
 - `mhwd` (mhwd-Kernel)
 - `coreutils` (ls cat sort du sha256sum)
 - `findutils` (finden)

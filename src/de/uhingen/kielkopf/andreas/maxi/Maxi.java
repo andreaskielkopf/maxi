@@ -11,7 +11,8 @@ import de.uhingen.kielkopf.andreas.beans.cli.Flag;
 
 /**
  * <pre>
- * Ein Programm um in einem manjaro-system zu prüfen ob eventuell notwendige Dateien für dennächsten Boot fehlen
+ * Ein Programm um in einem manjaro-system zu prüfen ob eventuell notwendige Dateien für dennächsten Boot fehlen.
+ * 
  * * Welche kernels installiert und vorhanden sind
  * * Ob alle intramdisks einen Inhalt haben (Länge)
  * * Ob eine Configdatei für Grub aktuell ist

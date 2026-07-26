@@ -15,7 +15,6 @@
         <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{ConfigInfo.java"/>
         <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{EfiInfo.java"/>
         <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{EfiVars.java"/>
-        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.beans.cli{Flag.java"/>
         <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{GrubInfo.java"/>
         <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{InfoLine.java"/>
         <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{IterableMatchResult.java"/>
@@ -28,6 +27,7 @@
         <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{Query.java"/>
         <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{TestInfo.java"/>
         <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{Maxi.java"/>
+        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.beans.cli"/>
         <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.beans.gui"/>
     </selectedElements>
 </jardesc>

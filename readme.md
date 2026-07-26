@@ -2,7 +2,7 @@
 If your manjaro installation does not boot (any more), maxi may help to find what is missing. 
 Just use it from commandline or from a chroot environment. If you need help interpreting the output, read [Understand the boot process](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/99740) or contact a forum like [manjaro forum](https://forum.manjaro.org/) and ask for help.
 
- `sudo wget https://github.com/andreaskielkopf/maxi/raw/java_21/jar/maxi -O /usr/local/bin/maxi; sudo chmod a+x /usr/local/bin/maxi; maxi -kmsgeif` 
+ `sudo wget https://github.com/andreaskielkopf/maxi/raw/java_25/jar/maxi -O /usr/local/bin/maxi; sudo chmod a+x /usr/local/bin/maxi; maxi -kmsgeif` 
 
 ## Description
 A tool to analyze why a Manjaro installation might not start.
@@ -46,14 +46,14 @@ maxi [OPTIONS]
 - ©2022 [Andreas Kielkopf](https://github.com/andreaskielkopf)
 
 ### Depends on
-- `java-21-openjdk`
+- `jdk-openjdk` (at least java 25)
 - `mhwd` (mhwd-kernel)
 - `coreutils` (ls cat sort du sha256sum)
 - `findutils` (find)
 - `ncurses` (tput) or zsh (echoti)
 - `lsblk`
 
-<img src="needsJava21.png" width=7% height=7%>
+<img src="needsJava25.png" width=7% height=7%>
 
 License: The license is `GNU General Public License v3.0`
 
@@ -65,7 +65,7 @@ And i hope there are [other wishes](https://forum.manjaro.org/t/maxi-call-for-te
 ## Install:
 
 1. Download maxi from [github](https://github.com/andreaskielkopf/maxi) and save it where you want
-    `sudo wget https://github.com/andreaskielkopf/maxi/raw/java_21/jar/maxi -O /usr/local/bin/maxi`
+    `sudo wget https://github.com/andreaskielkopf/maxi/raw/java_25/jar/maxi -O /usr/local/bin/maxi`
 
 2. Check the sha256sum
 
@@ -77,7 +77,7 @@ And i hope there are [other wishes](https://forum.manjaro.org/t/maxi-call-for-te
 
 All at once:
 
-   `sudo wget https://github.com/andreaskielkopf/maxi/raw/java_21/jar/maxi -O /usr/local/bin/maxi; sha256sum /usr/local/bin/maxi; sudo chmod -c a+x /usr/local/bin/maxi` 
+   `sudo wget https://github.com/andreaskielkopf/maxi/raw/java_25/jar/maxi -O /usr/local/bin/maxi; sha256sum /usr/local/bin/maxi; sudo chmod -c a+x /usr/local/bin/maxi` 
 
 ## Use it:
 
@@ -85,9 +85,9 @@ All at once:
 1. The output is already in the clipoboard. If you want to post it in [manjaro forum](https://forum.manjaro.org/) you only have to create the post, and press `[Ctrl-v]`
 1. You may also have a look at [Understand the boot process](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/99740)
 
-#### sha256sum of V0.7.18 (17.12.2024)
-ae2ef03e8a9c1d0dad818438cd01f11e656ea53834be105f6ddbf4b5a9ab3949  maxi
+#### sha256sum of maxi v0.7.28 (2026-07-26 16:22)
 
+aa4dc257be458d4ab76dc3a04bb32dcb7ecceba79ae87aa8fcb1b6e98a04ff0b  maxi
 P.S. If current developments trouble you, you can 
 [Find Peace](https://www.jw.org/en/library/series/more-topics/russia-invades-ukraine-bible-meaning-hope/) -
 [Find Real Hope](https://www.jw.org/en/jehovahs-witnesses/memorial/)
@@ -98,7 +98,7 @@ P.S. If current developments trouble you, you can
 Wenn deine Manjaro-Installation nicht (mehr) bootet, kann `maxi` helfen, heraus zu finden, was fehlt.
 Verwende es einfach von der Befehlszeile oder von einer `chroot`-Umgebung aus. Wenn du Hilfe beim Interpretieren der Ausgabe benötigst, lies [Den Boot-Prozess verstehen](https://forum.manjaro.org/t/howto-understand-efi-boot-process-with-gpt-via-grub-to-manjaro/99740) oder kontaktiere ein Forum wie [manjaro forum](https://forum.manjaro.org/) und bitte um Hilfe.
 
- `sudo wget https://github.com/andreaskielkopf/maxi/raw/java__21/jar/maxi -O /usr/local/bin/maxi; sudo chmod a+x /usr/local/bin/maxi ; maxi -kmsgeif`
+ `sudo wget https://github.com/andreaskielkopf/maxi/raw/java__25/jar/maxi -O /usr/local/bin/maxi; sudo chmod a+x /usr/local/bin/maxi ; maxi -kmsgeif`
 
 ## Beschreibung
 Ein Tool zur Analyse, warum eine Manjaro-Installation möglicherweise nicht startet.
@@ -138,10 +138,10 @@ Maxi [OPTIONEN]
  
 
 #### Projektmitglieder
-- ©2023,2025 [Andreas Kielkopf](https://github.com/andreaskielkopf)
+- ©2023,2025,2026 [Andreas Kielkopf](https://github.com/andreaskielkopf)
 
 #### Abhängig von:
-- `java-21-openjdk`
+- `jdk-openjdk` (zumindest java 25)
 - `mhwd` (mhwd-Kernel)
 - `coreutils` (ls cat sort du sha256sum)
 - `findutils` (finden)
@@ -160,7 +160,7 @@ Und ich hoffe, es gibt [weiter Wünsche](https://forum.manjaro.org/t/maxi-call-f
 ### Installieren:
 1. Laden Sie Maxi von [github](https://github.com/andreaskielkopf/maxi) herunter und speichern Sie es, wo Sie möchten
 
- `sudo wget https://github.com/andreaskielkopf/maxi/raw/java_21/jar/maxi -O /usr/local/bin/maxi`
+ `sudo wget https://github.com/andreaskielkopf/maxi/raw/java_25/jar/maxi -O /usr/local/bin/maxi`
  
 2. Überprüfen Sie die Prüfsumme
  
@@ -170,7 +170,7 @@ Und ich hoffe, es gibt [weiter Wünsche](https://forum.manjaro.org/t/maxi-call-f
  
  `sudo chmod -c a+x /usr/local/bin/maxi`
 
- `sudo wget https://github.com/andreaskielkopf/maxi/raw/java_21/jar/maxi -O /usr/local/bin/maxi; sha256sum /usr/local/bin/maxi; sudo chmod -c a+x /usr/local/bin/maxi`
+ `sudo wget https://github.com/andreaskielkopf/maxi/raw/java_25/jar/maxi -O /usr/local/bin/maxi; sha256sum /usr/local/bin/maxi; sudo chmod -c a+x /usr/local/bin/maxi`
 
 #### Benutzung:
 1. `maxi -kmf` oder `maxi -kmsgeif`

@@ -84,6 +84,7 @@ public class KernelInfo extends InfoLine {
     * 
     * @return Titel
     */
+   @SuppressWarnings("null")
    static public String getHeader() {
       // teste ob wir in chroot laufen
       final List<List<String>> mounts=Query.CHROOT.getLists(Pattern.compile(" /.* / .*"));

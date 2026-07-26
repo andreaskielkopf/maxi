@@ -115,6 +115,7 @@ public class InfoLine {
     *           Text bei Misserfolg
     * @return Ergebnis
     */
+   @SuppressWarnings("null")
    static String deepSearch(List<List<String>> lls, Predicate<String> pr, String success, String error) {
       return lls.stream().flatMap(List::stream).filter(pr).map(s -> success.replaceFirst("§", s)).findAny()
                .orElse(error);

@@ -97,6 +97,7 @@ public class MkinitcpioInfo extends InfoLine {
     *           Pattern
     * @return stream
     */
+   @SuppressWarnings("null")
    synchronized static public Stream<List<String>> getSelected_C(Pattern pa) {
       if (cache == null) { // Filtere Zeilen aus, die nicht abgeschlossen sind
          StringBuilder offen=new StringBuilder();

@@ -147,6 +147,7 @@ public enum Query {
     *           Pattern
     * @return stream
     */
+   @SuppressWarnings("null")
    public Stream<List<String>> getSelected(Pattern pa) {
       return query().stream().map(s -> pa.matcher(s)).filter(Matcher::find).map(IterableMatchResult::new)
                .map(i -> i.stream().collect(Collectors.toList()));

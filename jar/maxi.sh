@@ -1,12 +1,12 @@
 #!/bin/env -S bash
-# ©2024 Andreas Kielkopf
+# ©2026 Andreas Kielkopf
 # License: `GNU General Public License v3.0`
 java -jar "$0" "$@"
 EC="$?"
 [ "$EC" = 0 ] && exit;
 echo -n "$EC ==>"
-[ "$EC" = 127 ] && echo "$0 needs a java runntime"
-[ "$EC" = 1 ] && echo "$0 needs a java runtime with version 21"
+[ "$EC" = 127 ] && echo "$0 needs a java runtime"
+[ "$EC" = 1 ] && echo "$0 needs java version 25 or higher"
 { cat; exit; } <<EOF
 
 $0 [OPTIONS] $@

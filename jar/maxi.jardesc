@@ -11,7 +11,23 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
+        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{ClipboardSupport.java"/>
+        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{ConfigInfo.java"/>
+        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{EfiInfo.java"/>
+        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{EfiVars.java"/>
+        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.beans.cli{Flag.java"/>
+        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{GrubInfo.java"/>
+        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{InfoLine.java"/>
+        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{IterableMatchResult.java"/>
+        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{KernelInfo.java"/>
+        <file path="/maxi/LICENSE"/>
         <file path="/maxi/readme.md"/>
-        <javaElement handleIdentifier="=maxi/src"/>
+        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{MkinitcpioInfo.java"/>
+        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{ModuleInfo.java"/>
+        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{Partition.java"/>
+        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{Query.java"/>
+        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{TestInfo.java"/>
+        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.maxi{Maxi.java"/>
+        <javaElement handleIdentifier="=maxi/src&lt;de.uhingen.kielkopf.andreas.beans.gui"/>
     </selectedElements>
 </jardesc>

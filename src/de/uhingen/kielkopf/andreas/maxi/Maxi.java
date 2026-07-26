@@ -4,10 +4,12 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.LockSupport;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import de.uhingen.kielkopf.andreas.beans.cli.Flag;
+import de.uhingen.kielkopf.andreas.beans.gui.FrameHelper;
 
 /**
  * <pre>
@@ -69,8 +71,8 @@ public class Maxi {
    static final Flag               LISTONEXIT=new Flag('x', "listonexit", "internal use");
    /** Flag('z', "zsh", "internal use") */
    static final Flag               ZSH       =new Flag('z', "zsh", "internal use");
-   /** {@value} */
-   static final String             VERSION   ="maxi v0.7.27 (15.06.2025) for java 21";
+   /** {@value} */   
+   static final String             VERSION   ="maxi v0.7.28 ";
    /**
     * Konstruktor ungenutzt weil alles statisch abläuft
     */
@@ -102,7 +104,7 @@ public class Maxi {
       }));
       ZSH.set(SHELL.contains("zsh"));
       Flag.setArgs(args, "-km");// -km -efgikmpsv
-      ClipboardSupport.println(VERSION);
+      ClipboardSupport.println(VERSION + "(" + FrameHelper.getDateTime() + ")");
       if (HELP.get()) {
          for (String line:Flag.getUsage(HELP, COLOR, KERNEL, LIST_ALL, KVER, MODULES, SHASUM, WATCH, GRUB, MKINITCPIO,
                   EFI, FORUM, PARTITIONS))
@@ -172,10 +174,7 @@ public class Maxi {
          do { // Beobachte Änderungen bis zum Abbruch durch ctrl-c
             last=k_aktuell;
             KernelInfo.clear();
-            // slipboardSupport.println(Flag.WATCH.getParameter());
-            try {
-               Thread.sleep(pause);
-            } catch (final InterruptedException e) { /* nothing to do */}
+            LockSupport.parkNanos(pause * 1_000_000L);
             k_aktuell=KernelInfo.analyseStream().collect(Collectors.toList());// .toList();
             final ArrayList<KernelInfo> dif=new ArrayList<>();
             kein_dif: for (final KernelInfo a:k_aktuell) {
